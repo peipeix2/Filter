@@ -1,10 +1,13 @@
+import { Outlet } from 'react-router-dom'
+import Header from './Header'
+import Footer from './Footer'
 
 function App() {
     return (
         <>
-            <div className="text-red border-solid border-gray-400 bg-sky-700 px-4 py-2 hover:bg-sky-800">
-                <h1>Hello World</h1>
-            </div>
+            <Header />
+            <Outlet />
+            <Footer />
         </>
     )
 }

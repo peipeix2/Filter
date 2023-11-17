@@ -10,9 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nextui-org/react": "^2.2.9",
     "firebase": "^10.6.0",
+    "framer-motion": "^10.16.5",
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "react-router-dom": "^6.19.0",
+    "sort-by": "^1.2.0",
+    "styled-reset": "^4.5.1",
     "zustand": "^4.4.6"
   },
   "devDependencies": {
