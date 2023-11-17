@@ -16,21 +16,40 @@ import {
     CardHeader,
     CardBody,
     CardFooter,
-    Image
+    Image,
+    Button,
 } from '@nextui-org/react'
 import { CiSearch } from 'react-icons/ci'
+import api from './utils/api.tsx'
+
 
 interface Movie {
-    title: string,
-    original_title: string,
-    posters: string,
+  id: string,
+  title: string,
+  original_title: string,
+  poster_path: string
 }
 
-const Movies = () => {
+const Home = () => {
     const [movies, setMovies] = useState<Array<Movie>>([])
+    const [moviesFromAPI, setMoviesFromAPI] = useState<Array<Movie>>([])
+    const [nowPlaying, setNowPlaying] = useState<Array<Movie>>([])
 
     useEffect(() => {
-        getData()
+        async function getPopularMovie() {
+            const result = await api.getMovies('popular')
+            const data = result.results.slice(0,5)
+            setMoviesFromAPI(data)
+        }
+
+        async function getNowPlayingMovie() {
+          const result = await api.getMovies('now_playing')
+          const data = result.results.slice(0,5)
+          setNowPlaying(data)
+        }
+
+        getPopularMovie()
+        getNowPlayingMovie()
     }, [])
 
     const getData = async () => {
@@ -47,26 +66,34 @@ const Movies = () => {
 
     return (
         <>
-            <div className="m-auto flex w-4/5 items-center justify-between bg-slate-400">
-                <div>
+            <Navbar position="static" className="mx-auto my-5 flex w-4/5 items-center justify-around bg-slate-400">
+                <NavbarContent>
                     <span>篩選電影</span>
-                    <label htmlFor="filter">類型</label>
-                    <select name="filter" id="filter">
-                        <option value="comedy">喜劇</option>
-                        <option value="drama">劇情</option>
-                        <option value="action">動作</option>
-                        <option value="adventure">冒險</option>
-                    </select>
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Button variant="bordered">類型</Button>
+                        </DropdownTrigger>
+                        <DropdownMenu>
+                            <DropdownItem>喜劇</DropdownItem>
+                            <DropdownItem>劇情</DropdownItem>
+                            <DropdownItem>動作</DropdownItem>
+                            <DropdownItem>冒險</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
 
-                    <label htmlFor="filter">評分</label>
-                    <select name="filter" id="filter">
-                        <option value="comedy">5分</option>
-                        <option value="drama">4分</option>
-                        <option value="action">3分</option>
-                        <option value="adventure">2分</option>
-                        <option value="adventure">1分</option>
-                    </select>
-                </div>
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Button variant="bordered">評分</Button>
+                        </DropdownTrigger>
+                        <DropdownMenu>
+                            <DropdownItem>5分</DropdownItem>
+                            <DropdownItem>4分</DropdownItem>
+                            <DropdownItem>3分</DropdownItem>
+                            <DropdownItem>2分</DropdownItem>
+                            <DropdownItem>1分</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                </NavbarContent>
 
                 <div className="flex items-center">
                     <Input
@@ -83,19 +110,18 @@ const Movies = () => {
                         type="search"
                     />
                 </div>
-            </div>
+            </Navbar>
 
             <div className="mx-auto my-10 w-4/5">
                 <h3 className="font-semibold">熱門電影</h3>
                 <div className="my-5 flex gap-2">
-                    {movies.map((movie) => {
+                    {moviesFromAPI.map((movie) => {
                         return (
-                            <Card className="w-23% py-4">
+                            <Card className="w-23% py-4" key={movie.id}>
                                 <CardBody>
                                     <Image
                                         alt="film-poster"
-                                        src={movie.posters}
-                                        className="h-100% w-[300px]"
+                                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                                     />
                                 </CardBody>
                                 <CardHeader className="flex-col items-center">
@@ -113,14 +139,13 @@ const Movies = () => {
             <div className="mx-auto my-10 w-4/5">
                 <h3 className="font-semibold">正在上映</h3>
                 <div className="my-5 flex gap-2">
-                    {movies.map((movie) => {
+                    {nowPlaying.map((movie) => {
                         return (
                             <Card className="w-23% py-4">
                                 <CardBody>
                                     <Image
                                         alt="film-poster"
-                                        src={movie.posters}
-                                        className="h-100% w-[300px]"
+                                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
                                     />
                                 </CardBody>
                                 <CardHeader className="flex-col items-center">
@@ -138,4 +163,4 @@ const Movies = () => {
     )
 }
 
-export default Movies
+export default Home
