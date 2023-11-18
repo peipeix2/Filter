@@ -17,16 +17,23 @@ import {
 } from '@nextui-org/react'
 import { CiSearch } from 'react-icons/ci'
 import api from '../../utils/api.tsx'
+import Star from '../../components/Star/index.tsx'
 
 interface Movie {
-    id: string
+    id: number
     title: string
     original_title: string
     poster_path: string
 }
 
+interface MovieRating {
+    id: number,
+    rating: number,
+    ratings_count: number
+}
+
 const Home = () => {
-    const [movies, setMovies] = useState<Array<Movie>>([])
+    const [moviesRating, setMoviesRating] = useState<Array<MovieRating>>([])
     const [moviesFromAPI, setMoviesFromAPI] = useState<Array<Movie>>([])
     const [nowPlaying, setNowPlaying] = useState<Array<Movie>>([])
 
@@ -47,10 +54,11 @@ const Home = () => {
 
         getPopularMovie()
         getNowPlayingMovie()
+        getMoviesRating()
     }, [])
 
-    const getData = async () => {
-        const querySnapshot = await getDocs(collection(db, 'MOVIE_DETAILS'))
+    const getMoviesRating = async () => {
+        const querySnapshot = await getDocs(collection(db, 'MOVIES'))
         const moviesData: any = []
 
         querySnapshot.forEach((doc) => {
@@ -58,7 +66,7 @@ const Home = () => {
             moviesData.push(movieData)
         })
 
-        setMovies(moviesData)
+        setMoviesRating(moviesData)
     }
 
     const checkIfSavedToFirestore = async (id:unknown) => {
@@ -163,6 +171,14 @@ const Home = () => {
                                     <small className="text-center">
                                         {movie.original_title}
                                     </small>
+                                    {moviesRating.map(item => {
+                                        if(item.id === movie.id) {
+                                            return (
+                                                <Star rating={item.rating} count={item.ratings_count} />
+                                            )
+                                        }
+                                        
+                                    })}
                                 </CardHeader>
                             </Card>
                         )
@@ -187,6 +203,16 @@ const Home = () => {
                                     <small className="text-center">
                                         {movie.original_title}
                                     </small>
+                                    {moviesRating.map((item) => {
+                                        if (item.id === movie.id) {
+                                            return (
+                                                <Star
+                                                    rating={item.rating}
+                                                    count={item.ratings_count}
+                                                />
+                                            )
+                                        }
+                                    })}
                                 </CardHeader>
                             </Card>
                         )
