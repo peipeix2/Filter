@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
     Divider,
     Modal,
@@ -24,9 +24,7 @@ import {
     addDoc,
     serverTimestamp,
     doc,
-    onSnapshot,
-    QuerySnapshot,
-    query, where, getDocs, setDoc
+    setDoc
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 
@@ -36,9 +34,7 @@ interface Rating {
 }
 
 const RatingPanel = () => {
-    // const [rating, setRating] = useState<Rating | null>(null)
     const [hover, setHover] = useState<Rating | null>(null)
-    const [comments, setComments] = useState([])
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
@@ -50,10 +46,6 @@ const RatingPanel = () => {
     const resetMoviesComment = useMoviesCommentStore(
         (state) => state.resetMoviesComment
     )
-
-    useEffect(() => {
-      getComments()
-    }, [])
 
     const handleSubmitComment = async () => {
         try {
@@ -79,17 +71,6 @@ const RatingPanel = () => {
               { merge: true }
           )
         }
-    }
-
-    const getComments = async () => {
-      const commentsArray:any = []
-      const ref = collection(db, 'COMMENTS')
-      const q = query(ref, where('movie_id', '==', moviesDetail.id))
-      const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        commentsArray.push(doc.data())
-      })
-      setComments(commentsArray)
     }
 
     const countRating = () => {

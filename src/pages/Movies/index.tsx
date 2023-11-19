@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Image, Tabs, Tab } from '@nextui-org/react'
+import { Image } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import RatingPanel from './RatingPanel'

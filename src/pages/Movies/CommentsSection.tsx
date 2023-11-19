@@ -4,33 +4,11 @@ import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
 import {
     collection,
-    addDoc,
-    serverTimestamp,
-    doc,
     onSnapshot,
-    QuerySnapshot,
-    query,
-    where,
-    getDocs,
-    setDoc,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
-
-const DUMMY_DATA = {
-    author: '001',
-    avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
-    comment: 'second test',
-    likes_count: 0,
-    comments_count: 0,
-    created_at: '2023年11月19日 下午1:13:40[UTC+8]',
-    updated_at: '2023年11月19日 下午1:13:40[UTC+8]',
-    isPublic: true,
-    movie_id: 507089,
-    rating: 5,
-    tags: 'hello',
-}
 
 const CommentsSection = () => {
     const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)

@@ -1,12 +1,6 @@
 import {
     Tooltip,
     Button,
-    Table,
-    TableHeader,
-    TableBody,
-    TableColumn,
-    TableRow,
-    TableCell,
 } from '@nextui-org/react'
 import useMoviesDetailStore from '../../../store/moviesDetailStore'
 import { useEffect } from 'react'
