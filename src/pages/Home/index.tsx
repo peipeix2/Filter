@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { collection, getDocs, query, setDoc, where, doc } from 'firebase/firestore'
 import { db } from '../../../firebase.ts'
 import {
@@ -159,28 +160,36 @@ const Home = () => {
                 <div className="my-5 flex gap-2">
                     {moviesFromAPI.map((movie) => {
                         return (
-                            <Card className="w-23% py-4" key={movie.id}>
-                                <CardBody>
-                                    <Image
-                                        alt="film-poster"
-                                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                                    />
-                                </CardBody>
-                                <CardHeader className="flex-col items-center">
-                                    <p className="text-center">{movie.title}</p>
-                                    <small className="text-center">
-                                        {movie.original_title}
-                                    </small>
-                                    {moviesRating.map(item => {
-                                        if(item.id === movie.id) {
-                                            return (
-                                                <Star rating={item.rating} count={item.ratings_count} />
-                                            )
-                                        }
-                                        
-                                    })}
-                                </CardHeader>
-                            </Card>
+                            <Link to={`/movies/${movie.id}`}>
+                                <Card className="w-23% py-4" key={movie.id}>
+                                    <CardBody>
+                                        <Image
+                                            alt="film-poster"
+                                            src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                                        />
+                                    </CardBody>
+                                    <CardHeader className="flex-col items-center">
+                                        <p className="text-center">
+                                            {movie.title}
+                                        </p>
+                                        <small className="text-center">
+                                            {movie.original_title}
+                                        </small>
+                                        {moviesRating.map((item) => {
+                                            if (item.id === movie.id) {
+                                                return (
+                                                    <Star
+                                                        rating={item.rating}
+                                                        count={
+                                                            item.ratings_count
+                                                        }
+                                                    />
+                                                )
+                                            }
+                                        })}
+                                    </CardHeader>
+                                </Card>
+                            </Link>
                         )
                     })}
                 </div>
@@ -191,30 +200,36 @@ const Home = () => {
                 <div className="my-5 flex gap-2">
                     {nowPlaying.map((movie) => {
                         return (
-                            <Card className="w-23% py-4" key={movie.id}>
-                                <CardBody>
-                                    <Image
-                                        alt="film-poster"
-                                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                                    />
-                                </CardBody>
-                                <CardHeader className="flex-col items-center">
-                                    <p className="text-center">{movie.title}</p>
-                                    <small className="text-center">
-                                        {movie.original_title}
-                                    </small>
-                                    {moviesRating.map((item) => {
-                                        if (item.id === movie.id) {
-                                            return (
-                                                <Star
-                                                    rating={item.rating}
-                                                    count={item.ratings_count}
-                                                />
-                                            )
-                                        }
-                                    })}
-                                </CardHeader>
-                            </Card>
+                            <Link to={`/movies/${movie.id}`}>
+                                <Card className="w-23% py-4" key={movie.id}>
+                                    <CardBody>
+                                        <Image
+                                            alt="film-poster"
+                                            src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                                        />
+                                    </CardBody>
+                                    <CardHeader className="flex-col items-center">
+                                        <p className="text-center">
+                                            {movie.title}
+                                        </p>
+                                        <small className="text-center">
+                                            {movie.original_title}
+                                        </small>
+                                        {moviesRating.map((item) => {
+                                            if (item.id === movie.id) {
+                                                return (
+                                                    <Star
+                                                        rating={item.rating}
+                                                        count={
+                                                            item.ratings_count
+                                                        }
+                                                    />
+                                                )
+                                            }
+                                        })}
+                                    </CardHeader>
+                                </Card>
+                            </Link>
                         )
                     })}
                 </div>
