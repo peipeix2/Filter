@@ -27,7 +27,7 @@ function Star(Props: Rating) {
             <div className="flex items-center justify-start gap-1">
                 {ratingStar}
                 <span className="color-[#3f3a3a] text-xl text-opacity-50">
-                    {Props.rating}
+                    {Props.rating.toFixed(1)}
                 </span>
             </div>
         </div>

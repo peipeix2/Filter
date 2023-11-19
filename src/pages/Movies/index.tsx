@@ -3,6 +3,7 @@ import { Image, Tabs, Tab } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import RatingPanel from './RatingPanel'
+import CommentsSection from './CommentsSection'
 
 const tabLinks = ['CAST', 'CREW', 'DETAILS', 'RELEASES']
 
@@ -58,18 +59,20 @@ const Movies = () => {
                                 </p>
                             </div>
                             <div className="genres mt-10 flex gap-2">
-                                {moviesDetail.genres.map((genre:any, index:number) => {
-                                    return (
-                                        <div
-                                            className="bg-[#b4c0cd]"
-                                            key={index}
-                                        >
-                                            <span className="text-sm text-[#2a3037]">
-                                                {genre.name}
-                                            </span>
-                                        </div>
-                                    )
-                                })}
+                                {moviesDetail.genres.map(
+                                    (genre: any, index: number) => {
+                                        return (
+                                            <div
+                                                className="bg-[#b4c0cd]"
+                                                key={index}
+                                            >
+                                                <span className="text-sm text-[#2a3037]">
+                                                    {genre.name}
+                                                </span>
+                                            </div>
+                                        )
+                                    }
+                                )}
                             </div>
                             <div className="run-time">
                                 <p className="text-sm text-[#2a3037]">
@@ -91,6 +94,10 @@ const Movies = () => {
                                 })}
                             </div>
                             <Outlet />
+
+                            <section className="comments-section mx-auto mt-10">
+                                <CommentsSection />
+                            </section>
                         </div>
                         <div className="rating-data-wrapper w-2/5">
                             <RatingPanel />

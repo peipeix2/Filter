@@ -12,7 +12,7 @@ const useMoviesDetailStore = create((set) => ({
     fetchMoviesCast: async (URL: string) => {
         const response = await fetch(URL)
         const data = await response.json()
-        set({ moviesCast: data.cast })
+        set({ moviesCast: data.cast.slice(0,5) })
     },
     fetchMoviesCrew: async (URL: string) => {
         const response = await fetch(URL)

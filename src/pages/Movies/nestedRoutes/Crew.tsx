@@ -1,4 +1,13 @@
-import { Tooltip, Button } from '@nextui-org/react'
+import {
+    Tooltip,
+    Button,
+    Table,
+    TableHeader,
+    TableBody,
+    TableColumn,
+    TableRow,
+    TableCell,
+} from '@nextui-org/react'
 import useMoviesDetailStore from '../../../store/moviesDetailStore'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
@@ -21,12 +30,14 @@ const Crew = () => {
 
     return (
         <div className="mt-5 flex flex-wrap gap-2">
-            {moviesCrew.map((item:any) => {
-                return (
-                    <Tooltip content={item.job} size="sm">
-                        <Button size="sm">{item.name}</Button>
-                    </Tooltip>
-                )
+            {moviesCrew.map((item: any) => {
+                if (item.job === 'Director' || item.job === 'Producer' || item.job === 'Writer') {
+                    return (
+                        <Tooltip content={item.job} size="sm">
+                            <Button size="sm">{item.name}</Button>
+                        </Tooltip>
+                    )
+                }
             })}
         </div>
     )
