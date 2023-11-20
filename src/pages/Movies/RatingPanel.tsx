@@ -27,6 +27,7 @@ import {
     setDoc
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
+import { Link } from 'react-router-dom'
 
 interface Rating {
     rating: number
@@ -76,7 +77,7 @@ const RatingPanel = () => {
       const rating = sum / moviesCommentsForId.length
       return rating
     }
-    // console.log(moviesComment)
+    
     const formInvalid = !moviesComment.rating
 
     return (
@@ -103,14 +104,20 @@ const RatingPanel = () => {
 
             <div className="rating-wrapper flex flex-col items-center justify-center py-3">
                 <SimplisticStar rating={countRating()} count={1} />
-                <p className="mt-2 text-[10px] text-[#beccdc]">{countRating().toFixed(1)}</p>
+                <p className="mt-2 text-[10px] text-[#beccdc]">
+                    {countRating().toFixed(1)}
+                </p>
             </div>
 
             <Divider />
 
-            <div className="py-3">
-                <p className="text-center text-[14px] text-[#beccdc]">寫影評</p>
-            </div>
+            <Link to={`/review/${moviesDetail.id}`}>
+                <div className="py-3">
+                    <p className="text-center text-[14px] text-[#beccdc] hover:text-[#475565]">
+                        寫影評
+                    </p>
+                </div>
+            </Link>
 
             <Divider />
 

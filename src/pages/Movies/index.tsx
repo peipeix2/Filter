@@ -4,6 +4,7 @@ import { Link, Outlet, useParams } from 'react-router-dom'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import RatingPanel from './RatingPanel'
 import CommentsSection from './CommentsSection'
+import ReviewSection from './ReviewsSection'
 
 const tabLinks = ['CAST', 'CREW', 'DETAILS', 'RELEASES']
 
@@ -97,6 +98,10 @@ const Movies = () => {
 
                             <section className="comments-section mx-auto mt-10">
                                 <CommentsSection />
+                            </section>
+
+                            <section className="comments-section mx-auto mt-10">
+                                <ReviewSection />
                             </section>
                         </div>
                         <div className="rating-data-wrapper w-2/5">
