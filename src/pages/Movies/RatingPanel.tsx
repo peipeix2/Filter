@@ -38,16 +38,14 @@ const RatingPanel = () => {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
-    const moviesComment = useMoviesCommentStore((state) => state.moviesComment)
-    const moviesCommentsForId = useMoviesCommentStore((state) => state.moviesCommentsForId)
-    const setMoviesComment = useMoviesCommentStore(
-        (state) => state.setMoviesComment
-    )
-    const resetMoviesComment = useMoviesCommentStore(
-        (state) => state.resetMoviesComment
-    )
+    const { moviesComment, moviesCommentsForId, setMoviesComment, resetMoviesComment } = useMoviesCommentStore()
 
     const handleSubmitComment = async () => {
+        if (formInvalid) {
+            window.alert('請填寫評分！')
+            return
+        }
+
         try {
             const docRef = await addDoc(collection(db, 'COMMENTS'), {
                 ...moviesComment,
@@ -79,6 +77,7 @@ const RatingPanel = () => {
       return rating
     }
     // console.log(moviesComment)
+    const formInvalid = !moviesComment.rating
 
     return (
         <div className="rating-data-wrapper mx-auto w-4/5 bg-slate-100 py-3">
@@ -104,7 +103,7 @@ const RatingPanel = () => {
 
             <div className="rating-wrapper flex flex-col items-center justify-center py-3">
                 <SimplisticStar rating={countRating()} count={1} />
-                <p className="mt-2 text-[10px] text-[#beccdc]">評分</p>
+                <p className="mt-2 text-[10px] text-[#beccdc]">{countRating().toFixed(1)}</p>
             </div>
 
             <Divider />

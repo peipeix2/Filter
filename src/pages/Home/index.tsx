@@ -169,10 +169,10 @@ const Home = () => {
                                         />
                                     </CardBody>
                                     <CardHeader className="flex-col items-center">
-                                        <p className="text-center">
+                                        <p className="text-center text-xs">
                                             {movie.title}
                                         </p>
-                                        <small className="text-center">
+                                        <small className="text-center text-xs">
                                             {movie.original_title}
                                         </small>
                                         {moviesRating.map((item) => {
