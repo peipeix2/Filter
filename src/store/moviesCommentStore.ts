@@ -58,7 +58,7 @@ const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
         }))
     },
     moviesCommentsForId: [],
-    setMoviesCommentsForId: (moviesCommentsForId: any) =>
+    setMoviesCommentsForId: (moviesCommentsForId:any) =>
         set(() => ({ moviesCommentsForId: moviesCommentsForId })),
 }))
 

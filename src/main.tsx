@@ -8,6 +8,7 @@ import Crew from './pages/Movies/nestedRoutes/Crew.tsx'
 import Details from './pages/Movies/nestedRoutes/Details.tsx'
 import Releases from './pages/Movies/nestedRoutes/Releases.tsx'
 import Review from './pages/Review/index.jsx'
+import Read from './pages/Read/index.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NextUIProvider } from '@nextui-org/react'
 import './index.css'
@@ -27,6 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                             <Route path="releases" element={<Releases />} />
                         </Route>
                         <Route path="/review/:id" element={<Review />} />
+                        <Route path="/read/:id" element={<Read />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

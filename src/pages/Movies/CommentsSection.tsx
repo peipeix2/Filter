@@ -38,16 +38,18 @@ const CommentsSection = () => {
         }
     }, [])
 
+    console.log('k')
+
     return (
         <>
             <div>
                 <h1>熱門評論</h1>
             </div>
             <Divider className="my-4" />
-            {moviesCommentsForId.map(comment => {
+            {moviesCommentsForId.map((comment, index) => {
               return (
                   <>
-                      <div className="comment-card my-5 flex items-center">
+                      <div className="comment-card my-5 flex items-center" key={index}>
                           <div className="avatar-wrapper flex h-[100px] w-1/5 items-start">
                               <div
                                   className="avatar mx-auto h-10 w-10 rounded-full bg-contain"

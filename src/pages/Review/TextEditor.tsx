@@ -12,6 +12,7 @@ import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../../../firebase'
+import { useNavigate } from 'react-router-dom'
 
 const extensions = [StarterKit, Underline, Image]
 
@@ -26,6 +27,7 @@ const TextEditor = () => {
   const resetMoviesReview = useMoviesReviewStore(
     (state) => state.resetMoviesReview
   )
+  const navigate = useNavigate()
 
   const editor = useEditor({
     editorProps: {
@@ -90,6 +92,7 @@ const TextEditor = () => {
       resetMoviesReview()
       window.alert('影評已送出！')
       console.log('Document written with ID: ', docRef.id)
+      navigate(`/movies/${moviesDetail.id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
     }
@@ -125,7 +128,7 @@ const TextEditor = () => {
               <FaStar
                 size={30}
                 color={
-                  (hover && ratingValue <= hover) || moviesReview.rating
+                  ratingValue <= (hover || moviesReview.rating)
                     ? 'orange'
                     : '#e4e5e9'
                 }

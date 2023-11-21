@@ -16,7 +16,7 @@ function Header() {
     return (
         <Navbar className="bg-slate-200">
             <NavbarBrand>
-                <p>SiteLogo</p>
+                <a href='/'>SiteLogo</a>
             </NavbarBrand>
 
             <NavbarContent as="div" justify="end">
