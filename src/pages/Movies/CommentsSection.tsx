@@ -80,7 +80,19 @@ const CommentsSection = () => {
                               <div className="comment-content my-5">
                                   <p className="comment">{comment.comment}</p>
                               </div>
-
+                            
+                            <div className='tags'>
+                                <ul className='flex gap-1'>
+                                  {comment.tags.map(tag => {
+                                return (
+                                  <li className="p-1 text-sm text-slate-400">
+                                    #{tag}
+                                  </li>
+                                )
+                               })}  
+                                </ul>
+                                  
+                            </div>
                               <div className="like">
                                   <div className="like-btn flex items-center">
                                       <FaHeart className="mr-1 text-xs text-slate-800" />

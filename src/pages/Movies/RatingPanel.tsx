@@ -9,7 +9,6 @@ import {
   Button,
   useDisclosure,
   Checkbox,
-  Input,
   Image,
   Textarea,
 } from '@nextui-org/react'
@@ -31,10 +30,13 @@ import {
 import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
+import TagsInput from '../../components/TagsInput'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
   const [moviesData, setMoviesData] = useState<any>([])
+  const [tags, setTags] = useState<string[]>([])
+  const [tagsInput, setTagsInput] = useState<string>('')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
@@ -50,12 +52,12 @@ const RatingPanel = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
-        const movies = doc.data()
-        setMoviesData(movies)
+      const movies = doc.data()
+      setMoviesData(movies)
     })
 
     return () => {
-        unsubscribe()
+      unsubscribe()
     }
   }, [])
 
@@ -68,6 +70,7 @@ const RatingPanel = () => {
     try {
       const docRef = await addDoc(collection(db, 'COMMENTS'), {
         ...moviesComment,
+        tags: tags,
         author: '001',
         avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
         created_at: serverTimestamp(),
@@ -88,7 +91,8 @@ const RatingPanel = () => {
       await setDoc(
         doc(db, 'MOVIES', `${moviesDetail.id}`),
         {
-          ratings_count: moviesCommentsForId.length + moviesReviewsForId.length + 1,
+          ratings_count:
+            moviesCommentsForId.length + moviesReviewsForId.length + 1,
           rating: countRating(),
         },
         { merge: true }
@@ -116,9 +120,8 @@ const RatingPanel = () => {
     return rating
   }
 
+  
   const formInvalid = !moviesComment.rating
-
-  console.log(moviesData.rating)
 
   return (
     <div className="rating-data-wrapper mx-auto w-4/5 bg-slate-100 py-3">
@@ -201,13 +204,35 @@ const RatingPanel = () => {
                       setMoviesComment('comment', e.target.value)
                     }
                   />
-                  <Input
+
+                <TagsInput tags={tags} setTags={setTags} tagsInput={tagsInput} setTagsInput={setTagsInput} />
+                  {/* <Input
                     label="標籤"
-                    placeholder="自訂標籤"
+                    placeholder="按Enter自訂標籤"
                     variant="flat"
-                    value={moviesComment.tags}
-                    onChange={(e) => setMoviesComment('tags', e.target.value)}
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
+                    onKeyUp={(e) => (e.key === 'Enter' ? addTags(e) : null)}
                   />
+                  <div className="tag-input mt-5 flex items-center rounded px-2">
+                    <ul className="flex gap-1">
+                      {tags.map((tag, index) => {
+                        return (
+                          <li
+                            className="tag flex rounded bg-slate-950 p-1 text-white items-center"
+                            key={index}
+                          >
+                            <span className="text-sm">{tag}</span>
+                            <FaDeleteLeft
+                              className="text-xs mx-1"
+                              onClick={() => removeTags(index)}
+                            />
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div> */}
+
                   <div className="rating-privacy mt-5 flex justify-between">
                     <div className="flex items-center">
                       <span className="mx-2 text-sm">評分</span>

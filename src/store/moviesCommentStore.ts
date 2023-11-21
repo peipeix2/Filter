@@ -6,7 +6,6 @@ interface MoviesCommentState {
     isPublic: boolean,
     likes_count: number,
     rating: number,
-    tags: string
 }
 
 interface MoviesCommentsForIdState {
@@ -19,7 +18,7 @@ interface MoviesCommentsForIdState {
     likes_count: number,
     movie_id: number,
     rating: number,
-    tags: string,
+    tags: string[],
     updated_at: Date
 }
 
@@ -38,7 +37,6 @@ const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
         isPublic: true,
         likes_count: 0,
         rating: 0,
-        tags: '',
     },
     setMoviesComment: (fieldName, value) => {
         set((state) => ({
@@ -53,7 +51,6 @@ const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
                 isPublic: true,
                 likes_count: 0,
                 rating: 0,
-                tags: '',
             },
         }))
     },
