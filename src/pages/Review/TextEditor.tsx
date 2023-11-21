@@ -10,9 +10,10 @@ import { Input, Button, Checkbox } from '@nextui-org/react'
 import { FaStar } from 'react-icons/fa'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, setDoc, doc } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { useNavigate } from 'react-router-dom'
+import useMoviesCommentStore from '../../store/moviesCommentStore'
 
 const extensions = [StarterKit, Underline, Image]
 
@@ -27,6 +28,8 @@ const TextEditor = () => {
   const resetMoviesReview = useMoviesReviewStore(
     (state) => state.resetMoviesReview
   )
+  const moviesCommentsForId = useMoviesCommentStore((state) => state.moviesCommentsForId)
+  const moviesReviewsForId = useMoviesReviewStore((state) => state.moviesReviewsForId)
   const navigate = useNavigate()
 
   const editor = useEditor({
@@ -92,10 +95,43 @@ const TextEditor = () => {
       resetMoviesReview()
       window.alert('影評已送出！')
       console.log('Document written with ID: ', docRef.id)
+      await updateMovieRatings()
       navigate(`/movies/${moviesDetail.id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
     }
+  }
+
+  const updateMovieRatings = async () => {
+    try {
+      await setDoc(
+        doc(db, 'MOVIES', `${moviesDetail.id}`),
+        {
+          ratings_count:
+            moviesCommentsForId.length + moviesReviewsForId.length + 1,
+          rating: countRating(),
+        },
+        { merge: true }
+      )
+      console.log('Movie ratings updated successfully.')
+    } catch (error) {
+      console.error('Error updating movie ratings: ', error)
+    }
+  }
+
+  const countRating = () => {
+    const sumForComments = moviesCommentsForId.reduce(
+      (acc, comment) => acc + comment.rating,
+      0
+    )
+    const sumForReviews = moviesReviewsForId.reduce(
+      (acc, review) => acc + review.rating,
+      0
+    )
+    const rating =
+      (sumForComments + sumForReviews + moviesReview.rating) /
+      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
+    return rating
   }
 
   const formInvalid = !moviesReview.rating

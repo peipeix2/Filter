@@ -8,6 +8,7 @@ import { db } from '../../../firebase'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import parser from 'html-react-parser'
+import { useParams } from 'react-router-dom'
 
 const ReviewSection = () => {
     const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
@@ -17,6 +18,7 @@ const ReviewSection = () => {
     const setMoviesReviewsForId = useMoviesReviewStore(
         (state) => state.setMoviesReviewsForId
     )
+    const { id } = useParams()
 
     useEffect(() => {
         fetchMovieReviews()
@@ -24,7 +26,7 @@ const ReviewSection = () => {
 
     const fetchMovieReviews = async () => {
         const ref = collection(db, 'REVIEWS')
-        const q = query(ref, where('movie_id', '==', moviesDetail.id))
+        const q = query(ref, where('movie_id', '==', Number(id)))
         const querySnapshot = await getDocs(q)
         const reviewsArray: any = []
         querySnapshot.forEach((doc) => {

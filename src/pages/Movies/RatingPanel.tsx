@@ -30,10 +30,11 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
-  // const [commentsOnChange, setCommentsOnChange] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<any>([])
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
@@ -45,25 +46,18 @@ const RatingPanel = () => {
   const moviesReviewsForId = useMoviesReviewStore(
     (state) => state.moviesReviewsForId
   )
+  const { id } = useParams()
 
-  // useEffect(() => {
-  //   const unsubscribe = onSnapshot(
-  //     collection(db, 'COMMENTS'),
-  //     (querySnapshot) => {
-  //       const comments: any = []
-  //       querySnapshot.forEach((doc) => {
-  //         if (doc.data().movie_id === moviesDetail.id) {
-  //           comments.push(doc.data())
-  //         }
-  //       })
-  //       setCommentsOnChange(comments)
-  //     }
-  //   )
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
+        const movies = doc.data()
+        setMoviesData(movies)
+    })
 
-  //   return () => {
-  //     unsubscribe()
-  //   }
-  // }, [])
+    return () => {
+        unsubscribe()
+    }
+  }, [])
 
   const handleSubmitComment = async () => {
     if (formInvalid) {
@@ -94,7 +88,7 @@ const RatingPanel = () => {
       await setDoc(
         doc(db, 'MOVIES', `${moviesDetail.id}`),
         {
-          ratings_count: moviesCommentsForId.length + moviesReviewsForId.length,
+          ratings_count: moviesCommentsForId.length + moviesReviewsForId.length + 1,
           rating: countRating(),
         },
         { merge: true }
@@ -117,12 +111,14 @@ const RatingPanel = () => {
     console.log('sumForComments', sumForComments)
     console.log('sumForReviews', sumForReviews)
     const rating =
-      (sumForComments + sumForReviews) /
-      (moviesCommentsForId.length + moviesReviewsForId.length)
+      (sumForComments + sumForReviews + moviesComment.rating) /
+      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
     return rating
   }
 
   const formInvalid = !moviesComment.rating
+
+  console.log(moviesData.rating)
 
   return (
     <div className="rating-data-wrapper mx-auto w-4/5 bg-slate-100 py-3">
@@ -147,10 +143,8 @@ const RatingPanel = () => {
       <Divider />
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
-        <SimplisticStar rating={countRating()} count={1} />
-        <p className="mt-2 text-[10px] text-[#beccdc]">
-          {countRating().toFixed(1)}
-        </p>
+        <SimplisticStar rating={moviesData.rating} count={1} />
+        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating}</p>
       </div>
 
       <Divider />
@@ -203,7 +197,9 @@ const RatingPanel = () => {
                     className="mb-5"
                     maxLength={150}
                     value={moviesComment.comment}
-                    onChange={(e) => setMoviesComment('comment', e.target.value)}
+                    onChange={(e) =>
+                      setMoviesComment('comment', e.target.value)
+                    }
                   />
                   <Input
                     label="標籤"

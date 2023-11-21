@@ -9,6 +9,7 @@ import {
 import { db } from '../../../firebase'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
+import { useParams } from 'react-router-dom'
 
 const CommentsSection = () => {
     const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
@@ -18,6 +19,7 @@ const CommentsSection = () => {
     const setMoviesCommentsForId = useMoviesCommentStore(
         (state) => state.setMoviesCommentsForId
     )
+    const { id } = useParams()
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
@@ -25,7 +27,7 @@ const CommentsSection = () => {
             (querySnapshot) => {
               const comments:any = []
                 querySnapshot.forEach((doc) => {
-                    if (doc.data().movie_id === moviesDetail.id && doc.data().isPublic === true) {
+                    if (doc.data().movie_id === Number(id) && doc.data().isPublic === true) {
                       comments.push(doc.data())
                     }
                 })
