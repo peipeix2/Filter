@@ -1,6 +1,37 @@
 import { create } from 'zustand'
 
-const useMoviesCommentStore = create((set) => ({
+interface MoviesCommentState {
+    comment: string;
+    comments_count: number,
+    isPublic: boolean,
+    likes_count: number,
+    rating: number,
+    tags: string
+}
+
+interface MoviesCommentsForIdState {
+    author: string;
+    avatar: string;
+    comment: string;
+    comments_count: number,
+    created_at: Date,
+    isPublic: boolean,
+    likes_count: number,
+    movie_id: number,
+    rating: number,
+    tags: string,
+    updated_at: Date
+}
+
+interface MoviesCommentsStoreState {
+    moviesComment: MoviesCommentState;
+    setMoviesComment: (fieldName: string, value: any) => void;
+    resetMoviesComment: () => void;
+    moviesCommentsForId: MoviesCommentsForIdState[];
+    setMoviesCommentsForId: (moviesCommentsForId: MoviesCommentsForIdState) => void;
+}
+
+const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
     moviesComment: {
         comment: '',
         comments_count: 0,
@@ -9,8 +40,8 @@ const useMoviesCommentStore = create((set) => ({
         rating: 0,
         tags: '',
     },
-    setMoviesComment: (fieldName: any, value: any) => {
-        set((state: any) => ({
+    setMoviesComment: (fieldName, value) => {
+        set((state) => ({
             moviesComment: { ...state.moviesComment, [fieldName]: value },
         }))
     },

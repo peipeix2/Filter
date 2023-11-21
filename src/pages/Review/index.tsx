@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom'
 import TextEditor from './TextEditor.jsx'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 

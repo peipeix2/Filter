@@ -1,6 +1,42 @@
 import { create } from 'zustand'
 
-const useMoviesReviewStore = create((set) => ({
+interface MoviesReviewState {
+    title: string
+    review: string
+    comments_count: number
+    isPublic: boolean
+    likes_count: number
+    rating: number
+    tags: string
+}
+
+interface MoviesReviewsForIdState {
+    id: string
+    title: string
+    author: string
+    avatar: string
+    review: string
+    comments_count: number
+    created_at: Date
+    isPublic: boolean
+    likes_count: number
+    movie_id: number
+    rating: number
+    tags: string
+    updated_at: Date
+}
+
+interface MoviesReviewsStoreState {
+    moviesReview: MoviesReviewState
+    setMoviesReview: (fieldName: string, value: any) => void
+    resetMoviesReview: () => void
+    moviesReviewsForId: MoviesReviewsForIdState[]
+    setMoviesReviewsForId: (
+        moviesCommentsForId: MoviesReviewsForIdState
+    ) => void
+}
+
+const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
     moviesReview: {
         title: '',
         review: '',
@@ -10,8 +46,8 @@ const useMoviesReviewStore = create((set) => ({
         rating: 0,
         tags: '',
     },
-    setMoviesReview: (fieldName: any, value: any) => {
-        set((state: any) => ({
+    setMoviesReview: (fieldName, value) => {
+        set((state) => ({
             moviesReview: { ...state.moviesReview, [fieldName]: value },
         }))
     },
@@ -30,7 +66,7 @@ const useMoviesReviewStore = create((set) => ({
     },
     moviesReviewsForId: [],
     setMoviesReviewsForId: (moviesReviewsForId: any) =>
-        set(() => ({ moviesReviewsForId: moviesReviewsForId }))
+        set(() => ({ moviesReviewsForId: moviesReviewsForId })),
 }))
 
 export default useMoviesReviewStore

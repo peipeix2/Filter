@@ -43,7 +43,7 @@ const ReviewSection = () => {
             {moviesReviewsForId.map((review, index) => {
                 return (
                     <>
-                        <div className="comment-card my-5 flex items-center">
+                        <div className="comment-card my-5 flex items-center" key={index}>
                             <div className="avatar-wrapper flex">
                                 <div
                                     className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
@@ -75,7 +75,7 @@ const ReviewSection = () => {
                                 </div>
 
                                 <div className="comment-content my-5">
-                                    <p className="comment line-clamp-5 leading-10">
+                                    <p className="comment leading-10">
                                         {parser(review.review)}
                                     </p>
                                 </div>

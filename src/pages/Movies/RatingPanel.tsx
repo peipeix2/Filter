@@ -19,27 +19,34 @@ import SimplisticStar from '../../components/Star/SimplisticStar'
 import { FaStar } from 'react-icons/fa'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
+import useMoviesReviewStore from '../../store/moviesReviewStore'
 import {
     collection,
     addDoc,
     serverTimestamp,
     doc,
-    setDoc
+    setDoc,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
 
-interface Rating {
-    rating: number
-    setRating: () => void
-}
 
 const RatingPanel = () => {
-    const [hover, setHover] = useState<Rating | null>(null)
+    const [hover, setHover] = useState<number | null>(null)
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
-    const { moviesComment, moviesCommentsForId, setMoviesComment, resetMoviesComment } = useMoviesCommentStore()
+    const {
+        moviesComment,
+        moviesCommentsForId,
+        setMoviesComment,
+        resetMoviesComment,
+    } = useMoviesCommentStore()
+    const moviesReviewsForId = useMoviesReviewStore(
+        (state) => state.moviesReviewsForId
+    )
+
+    
 
     const handleSubmitComment = async () => {
         if (formInvalid) {
@@ -55,29 +62,50 @@ const RatingPanel = () => {
                 created_at: serverTimestamp(),
                 updated_at: serverTimestamp(),
                 movie_id: moviesDetail.id,
-            })           
-            resetMoviesComment()
+            })
+            await resetMoviesComment()
             console.log('Document written with ID: ', docRef.id)
+
+            await updateMovieRatings()
         } catch (e) {
             console.error('Error adding document: ', e)
-        } finally {
-          await setDoc(
-              doc(db, 'MOVIES', `${moviesDetail.id}`),
-              {
-                  ratings_count: moviesCommentsForId.length,
-                  rating: countRating(),
-              },
-              { merge: true }
-          )
+        } 
+    }
+
+    const updateMovieRatings = async () => {
+        try {
+
+            await setDoc(
+                doc(db, 'MOVIES', `${moviesDetail.id}`),
+                {
+                    ratings_count:
+                        moviesCommentsForId.length + moviesReviewsForId.length,
+                    rating: countRating(),
+                },
+                { merge: true }
+            )
+
+            console.log('Movie ratings updated successfully.')
+        } catch (error) {
+            console.error('Error updating movie ratings: ', error)
         }
     }
 
     const countRating = () => {
-      const sum = moviesCommentsForId.reduce((acc, comment) => acc + comment.rating, 0)
-      const rating = sum / moviesCommentsForId.length
-      return rating
+        const sumForComments = moviesCommentsForId.reduce(
+            (acc, comment) => acc + comment.rating,
+            0
+        )
+        const sumForReviews = moviesReviewsForId.reduce(
+            (acc, review) => acc + review.rating,
+            0
+        )
+        console.log('sumForComments', sumForComments)
+        console.log('sumForReviews', sumForReviews)
+        const rating = (sumForComments + sumForReviews) / (moviesCommentsForId.length + moviesReviewsForId.length)
+        return rating
     }
-    
+
     const formInvalid = !moviesComment.rating
 
     return (
@@ -166,9 +194,6 @@ const RatingPanel = () => {
                                         }
                                     />
                                     <Input
-                                        // endContent={
-                                        //     <LockIcon className="text-default-400 pointer-events-none flex-shrink-0 text-2xl" />
-                                        // }
                                         label="標籤"
                                         placeholder="自訂標籤"
                                         variant="flat"
