@@ -5,13 +5,13 @@ import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import useMoviesDetailStore from '../../store/moviesDetailStore'
+// import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import parser from 'html-react-parser'
 import { useParams } from 'react-router-dom'
 
 const ReviewSection = () => {
-    const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
+    // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
     const moviesReviewsForId = useMoviesReviewStore(
         (state) => state.moviesReviewsForId
     )

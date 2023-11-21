@@ -7,12 +7,12 @@ import {
     onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import useMoviesDetailStore from '../../store/moviesDetailStore'
+// import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useParams } from 'react-router-dom'
 
 const CommentsSection = () => {
-    const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
+    // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
     const moviesCommentsForId = useMoviesCommentStore(
         (state) => state.moviesCommentsForId
     )

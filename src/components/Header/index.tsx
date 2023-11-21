@@ -3,7 +3,6 @@ import {
     Navbar,
     NavbarBrand,
     NavbarContent,
-    NavbarItem,
     Input,
     DropdownItem,
     DropdownTrigger,
