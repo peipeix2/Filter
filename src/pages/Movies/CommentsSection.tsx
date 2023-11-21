@@ -25,7 +25,7 @@ const CommentsSection = () => {
             (querySnapshot) => {
               const comments:any = []
                 querySnapshot.forEach((doc) => {
-                    if (doc.data().movie_id === moviesDetail.id) {
+                    if (doc.data().movie_id === moviesDetail.id && doc.data().isPublic === true) {
                       comments.push(doc.data())
                     }
                 })
@@ -37,8 +37,6 @@ const CommentsSection = () => {
             unsubscribe()
         }
     }, [])
-
-    console.log('k')
 
     return (
         <>

@@ -201,10 +201,9 @@ const RatingPanel = () => {
                     label="我的評價"
                     description="字數不可超過150字"
                     className="mb-5"
+                    maxLength={150}
                     value={moviesComment.comment}
-                    onChange={(e) =>
-                      setMoviesComment('comment', e.target.value)
-                    }
+                    onChange={(e) => setMoviesComment('comment', e.target.value)}
                   />
                   <Input
                     label="標籤"
