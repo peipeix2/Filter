@@ -7,7 +7,6 @@ interface MoviesReviewState {
     isPublic: boolean
     likes_count: number
     rating: number
-    tags: string
 }
 
 interface MoviesReviewsForIdState {
@@ -22,7 +21,7 @@ interface MoviesReviewsForIdState {
     likes_count: number
     movie_id: number
     rating: number
-    tags: string
+    tags: string[]
     updated_at: Date
 }
 
@@ -44,7 +43,6 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
         isPublic: true,
         likes_count: 0,
         rating: 0,
-        tags: '',
     },
     setMoviesReview: (fieldName, value) => {
         set((state) => ({
@@ -60,7 +58,6 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
                 isPublic: true,
                 likes_count: 0,
                 rating: 0,
-                tags: '',
             },
         }))
     },

@@ -14,6 +14,7 @@ import { collection, addDoc, serverTimestamp, setDoc, doc } from 'firebase/fires
 import { db } from '../../../firebase'
 import { useNavigate } from 'react-router-dom'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
+import TagsInput from '../../components/TagsInput'
 
 const extensions = [StarterKit, Underline, Image]
 
@@ -22,6 +23,8 @@ const content = '<p>Type something here!</p>'
 const TextEditor = () => {
   const [image, setImage] = useState<File | string | null>(null)
   const [hover, setHover] = useState<number | null>(null)
+  const [tags, setTags] = useState<string[]>([])
+  const [tagsInput, setTagsInput] = useState<string>('')
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const moviesReview = useMoviesReviewStore((state) => state.moviesReview)
   const setMoviesReview = useMoviesReviewStore((state) => state.setMoviesReview)
@@ -55,7 +58,7 @@ const TextEditor = () => {
     return null
   }
 
-  console.log(moviesReview)
+  console.log(tags)
 
   const uploadImage = async (image: any) => {
     const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
@@ -91,6 +94,7 @@ const TextEditor = () => {
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
         movie_id: moviesDetail.id,
+        tags: tags
       })
       resetMoviesReview()
       window.alert('影評已送出！')
@@ -110,6 +114,7 @@ const TextEditor = () => {
           ratings_count:
             moviesCommentsForId.length + moviesReviewsForId.length + 1,
           rating: countRating(),
+          reviews_count: moviesReviewsForId.length + 1
         },
         { merge: true }
       )
@@ -283,14 +288,12 @@ const TextEditor = () => {
       <div>
         <EditorContent editor={editor} />
       </div>
-      <div className="tags-privacy mt-5 flex justify-between">
-        <Input
-          label="標籤"
-          placeholder="自訂標籤"
-          variant="flat"
-          className="w-1/3"
-          value={moviesReview.tags}
-          onChange={(e) => setMoviesReview('tags', e.target.value)}
+      <div className="tags-privacy mt-5">
+        <TagsInput
+          tags={tags}
+          setTags={setTags}
+          tagsInput={tagsInput}
+          setTagsInput={setTagsInput}
         />
         <div className="flex items-center justify-start px-1 py-2">
           <span className="mr-2">隱私設定</span>
