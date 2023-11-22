@@ -1,0 +1,304 @@
+import { useState, useEffect } from 'react'
+import {
+  Divider,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Checkbox,
+  Image,
+  Textarea,
+} from '@nextui-org/react'
+import { IoEyeOutline } from 'react-icons/io5'
+import { MdOutlineFavoriteBorder } from 'react-icons/md'
+import SimplisticStar from '../../components/Star/SimplisticStar'
+import { FaStar } from 'react-icons/fa'
+import useMoviesDetailStore from '../../store/moviesDetailStore'
+import useMoviesCommentStore from '../../store/moviesCommentStore'
+import useMoviesReviewStore from '../../store/moviesReviewStore'
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  doc,
+  setDoc,
+  onSnapshot,
+} from 'firebase/firestore'
+import { db } from '../../../firebase'
+import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
+import TagsInput from '../../components/TagsInput'
+
+const RatingPanel = () => {
+  const [hover, setHover] = useState<number | null>(null)
+  const [moviesData, setMoviesData] = useState<any>([])
+  const [tags, setTags] = useState<string[]>([])
+  const [tagsInput, setTagsInput] = useState<string>('')
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
+  const {
+    moviesComment,
+    moviesCommentsForId,
+    setMoviesComment,
+    resetMoviesComment,
+  } = useMoviesCommentStore()
+  const moviesReviewsForId = useMoviesReviewStore(
+    (state) => state.moviesReviewsForId
+  )
+  const { id } = useParams()
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
+      const movies = doc.data()
+      setMoviesData(movies)
+    })
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  const handleSubmitComment = async () => {
+    if (formInvalid) {
+      window.alert('請填寫評分！')
+      return
+    }
+
+    try {
+      const docRef = await addDoc(collection(db, 'COMMENTS'), {
+        ...moviesComment,
+        tags: tags,
+        author: '001',
+        avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
+        created_at: serverTimestamp(),
+        updated_at: serverTimestamp(),
+        movie_id: moviesDetail.id,
+      })
+      await resetMoviesComment()
+      console.log('Document written with ID: ', docRef.id)
+
+      await updateMovieRatings()
+    } catch (e) {
+      console.error('Error adding document: ', e)
+    }
+  }
+
+  const updateMovieRatings = async () => {
+    try {
+      await setDoc(
+        doc(db, 'MOVIES', `${moviesDetail.id}`),
+        {
+          ratings_count:
+            moviesCommentsForId.length + moviesReviewsForId.length + 1,
+          rating: countRating(),
+        },
+        { merge: true }
+      )
+      console.log('Movie ratings updated successfully.')
+    } catch (error) {
+      console.error('Error updating movie ratings: ', error)
+    }
+  }
+
+  const countRating = () => {
+    const sumForComments = moviesCommentsForId.reduce(
+      (acc, comment) => acc + comment.rating,
+      0
+    )
+    const sumForReviews = moviesReviewsForId.reduce(
+      (acc, review) => acc + review.rating,
+      0
+    )
+    console.log('sumForComments', sumForComments)
+    console.log('sumForReviews', sumForReviews)
+    const rating =
+      (sumForComments + sumForReviews + moviesComment.rating) /
+      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
+    return rating
+  }
+
+  
+  const formInvalid = !moviesComment.rating
+
+  return (
+    <div className="rating-data-wrapper mx-auto w-4/5 bg-slate-100 py-3">
+      <div className="watched-status flex justify-around pb-3">
+        <div
+          className="flex cursor-pointer flex-col items-center"
+          onClick={onOpen}
+        >
+          <IoEyeOutline className="cursor-pointer text-4xl text-[#94a3ab]" />
+          <span className="cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565]">
+            看過
+          </span>
+        </div>
+        <div className="flex cursor-pointer flex-col items-center hover:text-[#475565]">
+          <MdOutlineFavoriteBorder className="text-4xl text-[#94a3ab]" />
+          <span className="cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565]">
+            收藏
+          </span>
+        </div>
+      </div>
+
+      <Divider />
+
+      <div className="rating-wrapper flex flex-col items-center justify-center py-3">
+        <SimplisticStar rating={moviesData.rating} count={1} />
+        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating}</p>
+      </div>
+
+      <Divider />
+
+      <Link to={`/review/${moviesDetail.id}`}>
+        <div className="py-3">
+          <p className="text-center text-[14px] text-[#beccdc] hover:text-[#475565]">
+            寫影評
+          </p>
+        </div>
+      </Link>
+
+      <Divider />
+
+      <div className="pt-3">
+        <p className="text-center text-[14px] text-[#beccdc]">分享</p>
+      </div>
+
+      {/* Modal Form */}
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="top-center"
+        size="5xl"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                我看過...
+              </ModalHeader>
+              <ModalBody className="flex flex-row">
+                <Image
+                  src={`https://image.tmdb.org/t/p/w500${moviesDetail.poster_path}`}
+                  alt={moviesDetail.original_title}
+                  className="w-[300px]"
+                  isBlurred
+                />
+                <div className="flex-grow px-10">
+                  <h1 className="mr-2 text-3xl font-bold">
+                    {moviesDetail.title}
+                  </h1>
+                  <p className="mb-5 font-['DM_Serif_Display'] text-2xl">
+                    {moviesDetail.original_title}
+                  </p>
+                  <Textarea
+                    variant="flat"
+                    label="我的評價"
+                    description="字數不可超過150字"
+                    className="mb-5"
+                    maxLength={150}
+                    value={moviesComment.comment}
+                    onChange={(e) =>
+                      setMoviesComment('comment', e.target.value)
+                    }
+                  />
+
+                <TagsInput tags={tags} setTags={setTags} tagsInput={tagsInput} setTagsInput={setTagsInput} />
+                  {/* <Input
+                    label="標籤"
+                    placeholder="按Enter自訂標籤"
+                    variant="flat"
+                    value={tagsInput}
+                    onChange={(e) => setTagsInput(e.target.value)}
+                    onKeyUp={(e) => (e.key === 'Enter' ? addTags(e) : null)}
+                  />
+                  <div className="tag-input mt-5 flex items-center rounded px-2">
+                    <ul className="flex gap-1">
+                      {tags.map((tag, index) => {
+                        return (
+                          <li
+                            className="tag flex rounded bg-slate-950 p-1 text-white items-center"
+                            key={index}
+                          >
+                            <span className="text-sm">{tag}</span>
+                            <FaDeleteLeft
+                              className="text-xs mx-1"
+                              onClick={() => removeTags(index)}
+                            />
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div> */}
+
+                  <div className="rating-privacy mt-5 flex justify-between">
+                    <div className="flex items-center">
+                      <span className="mx-2 text-sm">評分</span>
+                      {[...Array(5)].map((_, index) => {
+                        const ratingValue: number = index + 1
+                        return (
+                          <label key={index}>
+                            <input
+                              className="hidden"
+                              type="radio"
+                              name="score"
+                              id="score"
+                              value={ratingValue}
+                              onClick={() =>
+                                setMoviesComment('rating', ratingValue)
+                              }
+                            />
+                            <FaStar
+                              size={30}
+                              color={
+                                ratingValue <= (hover || moviesComment.rating)
+                                  ? 'orange'
+                                  : '#e4e5e9'
+                              }
+                              onMouseEnter={() => setHover(ratingValue)}
+                              onMouseLeave={() => setHover(null)}
+                            />
+                          </label>
+                        )
+                      })}
+                    </div>
+
+                    <div className="flex justify-between px-1 py-2">
+                      <span className="mr-2">隱私設定</span>
+                      <Checkbox
+                        classNames={{
+                          label: 'text-small',
+                        }}
+                        onChange={(e) =>
+                          setMoviesComment('isPublic', !e.target.checked)
+                        }
+                      >
+                        不公開
+                      </Checkbox>
+                    </div>
+                  </div>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onClose}>
+                  Close
+                </Button>
+                <Button
+                  color="primary"
+                  onPress={onClose}
+                  onClick={handleSubmitComment}
+                >
+                  送出
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </div>
+  )
+}
+
+export default RatingPanel
