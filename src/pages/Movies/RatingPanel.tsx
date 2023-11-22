@@ -206,32 +206,6 @@ const RatingPanel = () => {
                   />
 
                 <TagsInput tags={tags} setTags={setTags} tagsInput={tagsInput} setTagsInput={setTagsInput} />
-                  {/* <Input
-                    label="標籤"
-                    placeholder="按Enter自訂標籤"
-                    variant="flat"
-                    value={tagsInput}
-                    onChange={(e) => setTagsInput(e.target.value)}
-                    onKeyUp={(e) => (e.key === 'Enter' ? addTags(e) : null)}
-                  />
-                  <div className="tag-input mt-5 flex items-center rounded px-2">
-                    <ul className="flex gap-1">
-                      {tags.map((tag, index) => {
-                        return (
-                          <li
-                            className="tag flex rounded bg-slate-950 p-1 text-white items-center"
-                            key={index}
-                          >
-                            <span className="text-sm">{tag}</span>
-                            <FaDeleteLeft
-                              className="text-xs mx-1"
-                              onClick={() => removeTags(index)}
-                            />
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div> */}
 
                   <div className="rating-privacy mt-5 flex justify-between">
                     <div className="flex items-center">
