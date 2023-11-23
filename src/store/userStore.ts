@@ -17,6 +17,8 @@ const useUserStore = create((set) => ({
         avatar: '',
       }
     }),
+    hasCommented: false,
+    setHasCommented: (value: boolean) => set({hasCommented: value})
 }))
 
 export default useUserStore

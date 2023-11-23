@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Divider } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
@@ -7,15 +7,19 @@ import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useParams } from 'react-router-dom'
+import { renderComments, isUserCommented } from '../../utils/render'
+import useUserStore from '../../store/userStore'
 
 const CommentsSection = () => {
-  // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
+  const [commentsFromDB, setCommentsFromDB] = useState([])
   const moviesCommentsForId = useMoviesCommentStore(
     (state) => state.moviesCommentsForId
   )
   const setMoviesCommentsForId = useMoviesCommentStore(
     (state) => state.setMoviesCommentsForId
   )
+  const user = useUserStore((state) => state.user)
+  const setHasCommented = useUserStore((state) => state.setHasCommented)
   const { id } = useParams()
 
   useEffect(() => {
@@ -24,14 +28,19 @@ const CommentsSection = () => {
       (querySnapshot) => {
         const comments: any = []
         querySnapshot.forEach((doc) => {
-          if (
-            doc.data().movie_id === Number(id) &&
-            doc.data().isPublic === true
-          ) {
-            comments.push(doc.data())
-          }
+          // if (
+          //   doc.data().movie_id === Number(id) &&
+          //   doc.data().isPublic === true
+          // ) {
+          //   comments.push(doc.data())
+          // }
+          comments.push(doc.data())
         })
-        setMoviesCommentsForId(comments)
+        setCommentsFromDB(comments)
+        const publicComments = renderComments(comments, Number(id))
+        setMoviesCommentsForId(publicComments)
+        setHasCommented(isUserCommented(comments, user.userId))
+        console.log(isUserCommented(comments, user.userId))
       }
     )
 

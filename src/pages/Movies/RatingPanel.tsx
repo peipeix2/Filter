@@ -32,10 +32,12 @@ import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
+import { isMovieCommented } from '../../utils/render'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
   const [moviesData, setMoviesData] = useState<any>([])
+  const [userComments, setUserComments] = useState<any>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -51,6 +53,9 @@ const RatingPanel = () => {
   )
   const { id } = useParams()
   const user = useUserStore((state) => state.user)
+  const hasCommented = useUserStore((state) => state.hasCommented)
+  const setHasCommented = useUserStore((state) => state.setHasCommented)
+  const userId = JSON.parse(localStorage.getItem('user')).userId
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
@@ -58,8 +63,20 @@ const RatingPanel = () => {
       setMoviesData(movies)
     })
 
+    const unsubsComments = onSnapshot(
+      collection(db, 'USERS', userId, 'COMMENTS'),
+      (querySnapshot) => {
+        const userComment:any = []
+        querySnapshot.forEach((doc) => {
+          userComment.push(doc.data()) 
+        })
+        setHasCommented(isMovieCommented(userComment, Number(id)))
+      }
+    )
+
     return () => {
       unsubscribe()
+      unsubsComments()
     }
   }, [])
 
@@ -81,12 +98,14 @@ const RatingPanel = () => {
     }
 
     try {
-      const docRef = await addDoc(collection(db, 'COMMENTS'), commentData)
+      const docRef = collection(db, 'COMMENTS')
+      const userRef = collection(db, 'USERS')
+      await Promise.all([
+        addDoc(docRef, commentData),
+        addDoc(collection(userRef, user.userId, 'COMMENTS'), commentData),
+      ])
       await resetMoviesComment()
-      console.log('Document written with ID: ', docRef.id)
-
       await updateMovieRatings()
-      const userRef = doc(db, "USERS", user.userId, "COMMENTS")
     } catch (e) {
       console.error('Error adding document: ', e)
     }
@@ -126,14 +145,13 @@ const RatingPanel = () => {
     return rating
   }
 
-  
   const formInvalid = !moviesComment.rating
 
   return (
     <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
       {!user.email && (
         <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
-          <div className=" text-white text-center">
+          <div className=" text-center text-white">
             <p>Sign in to enjoy more feature</p>
           </div>
         </div>
@@ -141,10 +159,18 @@ const RatingPanel = () => {
       <div className="watched-status flex justify-around pb-3">
         <div
           className="flex cursor-pointer flex-col items-center"
-          onClick={onOpen}
+          onClick={hasCommented ? undefined : onOpen}
         >
-          <IoEyeOutline className="cursor-pointer text-4xl text-[#94a3ab]" />
-          <span className="cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565]">
+          <IoEyeOutline
+            className={`cursor-pointer text-4xl text-[#94a3ab] ${
+              hasCommented ? 'text-indigo-500' : 'text-[#94a3ab]'
+            }`}
+          />
+          <span
+            className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
+              hasCommented ? 'text-indigo-500' : 'text-[#beccdc]'
+            }`}
+          >
             看過
           </span>
         </div>

@@ -60,8 +60,6 @@ const TextEditor = () => {
     return null
   }
 
-  console.log(tags)
-
   const uploadImage = async (image: any) => {
     const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
     await uploadBytes(imageRef, image)
@@ -88,8 +86,7 @@ const TextEditor = () => {
       return
     }
 
-    try {
-      const docRef = await addDoc(collection(db, 'REVIEWS'), {
+    const reviewData = {
         ...moviesReview,
         userId: user.userId,
         author: user.username,
@@ -98,10 +95,17 @@ const TextEditor = () => {
         updated_at: serverTimestamp(),
         movie_id: moviesDetail.id,
         tags: tags
-      })
+      }
+
+    try {
+      const docRef = collection(db, 'REVIEWS')
+      const userRef = collection(db, 'USERS')
+      Promise.all([
+        addDoc(docRef, reviewData),
+        addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData),
+      ])
       resetMoviesReview()
       window.alert('影評已送出！')
-      console.log('Document written with ID: ', docRef.id)
       await updateMovieRatings()
       navigate(`/movies/${moviesDetail.id}`)
     } catch (e) {
