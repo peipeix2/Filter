@@ -34,10 +34,24 @@ import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
 
+interface MoviesState {
+  id: number
+  title: string
+  original_title: string
+  overview: string
+  poster_path: string
+  rating: number
+  ratings_count: number
+  comments_count: number
+  reviews_count: number
+  wishes_count: number
+  tag: string[]
+  release_date: string
+}
+
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
-  const [moviesData, setMoviesData] = useState<any>([])
-  const [userComments, setUserComments] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<MoviesState | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -52,16 +66,17 @@ const RatingPanel = () => {
     (state) => state.moviesReviewsForId
   )
   const { id } = useParams()
-  const user = useUserStore((state) => state.user)
-  const hasCommented = useUserStore((state) => state.hasCommented)
-  const setHasCommented = useUserStore((state) => state.setHasCommented)
-  const userId = JSON.parse(localStorage.getItem('user')).userId
+  const { user, hasCommented, setHasCommented, isLogin } = useUserStore()
+  const userId = user.userId
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
-      const movies = doc.data()
+      const movies:any = doc.data()
+      if (movies === undefined) return
       setMoviesData(movies)
     })
+
+    if (!user?.userId) return 
 
     const unsubsComments = onSnapshot(
       collection(db, 'USERS', userId, 'COMMENTS'),
@@ -147,9 +162,11 @@ const RatingPanel = () => {
 
   const formInvalid = !moviesComment.rating
 
+  if (!moviesData) return
+
   return (
     <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
-      {!user.email && (
+      {!isLogin && (
         <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
           <div className=" text-center text-white">
             <p>Sign in to enjoy more feature</p>

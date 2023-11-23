@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import {
     Navbar,
@@ -17,26 +16,9 @@ import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
 
 function Header() {
-    const user = useUserStore((state) => state.user)
-    const setUser = useUserStore((state) => state.setUser)
+    const { user, isLogin } = useUserStore()
 
-    useEffect(() => {
-        checkIsLogin()
-    }, [])
-
-    const checkIsLogin = () => {
-        const userData = localStorage.getItem("user")
-        if (!userData) {
-            return false
-        } else {
-            setUser(JSON.parse(userData))
-            return true
-        }
-    }
-
-    const isLogin = user.email?.length !== 0
-    console.log(isLogin)
-    console.log(user.email)
+    if (!user) return
 
     return (
       <Navbar className="bg-slate-200">
@@ -73,7 +55,7 @@ function Header() {
                     as="button"
                     className="transition-transform"
                     color="default"
-                    name={user.name ? user.username : 'D'}
+                    name={user.username ? user.username : 'Guest'}
                     size="sm"
                     src={user.avatar}
                   />

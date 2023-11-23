@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Divider } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
@@ -11,7 +11,6 @@ import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 
 const CommentsSection = () => {
-  const [commentsFromDB, setCommentsFromDB] = useState([])
   const moviesCommentsForId = useMoviesCommentStore(
     (state) => state.moviesCommentsForId
   )
@@ -28,19 +27,11 @@ const CommentsSection = () => {
       (querySnapshot) => {
         const comments: any = []
         querySnapshot.forEach((doc) => {
-          // if (
-          //   doc.data().movie_id === Number(id) &&
-          //   doc.data().isPublic === true
-          // ) {
-          //   comments.push(doc.data())
-          // }
           comments.push(doc.data())
         })
-        setCommentsFromDB(comments)
         const publicComments = renderComments(comments, Number(id))
         setMoviesCommentsForId(publicComments)
         setHasCommented(isUserCommented(comments, user.userId))
-        console.log(isUserCommented(comments, user.userId))
       }
     )
 

@@ -1,6 +1,27 @@
 import { create } from 'zustand'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+const auth = getAuth()
 
-const useUserStore = create((set) => ({
+interface userState {
+  userId: string
+  username: string | undefined | null
+  email: string | undefined | null
+  avatar: string
+}
+
+interface userStoreState {
+  user: userState
+  setUser: (value: userState) => void
+  resetUser: () => void
+  isLogin: boolean
+  setIsLogin: (value: boolean) => void
+  checkIfLogin: () => void
+  getUserProfile: () => void
+  hasCommented: boolean
+  setHasCommented: (value: boolean) => void
+}
+
+const useUserStore = create<userStoreState>((set) => ({
   user: {
     userId: '',
     username: '',
@@ -15,10 +36,33 @@ const useUserStore = create((set) => ({
         username: '',
         email: '',
         avatar: '',
-      }
+      },
     }),
-    hasCommented: false,
-    setHasCommented: (value: boolean) => set({hasCommented: value})
+  isLogin: false,
+  setIsLogin: (value: boolean) => set({ isLogin: value }),
+  checkIfLogin: () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        set({ isLogin: true })
+      } else {
+        set({ isLogin: false })
+      }
+    })
+  },
+  getUserProfile: () => {
+    const user = auth.currentUser
+    if (!user || !user?.photoURL) return
+    set({
+      user: {
+        userId: user.uid,
+        username: user?.displayName,
+        email: user?.email,
+        avatar: user.photoURL,
+      },
+    })
+  },
+  hasCommented: false,
+  setHasCommented: (value: boolean) => set({ hasCommented: value }),
 }))
 
 export default useUserStore

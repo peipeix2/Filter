@@ -25,15 +25,7 @@ const SignUp = () => {
         photoURL:
           DEFAULT_PROFILE,
       })
-      console.log(currentUser)
       if (currentUser) {
-        const userData = {
-          userId: currentUser?.uid,
-          username: userName,
-          email: currentUser?.email,
-          avatar: DEFAULT_PROFILE,
-        }
-        localStorage.setItem("user", JSON.stringify(userData))
         setUser({
           userId: currentUser?.uid,
           username: userName,
@@ -42,8 +34,10 @@ const SignUp = () => {
         })
         postUserInfo(currentUser?.uid, currentUser.email)
       }
+      alert('註冊成功！')
     } catch (error) {
-      console.log(error.message)
+      console.log(error)
+      alert('註冊失敗！')
     }
   }
 

@@ -11,43 +11,18 @@ import {
   useDisclosure,
   Input,
 } from '@nextui-org/react'
-import useUserStore from '../../store/userStore';
-import { doc, getDoc } from 'firebase/firestore'
-import { db } from '../../../firebase';
 import SignUp from '../SignUp';
-import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const setUser = useUserStore((state) => state.setUser)
-  const navigate = useNavigate()
 
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      const currentUser = auth.currentUser
-      if (currentUser) {
-        fetchUser(currentUser.uid)
-      }
     } catch (error) {
-      console.log(error.message)
-    }
-  }
-
-  const fetchUser = async (id:string) => {
-    const docSnap = await getDoc(doc(db, "USERS", id))
-    if (docSnap.exists()) {
-      const user = docSnap.data()
-      const userData = {
-        userId: id,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar
-      }
-      setUser(userData)
-      localStorage.setItem('user', JSON.stringify(userData))
+      console.log(error)
     }
   }
 

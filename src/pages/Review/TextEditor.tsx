@@ -60,6 +60,8 @@ const TextEditor = () => {
     return null
   }
 
+  if (!user?.userId) return
+
   const uploadImage = async (image: any) => {
     const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
     await uploadBytes(imageRef, image)
