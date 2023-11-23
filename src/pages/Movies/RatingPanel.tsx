@@ -31,6 +31,7 @@ import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
+import useUserStore from '../../store/userStore'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
@@ -49,6 +50,7 @@ const RatingPanel = () => {
     (state) => state.moviesReviewsForId
   )
   const { id } = useParams()
+  const user = useUserStore((state) => state.user)
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
@@ -67,20 +69,24 @@ const RatingPanel = () => {
       return
     }
 
+    const commentData = {
+      ...moviesComment,
+      tags: tags,
+      userId: user.userId,
+      author: user.username,
+      avatar: user.avatar,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+      movie_id: moviesDetail.id,
+    }
+
     try {
-      const docRef = await addDoc(collection(db, 'COMMENTS'), {
-        ...moviesComment,
-        tags: tags,
-        author: '001',
-        avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
-        created_at: serverTimestamp(),
-        updated_at: serverTimestamp(),
-        movie_id: moviesDetail.id,
-      })
+      const docRef = await addDoc(collection(db, 'COMMENTS'), commentData)
       await resetMoviesComment()
       console.log('Document written with ID: ', docRef.id)
 
       await updateMovieRatings()
+      const userRef = doc(db, "USERS", user.userId, "COMMENTS")
     } catch (e) {
       console.error('Error adding document: ', e)
     }
@@ -124,7 +130,14 @@ const RatingPanel = () => {
   const formInvalid = !moviesComment.rating
 
   return (
-    <div className="rating-data-wrapper mx-auto w-4/5 bg-slate-100 py-3">
+    <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
+      {!user.email && (
+        <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
+          <div className=" text-white text-center">
+            <p>Sign in to enjoy more feature</p>
+          </div>
+        </div>
+      )}
       <div className="watched-status flex justify-around pb-3">
         <div
           className="flex cursor-pointer flex-col items-center"
@@ -205,7 +218,12 @@ const RatingPanel = () => {
                     }
                   />
 
-                <TagsInput tags={tags} setTags={setTags} tagsInput={tagsInput} setTagsInput={setTagsInput} />
+                  <TagsInput
+                    tags={tags}
+                    setTags={setTags}
+                    tagsInput={tagsInput}
+                    setTagsInput={setTagsInput}
+                  />
 
                   <div className="rating-privacy mt-5 flex justify-between">
                     <div className="flex items-center">

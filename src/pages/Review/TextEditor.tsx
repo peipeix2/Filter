@@ -15,6 +15,7 @@ import { db } from '../../../firebase'
 import { useNavigate } from 'react-router-dom'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import TagsInput from '../../components/TagsInput'
+import useUserStore from '../../store/userStore'
 
 const extensions = [StarterKit, Underline, Image]
 
@@ -33,6 +34,7 @@ const TextEditor = () => {
   )
   const moviesCommentsForId = useMoviesCommentStore((state) => state.moviesCommentsForId)
   const moviesReviewsForId = useMoviesReviewStore((state) => state.moviesReviewsForId)
+  const user = useUserStore((state) => state.user)
   const navigate = useNavigate()
 
   const editor = useEditor({
@@ -89,8 +91,9 @@ const TextEditor = () => {
     try {
       const docRef = await addDoc(collection(db, 'REVIEWS'), {
         ...moviesReview,
-        author: '001',
-        avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
+        userId: user.userId,
+        author: user.username,
+        avatar: user.avatar,
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
         movie_id: moviesDetail.id,
