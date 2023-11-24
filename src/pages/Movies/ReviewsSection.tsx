@@ -3,7 +3,7 @@ import { Divider } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
-import { collection, query, where, getDocs } from 'firebase/firestore'
+import { collection, query, where, getDocs, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
@@ -25,7 +25,7 @@ const ReviewSection = () => {
   }, [])
 
   const fetchMovieReviews = async () => {
-    const ref = collection(db, 'REVIEWS')
+    const ref = collectionGroup(db, 'REVIEWS')
     const q = query(ref, where('movie_id', '==', Number(id)))
     const querySnapshot = await getDocs(q)
     const reviewsArray: any = []
@@ -86,9 +86,9 @@ const ReviewSection = () => {
 
                 <div className="tags">
                   <ul className="flex gap-1">
-                    {review.tags.map((tag) => {
+                    {review.tags.map((tag, index) => {
                       return (
-                        <li className="p-1 text-sm text-slate-400">#{tag}</li>
+                        <li className="p-1 text-sm text-slate-400" key={index}>#{tag}</li>
                       )
                     })}
                   </ul>

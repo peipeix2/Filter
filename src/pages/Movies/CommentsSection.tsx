@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Divider } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { collection, onSnapshot, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
@@ -23,7 +23,7 @@ const CommentsSection = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(db, 'COMMENTS'),
+      collectionGroup(db, 'COMMENTS'),
       (querySnapshot) => {
         const comments: any = []
         querySnapshot.forEach((doc) => {
@@ -83,9 +83,9 @@ const CommentsSection = () => {
 
                 <div className="tags">
                   <ul className="flex gap-1">
-                    {comment.tags.map((tag) => {
+                    {comment.tags.map((tag, index) => {
                       return (
-                        <li className="p-1 text-sm text-slate-400">#{tag}</li>
+                        <li className="p-1 text-sm text-slate-400" key={index}>#{tag}</li>
                       )
                     })}
                   </ul>

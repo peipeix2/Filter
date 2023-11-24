@@ -103,7 +103,7 @@ const TextEditor = () => {
       const docRef = collection(db, 'REVIEWS')
       const userRef = collection(db, 'USERS')
       Promise.all([
-        addDoc(docRef, reviewData),
+        // addDoc(docRef, reviewData),
         addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData),
       ])
       resetMoviesReview()
