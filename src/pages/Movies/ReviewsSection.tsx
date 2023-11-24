@@ -56,7 +56,7 @@ const ReviewSection = () => {
                 />
               </div>
               <div className="comment-rating flex-grow">
-                <Link to={`/read/${review.id}`}>
+                <Link to={`/read/${review.userId}/${review.id}`}>
                   <h1 className="mb-5 font-bold">{review.title}</h1>
                 </Link>
 

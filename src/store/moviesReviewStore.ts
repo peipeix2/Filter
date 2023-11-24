@@ -13,6 +13,7 @@ interface MoviesReviewsForIdState {
     id: string
     title: string
     author: string
+    userId: string
     avatar: string
     review: string
     comments_count: number

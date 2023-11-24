@@ -6,7 +6,7 @@ import { collection, onSnapshot, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 
@@ -27,7 +27,9 @@ const CommentsSection = () => {
       (querySnapshot) => {
         const comments: any = []
         querySnapshot.forEach((doc) => {
-          comments.push(doc.data())
+          const commentsData = doc.data()
+          const commentsWithId = {...commentsData, id: doc.id}
+          comments.push(commentsWithId)
         })
         const publicComments = renderComments(comments, Number(id))
         setMoviesCommentsForId(publicComments)
@@ -59,23 +61,25 @@ const CommentsSection = () => {
                 />
               </div>
               <div className="comment-rating flex-grow">
-                <div className="comment-header flex">
-                  <div className="comment-user mr-2 flex">
-                    <span className="mr-1 text-sm text-slate-400">
-                      評論作者
-                    </span>
-                    <span className="text-sm font-semibold text-slate-800">
-                      {comment.author}
-                    </span>
+                <Link to={`/comment/${comment.userId}/${comment.id}`}>
+                  <div className="comment-header flex">
+                    <div className="comment-user mr-2 flex">
+                      <span className="mr-1 text-sm text-slate-400">
+                        評論作者
+                      </span>
+                      <span className="text-sm font-semibold text-slate-800">
+                        {comment.author}
+                      </span>
+                    </div>
+                    <CommentStar rating={comment.rating} />
+                    <div className="comment-count ml-2 flex items-center">
+                      <FaCommentAlt className="text-xs" />
+                      <span className="ml-1 text-sm">
+                        {comment.comments_count}
+                      </span>
+                    </div>
                   </div>
-                  <CommentStar rating={comment.rating} />
-                  <div className="comment-count ml-2 flex items-center">
-                    <FaCommentAlt className="text-xs" />
-                    <span className="ml-1 text-sm">
-                      {comment.comments_count}
-                    </span>
-                  </div>
-                </div>
+                </Link>
 
                 <div className="comment-content my-5">
                   <p className="comment">{comment.comment}</p>
@@ -85,21 +89,20 @@ const CommentsSection = () => {
                   <ul className="flex gap-1">
                     {comment.tags.map((tag, index) => {
                       return (
-                        <li className="p-1 text-sm text-slate-400" key={index}>#{tag}</li>
+                        <li className="p-1 text-sm text-slate-400" key={index}>
+                          #{tag}
+                        </li>
                       )
                     })}
                   </ul>
                 </div>
-                <div className="like">
-                  <div className="like-btn flex items-center">
-                    <FaHeart className="mr-1 text-xs text-slate-800" />
-                    <span className="mr-2 text-xs text-slate-800">
-                      點讚評論
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {comment.likes_count} 個人點讚
-                    </span>
-                  </div>
+
+                <div className="like-btn flex items-center">
+                  <FaHeart className="mr-1 text-xs text-slate-800" />
+                  <span className="mr-2 text-xs text-slate-800">點讚評論</span>
+                  <span className="text-xs text-slate-500">
+                    {comment.likes_count} 個人點讚
+                  </span>
                 </div>
               </div>
             </div>
