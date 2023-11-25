@@ -110,6 +110,11 @@ const RatingPanel = () => {
       created_at: serverTimestamp(),
       updated_at: serverTimestamp(),
       movie_id: moviesDetail.id,
+      movie_title: moviesDetail.title,
+      movie_original_title: moviesDetail.original_title,
+      movie_backdrop_path: moviesDetail.backdrop_path,
+      movie_poster: moviesDetail.poster_path,
+      movie_release: moviesDetail.release_date
     }
 
     try {
