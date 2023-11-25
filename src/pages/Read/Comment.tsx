@@ -1,26 +1,148 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { getDocs, collectionGroup } from 'firebase/firestore'
+import {
+  getDocs,
+  collectionGroup,
+  serverTimestamp,
+  getDoc,
+  setDoc,
+  doc,
+  deleteDoc,
+} from 'firebase/firestore'
 import { db } from '../../../firebase'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import useUserStore from '../../store/userStore'
+import {
+  Divider,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Checkbox,
+  Image,
+  Textarea,
+} from '@nextui-org/react'
+import TagsInput from '../../components/TagsInput'
+import { FaStar } from 'react-icons/fa'
+import useMoviesCommentStore from '../../store/moviesCommentStore'
+import { useNavigate } from 'react-router-dom'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
+  const { revisedMoviesComment, setRevisedMoviesComment } = useMoviesCommentStore()
+  const [moviesData, setMoviesData] = useState<any>([])
+  const [hover, setHover] = useState<number | null>(null)
+  const [tags, setTags] = useState<string[]>([])
+  const [tagsInput, setTagsInput] = useState<string>('')
+  const user = useUserStore((state) => state.user)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const navigate = useNavigate()
+
   useEffect(() => {
     getMoviesComment()
   }, [])
 
+  useEffect(() => {
+    if (comment) {
+      getMoviesDetail(comment.movie_id)
+    }
+  }, [comment])
+
   const { id } = useParams()
   const { userId } = useParams()
+
+  if (!id) return
+  if (!userId) return
 
   const getMoviesComment = async () => {
     const querySnapshot = await getDocs(collectionGroup(db, 'COMMENTS'))
     querySnapshot.forEach((doc) => {
       if (doc.id === id) {
         setComment(doc.data())
+        setTags(doc.data().tags)
+        setRevisedMoviesComment('comment', doc.data().comment)
       }
     })
+  }
+
+  const getMoviesDetail = async (movieId:any) => {
+    const movieRef = doc(db, 'MOVIES', String(movieId))
+    const docSnap = await getDoc(movieRef)
+    if(docSnap.exists()) {
+      const movieInfo = docSnap.data()
+      setMoviesData(movieInfo)
+    }
+  }
+
+  const handleSubmitComment = async () => {
+    if (!revisedMoviesComment.rating) {
+      window.alert('請填寫評分！')
+      return
+    }
+
+    const commentData = {
+      ...revisedMoviesComment,
+      tags: tags,
+      updated_at: serverTimestamp(),
+    }
+
+    try {
+      const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
+      setDoc(userRef, commentData, { merge: true })
+      await updateMovieRatings()
+      navigate(`/movies/${comment.movie_id}`)
+    } catch (e) {
+      console.error('Error adding document: ', e)
+    }
+  }
+
+  const updateMovieRatings = async () => {
+    try {
+      await setDoc(
+        doc(db, 'MOVIES', `${comment.movie_id}`),
+        {
+          rating: ((moviesData.rating * moviesData.ratings_count) + (revisedMoviesComment.rating - moviesData.rating)) / moviesData.ratings_count,
+        },
+        { merge: true }
+      )
+      console.log('Movie ratings updated successfully.')
+    } catch (error) {
+      console.error('Error updating movie ratings: ', error)
+    }
+  }
+
+  const handleDeleteComment = async () => {
+    try {
+      const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
+      await deleteDoc(userRef)
+      await updateDeleteMovieRatings()
+      alert('評論已刪除！')
+      navigate(`/movies/${comment.movie_id}`)
+    } catch (e) {
+      console.error('Error adding document: ', e)
+    }
+  }
+
+  const updateDeleteMovieRatings = async () => {
+    try {
+      await setDoc(
+        doc(db, 'MOVIES', `${comment.movie_id}`),
+        {
+          rating:
+            (moviesData.rating * moviesData.ratings_count - comment.rating) /
+            (moviesData.ratings_count - 1),
+        },
+        { merge: true }
+      )
+      console.log('Movie ratings updated successfully.')
+    } catch (error) {
+      console.error('Error updating movie ratings: ', error)
+    }
   }
 
   if (!comment) return null
@@ -74,6 +196,132 @@ const Comment = () => {
               </span>
             </div>
           </div>
+
+          {comment.userId === user.userId && (
+            <div className="flex gap-2">
+              <button onClick={onOpen}>修改</button>
+              <button onClick={handleDeleteComment}>刪除</button>
+            </div>
+          )}
+
+          {/* Modal Form */}
+          <Modal
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+            placement="top-center"
+            size="5xl"
+          >
+            <ModalContent>
+              {(onClose) => (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    我看過...
+                  </ModalHeader>
+                  <ModalBody className="flex flex-row">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
+                      alt={comment.movie_original_title}
+                      className="w-[300px]"
+                      isBlurred
+                    />
+                    <div className="flex-grow px-10">
+                      <h1 className="mr-2 text-3xl font-bold">
+                        {comment.movie_title}
+                      </h1>
+                      <p className="mb-5 font-['DM_Serif_Display'] text-2xl">
+                        {comment.movie_original_title}
+                      </p>
+                      <Textarea
+                        variant="flat"
+                        label="我的評價"
+                        description="字數不可超過150字"
+                        className="mb-5"
+                        maxLength={150}
+                        value={revisedMoviesComment.comment}
+                        onChange={(e) =>
+                          setRevisedMoviesComment('comment', e.target.value)
+                        }
+                      />
+
+                      <TagsInput
+                        tags={tags}
+                        setTags={setTags}
+                        tagsInput={tagsInput}
+                        setTagsInput={setTagsInput}
+                      />
+
+                      <div className="rating-privacy mt-5 flex justify-between">
+                        <div className="flex items-center">
+                          <span className="mx-2 text-sm">評分</span>
+                          {[...Array(5)].map((_, index) => {
+                            const ratingValue: number = index + 1
+                            return (
+                              <label key={index}>
+                                <input
+                                  className="hidden"
+                                  type="radio"
+                                  name="score"
+                                  id="score"
+                                  value={ratingValue}
+                                  onClick={() =>
+                                    setRevisedMoviesComment(
+                                      'rating',
+                                      ratingValue
+                                    )
+                                  }
+                                />
+                                <FaStar
+                                  size={30}
+                                  color={
+                                    ratingValue <=
+                                    (hover || setRevisedMoviesComment.rating)
+                                      ? 'orange'
+                                      : '#e4e5e9'
+                                  }
+                                  onMouseEnter={() => setHover(ratingValue)}
+                                  onMouseLeave={() => setHover(null)}
+                                />
+                              </label>
+                            )
+                          })}
+                        </div>
+
+                        <div className="flex justify-between px-1 py-2">
+                          <span className="mr-2">隱私設定</span>
+                          <Checkbox
+                            classNames={{
+                              label: 'text-small',
+                            }}
+                            isSelected={!comment.isPublic}
+                            onChange={(e) =>
+                              setRevisedMoviesComment(
+                                'isPublic',
+                                !e.target.checked
+                              )
+                            }
+                          >
+                            不公開
+                          </Checkbox>
+                        </div>
+                      </div>
+                    </div>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button color="danger" variant="flat" onPress={onClose}>
+                      Close
+                    </Button>
+                    <Button
+                      color="primary"
+                      onPress={onClose}
+                      onClick={handleSubmitComment}
+                    >
+                      送出
+                    </Button>
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
         </div>
       </div>
     </>
