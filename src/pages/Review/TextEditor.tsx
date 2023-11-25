@@ -89,15 +89,20 @@ const TextEditor = () => {
     }
 
     const reviewData = {
-        ...moviesReview,
-        userId: user.userId,
-        author: user.username,
-        avatar: user.avatar,
-        created_at: serverTimestamp(),
-        updated_at: serverTimestamp(),
-        movie_id: moviesDetail.id,
-        tags: tags
-      }
+      ...moviesReview,
+      userId: user.userId,
+      author: user.username,
+      avatar: user.avatar,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+      movie_id: moviesDetail.id,
+      tags: tags,
+      movie_title: moviesDetail.title,
+      movie_original_title: moviesDetail.original_title,
+      movie_backdrop_path: moviesDetail.backdrop_path,
+      movie_poster: moviesDetail.poster_path,
+      movie_release: moviesDetail.release_date,
+    }
 
     try {
       const docRef = collection(db, 'REVIEWS')
