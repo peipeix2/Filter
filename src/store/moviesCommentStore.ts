@@ -22,6 +22,11 @@ interface MoviesCommentsForIdState {
   rating: number
   tags: string[]
   updated_at: Date
+  movie_title: string
+  movie_original_title: string
+  movie_backdrop_path: string
+  movie_poster: string
+  movie_release: string
 }
 
 interface MoviesCommentsStoreState {

@@ -10,20 +10,25 @@ interface MoviesReviewState {
 }
 
 interface MoviesReviewsForIdState {
-    id: string
-    title: string
-    author: string
-    userId: string
-    avatar: string
-    review: string
-    comments_count: number
-    created_at: Date
-    isPublic: boolean
-    likes_count: number
-    movie_id: number
-    rating: number
-    tags: string[]
-    updated_at: Date
+  id: string
+  title: string
+  author: string
+  userId: string
+  avatar: string
+  review: string
+  comments_count: number
+  created_at: Date
+  isPublic: boolean
+  likes_count: number
+  movie_id: number
+  rating: number
+  tags: string[]
+  updated_at: Date
+  movie_title: string
+  movie_original_title: string
+  movie_backdrop_path: string
+  movie_poster: string
+  movie_release: string
 }
 
 interface MoviesReviewsStoreState {
