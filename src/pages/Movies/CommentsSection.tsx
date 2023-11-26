@@ -53,12 +53,14 @@ const CommentsSection = () => {
           <>
             <div className="comment-card my-5 flex items-center" key={index}>
               <div className="avatar-wrapper flex h-[100px] w-1/5 items-start">
-                <div
-                  className="avatar mx-auto h-10 w-10 rounded-full bg-contain"
-                  style={{
-                    backgroundImage: `url(${comment.avatar})`,
-                  }}
-                />
+                <Link to={`/profile/${comment.userId}/activity`}>
+                  <div
+                    className="avatar mx-auto h-10 w-10 rounded-full bg-contain"
+                    style={{
+                      backgroundImage: `url(${comment.avatar})`,
+                    }}
+                  />
+                </Link>
               </div>
               <div className="comment-rating flex-grow">
                 <Link to={`/comment/${comment.userId}/${comment.id}`}>

@@ -13,6 +13,7 @@ import Comment from './pages/Read/Comment.tsx'
 import Profile from './pages/Profile/index.tsx'
 import Discover from './pages/Profile/Discover.tsx'
 import Activity from './pages/Profile/Activity.tsx'
+import Network from './pages/Profile/Network.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NextUIProvider } from '@nextui-org/react'
 import './index.css'
@@ -35,9 +36,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/read/:userId/:id" element={<Read />} />
             <Route path="/comment/:userId/:id" element={<Comment />} />
             <Route path="/profile/:userId" element={<Profile />}>
-              <Route index element={<Discover />} />
+              <Route index element={<Activity />} />
               <Route path="discover" element={<Discover />} />
               <Route path="activity" element={<Activity />} />
+              <Route path='network' element={<Network />} />
             </Route>
           </Route>
         </Routes>

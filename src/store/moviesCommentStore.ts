@@ -37,6 +37,8 @@ interface MoviesCommentsStoreState {
   setMoviesCommentsForId: (
     moviesCommentsForId: MoviesCommentsForIdState
   ) => void
+  revisedMoviesComment: any
+  setRevisedMoviesComment: any
 }
 
 const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
@@ -66,6 +68,19 @@ const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
   moviesCommentsForId: [],
   setMoviesCommentsForId: (moviesCommentsForId: any) =>
     set(() => ({ moviesCommentsForId: moviesCommentsForId })),
+  revisedMoviesComment: {
+    comment: '',
+    isPublic: true,
+    rating: 0,
+  },
+  setRevisedMoviesComment: (fieldName:any, value:any) => {
+    set((state) => ({
+      revisedMoviesComment: {
+        ...state.revisedMoviesComment,
+        [fieldName]: value,
+      }
+    }))
+  }
 }))
 
 export default useMoviesCommentStore

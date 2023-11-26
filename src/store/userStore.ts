@@ -21,8 +21,12 @@ interface userStoreState {
   setHasCommented: (value: boolean) => void
   userMoviesComments: any
   setUserMoviesComments: any
-  userMoviesReviews: any,
+  userMoviesReviews: any
   setUserMoviesReviews: any
+  userFollowings: any
+  setUserFollowings: any
+  userFollowers: any
+  setUserFollowers: any
 }
 
 const useUserStore = create<userStoreState>((set) => ({
@@ -72,7 +76,13 @@ const useUserStore = create<userStoreState>((set) => ({
     set(() => ({ userMoviesComments: userMoviesComments })),
   userMoviesReviews: [],
   setUserMoviesReviews: (userMoviesReviews: any) =>
-    set(() => ({ userMoviesReviews: userMoviesReviews }))
+    set(() => ({ userMoviesReviews: userMoviesReviews })),
+  userFollowings: [],
+  setUserFollowings: (userFollowings: any) =>
+    set(() => ({ userFollowings: userFollowings })),
+  userFollowers: [],
+  setUserFollowers: (userFollowers: any) =>
+    set(() => ({ userFollowers: userFollowers })),
 }))
 
 export default useUserStore

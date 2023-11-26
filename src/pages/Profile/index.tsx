@@ -11,7 +11,7 @@ const Profile = () => {
   const [followersCount, setFollowersCount] = useState<number>(0)
   const [followingCount, setFollowingCount] = useState<number>(0)
   const [isHoverBtn, setIsHoverBtn] = useState<boolean>(false)
-  const { user, userMoviesComments, userMoviesReviews } = useUserStore()
+  const { user, userMoviesComments, userMoviesReviews, setUserFollowings, setUserFollowers } = useUserStore()
   const { userId } = useParams()
   let profileUserFollowerRef: any
   let profileUserFollowingRef: any
@@ -30,10 +30,17 @@ const Profile = () => {
         currentFollowers.push(doc.data())
       })
       setIsFollowing(currentFollowers.some(follower => follower.userId === user.userId))
+      setUserFollowers(currentFollowers)
     })
 
     const unsubsFollowing = onSnapshot(profileUserFollowingRef,(querySnapshot) => {
       setFollowingCount(querySnapshot.size)
+      const currentFollowings: any = []
+      if (querySnapshot)
+      querySnapshot.forEach(doc => {
+        currentFollowings.push(doc.data())
+      })
+      setUserFollowings(currentFollowings)
       }
     )
 
@@ -41,11 +48,7 @@ const Profile = () => {
       unsubs()
       unsubsFollowing()
     }
-  }, [])
-
-  useEffect(() => {
-
-  }, [])
+  }, [user.userId])
 
   const fetchUser = async (userId: string) => {
     const docRef = doc(db, 'USERS', userId)
@@ -141,7 +144,7 @@ const Profile = () => {
               <span>{userMoviesReviews && userMoviesReviews.length}</span>
             </div>
             <div className="followers-count flex flex-col items-center">
-              <span>我的追蹤</span>
+              <span>追蹤人數</span>
               <span>{followingCount}</span>
             </div>
             <div className="following-count flex flex-col items-center">
