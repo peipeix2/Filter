@@ -1,11 +1,106 @@
-import useUserStore from "../../store/userStore"
+import { useState, useEffect } from 'react'
+import useUserStore from '../../store/userStore'
 import { Avatar, Divider, Button } from '@nextui-org/react'
-import { Link, Outlet } from "react-router-dom"
+import { Link, Outlet, useParams } from 'react-router-dom'
+import { db } from '../../../firebase'
+import { collection, getDoc, doc, setDoc, onSnapshot, deleteDoc } from 'firebase/firestore'
 
 const Profile = () => {
-  const user = useUserStore((state) => state.user)
+  const [profileUser, setProfileUser] = useState<any>(null)
+  const [isFollowing, setIsFollowing] = useState<boolean>(false)
+  const [followersCount, setFollowersCount] = useState<number>(0)
+  const [followingCount, setFollowingCount] = useState<number>(0)
+  const [isHoverBtn, setIsHoverBtn] = useState<boolean>(false)
+  const { user, userMoviesComments, userMoviesReviews } = useUserStore()
+  const { userId } = useParams()
+  let profileUserFollowerRef: any
+  let profileUserFollowingRef: any
 
-  const profileTabLinks = ['Discover', 'Activity', 'Watchlist', 'Calender', "Customize"]
+  useEffect(() => {
+    if (userId) {
+      fetchUser(userId)
+      profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
+      profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
+    }
+
+    const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot) => {
+      setFollowersCount(querySnapshot.size)
+      const currentFollowers:any = []
+      querySnapshot.forEach(doc => {
+        currentFollowers.push(doc.data())
+      })
+      setIsFollowing(currentFollowers.some(follower => follower.userId === user.userId))
+    })
+
+    const unsubsFollowing = onSnapshot(profileUserFollowingRef,(querySnapshot) => {
+      setFollowingCount(querySnapshot.size)
+      }
+    )
+
+    return () => {
+      unsubs()
+      unsubsFollowing()
+    }
+  }, [])
+
+  useEffect(() => {
+
+  }, [])
+
+  const fetchUser = async (userId: string) => {
+    const docRef = doc(db, 'USERS', userId)
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+      setProfileUser(docSnap.data())
+    }
+  }
+
+  if (!profileUser) return
+  if (!user.userId) return
+  if (!userId) return
+
+  const handleFollowUser = async (profileUserId: string, currentUserId:string) => {
+    const currentUserRef = doc(
+      db,
+      'USERS',
+      currentUserId,
+      'FOLLOWING',
+      profileUserId
+    )
+    const profileUserRef = doc(
+      db,
+      'USERS',
+      profileUserId,
+      'FOLLOWER',
+      currentUserId
+    )
+
+    if(isFollowing) {
+      await deleteDoc(currentUserRef)
+      await deleteDoc(profileUserRef)
+    } else {
+      await setDoc(currentUserRef, {
+        userId: userId,
+        username: profileUser.username,
+        avatar: profileUser.avatar,
+      })
+
+      await setDoc(profileUserRef, {
+        userId: user.userId,
+        username: user.username,
+        avatar: user.avatar,
+      })
+    }
+    setIsFollowing(!isFollowing)
+  }
+
+  const profileTabLinks = [
+    'Discover',
+    'Activity',
+    'Network',
+    'Calender',
+    'Customize',
+  ]
 
   return (
     <>
@@ -19,28 +114,39 @@ const Profile = () => {
         <div className="header flex w-full items-center justify-between">
           <div className="profile flex items-center">
             <div className="profile-info flex items-baseline">
-              <Avatar src={user.avatar} size="lg" />
-              <p>{user.username}</p>
+              <Avatar src={profileUser.avatar} size="lg" />
+              <p>{profileUser.username}</p>
             </div>
-            <Button size="sm" className='ml-5'>Follow</Button>
+            {userId !== user.userId && (
+              <Button
+                size="sm"
+                className="ml-5"
+                color={isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'}
+                onClick={() => handleFollowUser(userId, user.userId)}
+                onMouseEnter={() => setIsHoverBtn(true)}
+                onMouseLeave={() => setIsHoverBtn(false)}
+              >
+                {isFollowing ? (isHoverBtn ? '取消追蹤' : '追蹤中') : '追蹤'}
+              </Button>
+            )}
           </div>
 
           <div className="follows-data flex gap-2">
             <div className="comments-count flex flex-col items-center">
               <span>評論數</span>
-              <span>0</span>
+              <span>{userMoviesComments && userMoviesComments.length}</span>
             </div>
             <div className="reviews-count flex flex-col items-center">
               <span>影評數</span>
-              <span>0</span>
+              <span>{userMoviesReviews && userMoviesReviews.length}</span>
             </div>
             <div className="followers-count flex flex-col items-center">
               <span>我的追蹤</span>
-              <span>0</span>
+              <span>{followingCount}</span>
             </div>
             <div className="following-count flex flex-col items-center">
               <span>粉絲人數</span>
-              <span>0</span>
+              <span>{followersCount}</span>
             </div>
           </div>
         </div>
@@ -61,7 +167,7 @@ const Profile = () => {
 
         <Divider className="mx-auto w-1/2" />
 
-        <div className='w-3/5 mx-auto mt-20'>
+        <div className="mx-auto mt-20 w-3/5">
           <Outlet />
         </div>
       </section>
