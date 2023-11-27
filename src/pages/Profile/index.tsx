@@ -11,7 +11,7 @@ const Profile = () => {
   const [followersCount, setFollowersCount] = useState<number>(0)
   const [followingCount, setFollowingCount] = useState<number>(0)
   const [isHoverBtn, setIsHoverBtn] = useState<boolean>(false)
-  const { user, userMoviesComments, userMoviesReviews, setUserFollowings, setUserFollowers } = useUserStore()
+  const { user, userMoviesComments, userMoviesReviews, setUserFollowings, setUserFollowers, isLogin } = useUserStore()
   const { userId } = useParams()
   let profileUserFollowerRef: any
   let profileUserFollowingRef: any
@@ -22,6 +22,7 @@ const Profile = () => {
       profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
       profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
     }
+    console.log('userId', userId)
 
     const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot) => {
       setFollowersCount(querySnapshot.size)
@@ -29,6 +30,7 @@ const Profile = () => {
       querySnapshot.forEach(doc => {
         currentFollowers.push(doc.data())
       })
+      console.log(currentFollowers)
       setIsFollowing(currentFollowers.some(follower => follower.userId === user.userId))
       setUserFollowers(currentFollowers)
     })
@@ -59,7 +61,7 @@ const Profile = () => {
   }
 
   if (!profileUser) return
-  if (!user.userId) return
+  // if (!user.userId) return
   if (!userId) return
 
   const handleFollowUser = async (profileUserId: string, currentUserId:string) => {
@@ -120,7 +122,7 @@ const Profile = () => {
               <Avatar src={profileUser.avatar} size="lg" />
               <p>{profileUser.username}</p>
             </div>
-            {userId !== user.userId && (
+            {userId !== user.userId && isLogin && (
               <Button
                 size="sm"
                 className="ml-5"
