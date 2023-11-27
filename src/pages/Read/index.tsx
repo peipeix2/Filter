@@ -1,19 +1,30 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { collection, getDocs, collectionGroup } from 'firebase/firestore'
+import { useParams, useNavigate } from 'react-router-dom'
+import { getDocs, collectionGroup, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import parser from 'html-react-parser'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import useUserStore from '../../store/userStore'
 
 const Read = () => {
+  const user = useUserStore((state) => state.user)
+  const [moviesData, setMoviesData] = useState<any>([])
   const [review, setReview] = useState<any>([])
+
   useEffect(() => {
     getMoviesReview()
   }, [])
 
+  useEffect(() => {
+    getMoviesDetail(review.movie_id)
+  }, [review])
+
   const { id } = useParams()
   const { userId } = useParams()
+  const navigate = useNavigate()
+  if (!id) return
+  if (!userId) return
 
   const getMoviesReview = async () => {
     const querySnapshot = await getDocs(collectionGroup(db, 'REVIEWS'))
@@ -22,6 +33,45 @@ const Read = () => {
         setReview(doc.data())
       }
     })
+  }
+
+  const getMoviesDetail = async (movieId: any) => {
+    const movieRef = doc(db, 'MOVIES', String(movieId))
+    const docSnap = await getDoc(movieRef)
+    if (docSnap.exists()) {
+      const movieInfo = docSnap.data()
+      setMoviesData(movieInfo)
+    }
+  }
+
+  const handleDeleteReview = async () => {
+    try {
+      const userRef = doc(db, 'USERS', userId, 'REVIEWS', id)
+      await deleteDoc(userRef)
+      await updateDeleteMovieRatings()
+      alert('評論已刪除！')
+      navigate(`/movies/${review.movie_id}`)
+    } catch (e) {
+      console.error('Error adding document: ', e)
+    }
+  }
+
+  const updateDeleteMovieRatings = async () => {
+    try {
+      await setDoc(
+        doc(db, 'MOVIES', `${review.movie_id}`),
+        {
+          rating:
+            (moviesData.rating * moviesData.ratings_count - review.rating) /
+            (moviesData.ratings_count - 1),
+          ratings_count: moviesData.ratings_count - 1,
+        },
+        { merge: true }
+      )
+      console.log('Movie ratings updated successfully.')
+    } catch (error) {
+      console.error('Error updating movie ratings: ', error)
+    }
   }
 
   if (!review) return null
@@ -78,6 +128,13 @@ const Read = () => {
             </div>
           </div>
         </div>
+
+        {review.userId === user.userId && (
+          <div className="flex gap-2">
+            <a href={`/review/revision/${id}`}>修改</a>
+            <button onClick={handleDeleteReview}>刪除</button>
+          </div>
+        )}
       </div>
     </>
   )

@@ -106,7 +106,7 @@ const Comment = () => {
       await setDoc(
         doc(db, 'MOVIES', `${comment.movie_id}`),
         {
-          rating: ((moviesData.rating * moviesData.ratings_count) + (revisedMoviesComment.rating - moviesData.rating)) / moviesData.ratings_count,
+          rating: ((moviesData.rating * moviesData.ratings_count) - comment.rating + revisedMoviesComment.rating) / moviesData.ratings_count,
         },
         { merge: true }
       )
@@ -136,6 +136,7 @@ const Comment = () => {
           rating:
             (moviesData.rating * moviesData.ratings_count - comment.rating) /
             (moviesData.ratings_count - 1),
+          ratings_count: moviesData.ratings_count - 1
         },
         { merge: true }
       )
