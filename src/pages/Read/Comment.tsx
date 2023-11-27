@@ -14,7 +14,6 @@ import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
 import {
-  Divider,
   Modal,
   ModalContent,
   ModalHeader,

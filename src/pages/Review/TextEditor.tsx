@@ -105,12 +105,9 @@ const TextEditor = () => {
     }
 
     try {
-      const docRef = collection(db, 'REVIEWS')
       const userRef = collection(db, 'USERS')
-      Promise.all([
-        // addDoc(docRef, reviewData),
-        addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData),
-      ])
+      addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData)
+      
       resetMoviesReview()
       window.alert('影評已送出！')
       await updateMovieRatings()

@@ -5,7 +5,7 @@ import Footer from './components/Footer'
 import useUserStore from './store/userStore'
 
 function App() {
-    const { isLogin, user, checkIfLogin, getUserProfile } = useUserStore()
+    const { isLogin, checkIfLogin, getUserProfile } = useUserStore()
 
     useEffect(() => {
         checkIfLogin()
@@ -14,7 +14,6 @@ function App() {
         }
     }, [isLogin])
 
-    // console.log('user',user)
     
     return (
         <>
