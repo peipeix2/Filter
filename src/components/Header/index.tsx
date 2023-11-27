@@ -67,7 +67,7 @@ function Header() {
                     </p>
                     <p className="font-semibold">{user.email}</p>
                   </DropdownItem>
-                  <DropdownItem key="settings">My Settings</DropdownItem>
+                  <DropdownItem key="profile" href={`/profile/${user.userId}`}>個人頁面</DropdownItem>
                   <DropdownItem key="team_settings">Team Settings</DropdownItem>
                   <DropdownItem key="analytics">Analytics</DropdownItem>
                   <DropdownItem key="system">System</DropdownItem>

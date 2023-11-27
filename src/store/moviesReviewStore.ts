@@ -32,44 +32,57 @@ interface MoviesReviewsForIdState {
 }
 
 interface MoviesReviewsStoreState {
-    moviesReview: MoviesReviewState
-    setMoviesReview: (fieldName: string, value: any) => void
-    resetMoviesReview: () => void
-    moviesReviewsForId: MoviesReviewsForIdState[]
-    setMoviesReviewsForId: (
-        moviesCommentsForId: MoviesReviewsForIdState
-    ) => void
+  moviesReview: MoviesReviewState
+  setMoviesReview: (fieldName: string, value: any) => void
+  resetMoviesReview: () => void
+  moviesReviewsForId: MoviesReviewsForIdState[]
+  setMoviesReviewsForId: (moviesCommentsForId: MoviesReviewsForIdState) => void
+  revisedMoviesReview: any
+  setRevisedMoviesReview: any
 }
 
 const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
-    moviesReview: {
+  moviesReview: {
+    title: '',
+    review: '',
+    comments_count: 0,
+    isPublic: true,
+    likes_count: 0,
+    rating: 0,
+  },
+  setMoviesReview: (fieldName, value) => {
+    set((state) => ({
+      moviesReview: { ...state.moviesReview, [fieldName]: value },
+    }))
+  },
+  resetMoviesReview: () => {
+    set(() => ({
+      moviesReview: {
         title: '',
         review: '',
         comments_count: 0,
         isPublic: true,
         likes_count: 0,
         rating: 0,
-    },
-    setMoviesReview: (fieldName, value) => {
-        set((state) => ({
-            moviesReview: { ...state.moviesReview, [fieldName]: value },
-        }))
-    },
-    resetMoviesReview: () => {
-        set(() => ({
-            moviesReview: {
-                title: '',
-                review: '',
-                comments_count: 0,
-                isPublic: true,
-                likes_count: 0,
-                rating: 0,
-            },
-        }))
-    },
-    moviesReviewsForId: [],
-    setMoviesReviewsForId: (moviesReviewsForId: any) =>
-        set(() => ({ moviesReviewsForId: moviesReviewsForId })),
+      },
+    }))
+  },
+  moviesReviewsForId: [],
+  setMoviesReviewsForId: (moviesReviewsForId: any) =>
+    set(() => ({ moviesReviewsForId: moviesReviewsForId })),
+  revisedMoviesReview: {
+    comment: '',
+    isPublic: true,
+    rating: 0,
+  },
+  setRevisedMoviesReview: (fieldName: any, value: any) => {
+    set((state) => ({
+      revisedMoviesReview: {
+        ...state.revisedMoviesReview,
+        [fieldName]: value,
+      },
+    }))
+  },
 }))
 
 export default useMoviesReviewStore

@@ -14,6 +14,7 @@ import Profile from './pages/Profile/index.tsx'
 import Discover from './pages/Profile/Discover.tsx'
 import Activity from './pages/Profile/Activity.tsx'
 import Network from './pages/Profile/Network.tsx'
+import EditPage from './pages/Review/EditPage.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NextUIProvider } from '@nextui-org/react'
 import './index.css'
@@ -33,13 +34,14 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <Route path="releases" element={<Releases />} />
             </Route>
             <Route path="/review/:id" element={<Review />} />
+            <Route path="/review/revision/:reviewId" element={<EditPage />} />
             <Route path="/read/:userId/:id" element={<Read />} />
             <Route path="/comment/:userId/:id" element={<Comment />} />
             <Route path="/profile/:userId" element={<Profile />}>
               <Route index element={<Activity />} />
               <Route path="discover" element={<Discover />} />
               <Route path="activity" element={<Activity />} />
-              <Route path='network' element={<Network />} />
+              <Route path="network" element={<Network />} />
             </Route>
           </Route>
         </Routes>
