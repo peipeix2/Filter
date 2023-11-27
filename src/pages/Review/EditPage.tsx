@@ -118,10 +118,6 @@ const EditPage = () => {
 
   const updateMovieRatings = async () => {
     try {
-      console.log('moviesData.rating', moviesData.rating)
-      console.log('moviesData.ratings_count', moviesData.ratings_count)
-      console.log('review.rating', review.rating)
-      console.log('revisedMoviesReview.rating', revisedMoviesReview.rating)
       await setDoc(
         doc(db, 'MOVIES', `${review.movie_id}`),
         {

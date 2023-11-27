@@ -5,6 +5,7 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
+  QuerySnapshot
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Avatar, Divider, Button } from '@nextui-org/react'
@@ -26,7 +27,7 @@ const Network = () => {
       userFollowingRef = collection(db, 'USERS', 'guest', 'FOLLOWING')
     }
 
-    const unsub = onSnapshot(userFollowingRef, (querySnapshot) => {
+    const unsub = onSnapshot(userFollowingRef, (querySnapshot:QuerySnapshot) => {
       const followingIds: any = []
       querySnapshot.forEach((doc) => {
         followingIds.push(doc.id)

@@ -8,6 +8,12 @@ interface MoviesCommentState {
   rating: number
 }
 
+interface RevisedMoviesCommentState {
+    comment: string,
+    rating: number,
+    isPublic: boolean
+}
+
 interface MoviesCommentsForIdState {
   id: string
   author: string
@@ -37,8 +43,8 @@ interface MoviesCommentsStoreState {
   setMoviesCommentsForId: (
     moviesCommentsForId: MoviesCommentsForIdState
   ) => void
-  revisedMoviesComment: any
-  setRevisedMoviesComment: any
+  revisedMoviesComment: RevisedMoviesCommentState
+  setRevisedMoviesComment: (fieldName: string, value: any) => void
 }
 
 const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({

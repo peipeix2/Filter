@@ -83,7 +83,7 @@ const Activity = () => {
               <Link to={`/comment/${comment.userId}/${comment.id}`}>
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
-                  alt={comment.original_title}
+                  alt={comment.movie_original_title}
                   isBlurred
                   className='mb-2'
                 />
@@ -109,7 +109,7 @@ const Activity = () => {
               <Link to={`/read/${review.userId}/${review.id}`}>
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${review.movie_poster}`}
-                  alt={review.original_title}
+                  alt={review.movie_original_title}
                   isBlurred
                   className="mb-2"
                 />
@@ -184,7 +184,7 @@ const Activity = () => {
 
                     <div className="tags">
                       <ul className="flex gap-1">
-                        {comment.tags.map((tag, index:number) => {
+                        {comment.tags.map((tag:string, index:number) => {
                           return (
                             <li
                               className="p-1 text-sm text-slate-400"

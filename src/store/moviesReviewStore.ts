@@ -9,6 +9,13 @@ interface MoviesReviewState {
     rating: number
 }
 
+interface RevisedMoviesReviewState {
+  title: string
+  review: string
+  rating: number
+  isPublic: boolean
+}
+
 interface MoviesReviewsForIdState {
   id: string
   title: string
@@ -37,8 +44,8 @@ interface MoviesReviewsStoreState {
   resetMoviesReview: () => void
   moviesReviewsForId: MoviesReviewsForIdState[]
   setMoviesReviewsForId: (moviesCommentsForId: MoviesReviewsForIdState) => void
-  revisedMoviesReview: any
-  setRevisedMoviesReview: any
+  revisedMoviesReview: RevisedMoviesReviewState
+  setRevisedMoviesReview: (fieldName: string, value: any) => void
 }
 
 const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
@@ -71,7 +78,8 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
   setMoviesReviewsForId: (moviesReviewsForId: any) =>
     set(() => ({ moviesReviewsForId: moviesReviewsForId })),
   revisedMoviesReview: {
-    comment: '',
+    title: '',
+    review: '',
     isPublic: true,
     rating: 0,
   },

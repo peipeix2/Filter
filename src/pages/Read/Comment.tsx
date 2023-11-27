@@ -275,7 +275,7 @@ const Comment = () => {
                                   size={30}
                                   color={
                                     ratingValue <=
-                                    (hover || setRevisedMoviesComment.rating)
+                                    (hover || revisedMoviesComment.rating)
                                       ? 'orange'
                                       : '#e4e5e9'
                                   }

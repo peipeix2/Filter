@@ -3,7 +3,14 @@ import useUserStore from '../../store/userStore'
 import { Avatar, Divider, Button } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { db } from '../../../firebase'
-import { collection, getDoc, doc, setDoc, onSnapshot, deleteDoc } from 'firebase/firestore'
+import { collection, getDoc, doc, setDoc, onSnapshot, deleteDoc, QuerySnapshot } from 'firebase/firestore'
+
+interface UserState {
+  userId: string
+  username: string | undefined | null
+  email: string | undefined | null
+  avatar: string
+}
 
 const Profile = () => {
   const [profileUser, setProfileUser] = useState<any>(null)
@@ -24,13 +31,13 @@ const Profile = () => {
     }
     console.log('userId', userId)
 
-    const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot) => {
+    const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot:QuerySnapshot) => {
       setFollowersCount(querySnapshot.size)
-      const currentFollowers:any = []
+      const currentFollowers:UserState[] = []
       querySnapshot.forEach(doc => {
-        currentFollowers.push(doc.data())
+        const data = doc.data() as UserState
+        currentFollowers.push(data)
       })
-      console.log(currentFollowers)
       setIsFollowing(currentFollowers.some(follower => follower.userId === user.userId))
       setUserFollowers(currentFollowers)
     })
@@ -100,11 +107,11 @@ const Profile = () => {
   }
 
   const profileTabLinks = [
-    'Discover',
-    'Activity',
-    'Network',
-    'Calender',
-    'Customize',
+    { name: '動態', link: './discover' },
+    { name: '筆記', link: './activity' },
+    { name: '追蹤列表', link: './network' },
+    { name: '日曆', link: './calender' },
+    { name: '設定', link: './customize' },
   ]
 
   return (
@@ -160,11 +167,11 @@ const Profile = () => {
           {profileTabLinks.map((tab, index) => {
             return (
               <Link
-                to={`./${tab.toLowerCase()}`}
+                to={tab.link}
                 key={index}
                 className="text-md font-['DM_Serif_Display'] tracking-wide"
               >
-                {tab}
+                {tab.name}
               </Link>
             )
           })}

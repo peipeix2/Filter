@@ -67,7 +67,7 @@ const Discover = () => {
       
     }
 
-    const sortedPosts = allPosts.sort((a, b) => b.updated_at - a.updated_at)
+    const sortedPosts = allPosts.sort((a:any, b:any) => b.updated_at - a.updated_at)
     setFollowingUsersPosts(sortedPosts)
   }
 
@@ -77,7 +77,7 @@ const Discover = () => {
 
       <h1>If no followers, show popular comments and reviews from all site.</h1>
 
-      {followingUsersPosts.map((post, index) => {
+      {followingUsersPosts.map((post:any, index:number) => {
         return (
           <div className="comment-card">
             <>
@@ -131,7 +131,7 @@ const Discover = () => {
 
                   <div className="tags">
                     <ul className="flex gap-1">
-                      {post.tags.map((tag, index: number) => {
+                      {post.tags.map((tag:string, index: number) => {
                         return (
                           <li
                             className="p-1 text-sm text-slate-400"

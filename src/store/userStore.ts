@@ -9,6 +9,49 @@ interface userState {
   avatar: string
 }
 
+interface userMoviesCommentsState {
+  id: string
+  author: string
+  userId: string
+  avatar: string
+  comment: string
+  comments_count: number
+  created_at: Date
+  isPublic: boolean
+  likes_count: number
+  movie_id: number
+  rating: number
+  tags: string[]
+  updated_at: Date
+  movie_title: string
+  movie_original_title: string
+  movie_backdrop_path: string
+  movie_poster: string
+  movie_release: string
+}
+
+interface userMoviesReviewsState {
+  id: string
+  title: string
+  author: string
+  userId: string
+  avatar: string
+  review: string
+  comments_count: number
+  created_at: Date
+  isPublic: boolean
+  likes_count: number
+  movie_id: number
+  rating: number
+  tags: string[]
+  updated_at: Date
+  movie_title: string
+  movie_original_title: string
+  movie_backdrop_path: string
+  movie_poster: string
+  movie_release: string
+}
+
 interface userStoreState {
   user: userState
   setUser: (value: userState) => void
@@ -19,14 +62,14 @@ interface userStoreState {
   getUserProfile: () => void
   hasCommented: boolean
   setHasCommented: (value: boolean) => void
-  userMoviesComments: any
-  setUserMoviesComments: any
-  userMoviesReviews: any
-  setUserMoviesReviews: any
-  userFollowings: any
-  setUserFollowings: any
-  userFollowers: any
-  setUserFollowers: any
+  userMoviesComments: userMoviesCommentsState[]
+  setUserMoviesComments: (userMoviesComments: userMoviesCommentsState) => void
+  userMoviesReviews: userMoviesReviewsState[]
+  setUserMoviesReviews: (userMoviesReviews: userMoviesReviewsState) => void
+  userFollowings: userState[]
+  setUserFollowings: (userFollowings: userState) => void
+  userFollowers: userState[]
+  setUserFollowers: (userFollowers: userState) => void
 }
 
 const useUserStore = create<userStoreState>((set) => ({
