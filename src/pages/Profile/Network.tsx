@@ -63,8 +63,6 @@ const Network = () => {
       'FOLLOWER',
       currentUserId
     )
-    console.log('did i follow this user', isUserFollowed(profileUserId))
-    console.log(profileUserId)
     if (isUserFollowed(profileUserId)) {
       await deleteDoc(currentUserRef)
       await deleteDoc(profileUserRef)
@@ -117,13 +115,13 @@ const Network = () => {
                           handleFollowUser(profileUser.userId, user.userId, profileUser)
                         }
                         onMouseEnter={() =>
-                          setUserHoverState((prev) => ({
+                          setUserHoverState((prev:any) => ({
                             ...prev,
                             [profileUser.userId]: true,
                           }))
                         }
                         onMouseLeave={() =>
-                          setUserHoverState((prev) => ({
+                          setUserHoverState((prev:any) => ({
                             ...prev,
                             [profileUser.userId]: false,
                           }))
@@ -179,13 +177,13 @@ const Network = () => {
                           )
                         }
                         onMouseEnter={() =>
-                          setUserHoverState((prev) => ({
+                          setUserHoverState((prev:any) => ({
                             ...prev,
                             [profileUser.userId]: true,
                           }))
                         }
                         onMouseLeave={() =>
-                          setUserHoverState((prev) => ({
+                          setUserHoverState((prev:any) => ({
                             ...prev,
                             [profileUser.userId]: false,
                           }))

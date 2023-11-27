@@ -118,12 +118,8 @@ const RatingPanel = () => {
     }
 
     try {
-      const docRef = collection(db, 'COMMENTS')
       const userRef = collection(db, 'USERS')
-      await Promise.all([
-        // addDoc(docRef, commentData),
-        addDoc(collection(userRef, user.userId, 'COMMENTS'), commentData),
-      ])
+      await addDoc(collection(userRef, user.userId, 'COMMENTS'), commentData)
       await resetMoviesComment()
       await updateMovieRatings()
     } catch (e) {
