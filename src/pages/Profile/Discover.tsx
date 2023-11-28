@@ -5,7 +5,7 @@ import { collection, getDocs, collectionGroup, where, query } from 'firebase/fir
 import { db } from '../../../firebase'
 import { Divider, Image } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import { FaCommentAlt } from 'react-icons/fa'
 import parser from 'html-react-parser'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 
