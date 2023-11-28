@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import { FaCommentAlt } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
 import {
   Modal,
@@ -30,6 +30,7 @@ import { FaStar } from 'react-icons/fa'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useNavigate } from 'react-router-dom'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
+import SubComments from '../../components/SubComments'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
@@ -74,17 +75,6 @@ const Comment = () => {
 
   if (!id) return
   if (!userId) return
-
-  const getMoviesComment = async () => {
-    const querySnapshot = await getDocs(collectionGroup(db, 'COMMENTS'))
-    querySnapshot.forEach((doc) => {
-      if (doc.id === id) {
-        setComment(doc.data())
-        setTags(doc.data().tags)
-        setRevisedMoviesComment('comment', doc.data().comment)
-      }
-    })
-  }
 
   const getMoviesDetail = async (movieId:any) => {
     const movieRef = doc(db, 'MOVIES', String(movieId))
@@ -205,7 +195,14 @@ const Comment = () => {
           </div>
 
           <div className="like">
-            <CommentLikeBtn postId={id} authorId={comment.userId} count={comment.likes_count} isLiked={comment.likesUser && comment.likesUser.includes(user.userId)} />
+            <CommentLikeBtn
+              postId={id}
+              authorId={comment.userId}
+              count={comment.likes_count}
+              isLiked={
+                comment.likesUser && comment.likesUser.includes(user.userId)
+              }
+            />
           </div>
 
           {comment.userId === user.userId && (
@@ -334,6 +331,13 @@ const Comment = () => {
             </ModalContent>
           </Modal>
         </div>
+      </div>
+
+      <div className="comments-section mx-auto my-5 flex w-2/3 items-center">
+        <SubComments
+          commentId={id}
+          userId={userId}
+        />
       </div>
     </>
   )

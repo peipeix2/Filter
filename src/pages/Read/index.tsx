@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getDocs, collectionGroup, deleteDoc, doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
+import { collectionGroup, deleteDoc, doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import parser from 'html-react-parser'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import { FaCommentAlt } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
 import Like from '../../components/Like'
+import SubCommentsReview from '../../components/SubComments/SubCommentsReview'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
@@ -37,15 +38,6 @@ const Read = () => {
   const navigate = useNavigate()
   if (!id) return
   if (!userId) return
-
-  const getMoviesReview = async () => {
-    const querySnapshot = await getDocs(collectionGroup(db, 'REVIEWS'))
-    querySnapshot.forEach((doc) => {
-      if (doc.id === id) {
-        setReview(doc.data())
-      }
-    })
-  }
 
   const getMoviesDetail = async (movieId: any) => {
     const movieRef = doc(db, 'MOVIES', String(movieId))
@@ -133,7 +125,9 @@ const Read = () => {
           <div className="like">
             <Like
               postId={id}
-              isLiked={review.likesUser && review.likesUser.includes(user.userId)}
+              isLiked={
+                review.likesUser && review.likesUser.includes(user.userId)
+              }
               count={review.likes_count}
               authorId={review.userId}
             />
@@ -146,6 +140,10 @@ const Read = () => {
             <button onClick={handleDeleteReview}>刪除</button>
           </div>
         )}
+      </div>
+
+      <div className="mx-auto my-5 flex w-2/3">
+        <SubCommentsReview commentId={id} userId={userId} />
       </div>
     </>
   )

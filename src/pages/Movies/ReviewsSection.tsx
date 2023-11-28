@@ -2,8 +2,8 @@ import { useEffect } from 'react'
 import { Divider } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt, FaHeart } from 'react-icons/fa'
-import { query, where, getDocs, collectionGroup, onSnapshot, QuerySnapshot } from 'firebase/firestore'
+import { FaCommentAlt } from 'react-icons/fa'
+import { query, where, getDocs, collectionGroup, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
@@ -36,19 +36,6 @@ const ReviewSection = () => {
       unsubscribe()
     }
   }, [])
-
-  const fetchMovieReviews = async () => {
-    const ref = collectionGroup(db, 'REVIEWS')
-    const q = query(ref, where('movie_id', '==', Number(id)))
-    const querySnapshot = await getDocs(q)
-    const reviewsArray: any = []
-    querySnapshot.forEach((doc) => {
-      const reviewData = doc.data()
-      const reviewWithId = { ...reviewData, id: doc.id }
-      reviewsArray.push(reviewWithId)
-    })
-    setMoviesReviewsForId(reviewsArray)
-  }
 
   return (
     <>

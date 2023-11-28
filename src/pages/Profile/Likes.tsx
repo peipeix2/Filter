@@ -105,7 +105,7 @@ const Likes = () => {
   return (
     <>
       <p className="mb-5 text-center">點讚的評論</p>
-      {likedComments.map((comment, index) => {
+      {likedComments.map((comment:any, index:number) => {
         return (
           <div className="comment-card">
             <>
@@ -192,7 +192,7 @@ const Likes = () => {
       })}
 
       <p className="my-5 mt-10 text-center">點讚的影評</p>
-      {likedReviews.map((review, index:number) => {
+      {likedReviews.map((review:any, index:number) => {
         return (
           <div className="comment-card">
             <>

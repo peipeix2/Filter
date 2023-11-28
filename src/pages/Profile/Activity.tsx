@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { db } from '../../../firebase'
 import { Image, Divider } from '@nextui-org/react'
-import { collection, getDocs, onSnapshot } from 'firebase/firestore'
+import { collection, onSnapshot } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
@@ -50,30 +50,6 @@ const Activity = () => {
       unsubscribeReviews()
     }
   }, [])
-
-  const fetchUserComments = async (userId: string) => {
-    const docRef = collection(db, 'USERS', userId, 'COMMENTS')
-    const querySnapshot = await getDocs(docRef)
-    const comments: any = []
-    querySnapshot.forEach((doc) => {
-      const commentsData = doc.data()
-      const commentsWithId = { ...commentsData, id: doc.id }
-      comments.push(commentsWithId)
-    })
-    setUserMoviesComments(comments)
-  }
-
-  const fetchUserReviews = async (userId: string) => {
-    const docRef = collection(db, 'USERS', userId, 'REVIEWS')
-    const querySnapshot = await getDocs(docRef)
-    const reviews: any = []
-    querySnapshot.forEach((doc) => {
-      const reviewsData = doc.data()
-      const reviewsWithId = { ...reviewsData, id: doc.id }
-      reviews.push(reviewsWithId)
-    })
-    setUserMoviesReviews(reviews)
-  }
 
   userMoviesComments.sort((a: any, b: any) => {
     return b.created_at - a.created_at
@@ -155,12 +131,9 @@ const Activity = () => {
       {
         displayComments.slice(0,3).map((comment:any,index:number) => {
           return (
-            <div className="comment-card">
-              <>
-                <div
-                  className="comment-card my-5 flex items-center"
-                  key={index}
-                >
+            <div className="comment-card" key={index}>
+              
+                <div className="comment-card my-5 flex items-center">
                   <div className="avatar-wrapper flex w-[100px] items-start">
                     <Image
                       src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
@@ -237,7 +210,7 @@ const Activity = () => {
                   </div>
                 </div>
                 <Divider />
-              </>
+              
             </div>
           )
         })
