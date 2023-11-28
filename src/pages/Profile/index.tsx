@@ -33,16 +33,16 @@ const Profile = () => {
 
     const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot:QuerySnapshot) => {
       setFollowersCount(querySnapshot.size)
-      const currentFollowers:UserState[] = []
+      const currentFollowers:any = []
       querySnapshot.forEach(doc => {
         const data = doc.data() as UserState
         currentFollowers.push(data)
       })
-      setIsFollowing(currentFollowers.some(follower => follower.userId === user.userId))
+      setIsFollowing(currentFollowers.some((follower:UserState) => follower.userId === user.userId))
       setUserFollowers(currentFollowers)
     })
 
-    const unsubsFollowing = onSnapshot(profileUserFollowingRef,(querySnapshot) => {
+    const unsubsFollowing = onSnapshot(profileUserFollowingRef,(querySnapshot:QuerySnapshot) => {
       setFollowingCount(querySnapshot.size)
       const currentFollowings: any = []
       if (querySnapshot)
@@ -110,6 +110,7 @@ const Profile = () => {
     { name: '動態', link: './discover' },
     { name: '筆記', link: './activity' },
     { name: '追蹤列表', link: './network' },
+    { name: '點讚', link: './likes' },
     { name: '日曆', link: './calender' },
     { name: '設定', link: './customize' },
   ]

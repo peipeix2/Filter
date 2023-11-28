@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
-import { collection, getDocs, collectionGroup, where, query, onSnapshot } from 'firebase/firestore'
+import { collection, getDocs, collectionGroup, where, query } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Divider, Image } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
