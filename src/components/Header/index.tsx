@@ -14,6 +14,7 @@ import SignUp from '../SignUp'
 import SignIn from '../SignIn'
 import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
+import { Link } from 'react-router-dom'
 
 function Header() {
     const { user, isLogin } = useUserStore()
@@ -67,7 +68,9 @@ function Header() {
                     </p>
                     <p className="font-semibold">{user.email}</p>
                   </DropdownItem>
-                  <DropdownItem key="profile" href={`/profile/${user.userId}`}>個人頁面</DropdownItem>
+                  <DropdownItem key="profile">
+                    <Link to={`/profile/${user.userId}`}>個人頁面</Link>
+                  </DropdownItem>
                   <DropdownItem key="team_settings">Team Settings</DropdownItem>
                   <DropdownItem key="analytics">Analytics</DropdownItem>
                   <DropdownItem key="system">System</DropdownItem>
