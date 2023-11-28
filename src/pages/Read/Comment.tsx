@@ -7,7 +7,7 @@ import {
   getDoc,
   setDoc,
   doc,
-  deleteDoc,
+  deleteDoc, onSnapshot, 
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import CommentStar from '../../components/Star/CommentStar'
@@ -29,6 +29,7 @@ import TagsInput from '../../components/TagsInput'
 import { FaStar } from 'react-icons/fa'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useNavigate } from 'react-router-dom'
+import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
@@ -43,7 +44,23 @@ const Comment = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    getMoviesComment()
+    // getMoviesComment()
+    const unsubscribe = onSnapshot(
+      collectionGroup(db, 'COMMENTS'),
+      (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          if (doc.id === id) {
+            setComment(doc.data())
+            setTags(doc.data().tags)
+            setRevisedMoviesComment('comment', doc.data().comment)
+          }
+        })
+      }
+    )
+
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
@@ -188,13 +205,7 @@ const Comment = () => {
           </div>
 
           <div className="like">
-            <div className="like-btn flex items-center">
-              <FaHeart className="mr-1 text-xs text-slate-800" />
-              <span className="mr-2 text-xs text-slate-800">點讚評論</span>
-              <span className="text-xs text-slate-500">
-                {comment.likes_count} 個人點讚
-              </span>
-            </div>
+            <CommentLikeBtn postId={id} authorId={comment.userId} count={comment.likes_count} isLiked={comment.likesUser && comment.likesUser.includes(user.userId)} />
           </div>
 
           {comment.userId === user.userId && (

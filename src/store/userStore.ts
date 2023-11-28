@@ -86,7 +86,7 @@ const useUserStore = create<userStoreState>((set) => ({
         userId: '',
         username: '',
         email: '',
-        avatar: '',
+        avatar: ''
       },
     }),
   isLogin: false,

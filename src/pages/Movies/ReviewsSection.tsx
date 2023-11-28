@@ -3,25 +3,38 @@ import { Divider } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
-import { query, where, getDocs, collectionGroup } from 'firebase/firestore'
+import { query, where, getDocs, collectionGroup, onSnapshot, QuerySnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
+import useUserStore from '../../store/userStore'
 import parser from 'html-react-parser'
 import { useParams } from 'react-router-dom'
+import Like from '../../components/Like'
 
 const ReviewSection = () => {
   // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
-  const moviesReviewsForId = useMoviesReviewStore(
-    (state) => state.moviesReviewsForId
-  )
-  const setMoviesReviewsForId = useMoviesReviewStore(
-    (state) => state.setMoviesReviewsForId
-  )
+  const { moviesReviewsForId, setMoviesReviewsForId } = useMoviesReviewStore()
+  const user = useUserStore((state) => state.user)
+  
   const { id } = useParams()
 
   useEffect(() => {
-    fetchMovieReviews()
+    const ref = collectionGroup(db, 'REVIEWS')
+    const q = query(ref, where('movie_id', '==', Number(id)))
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const reviewsArray: any = []
+      querySnapshot.forEach((doc) => {
+        const reviewData = doc.data()
+        const reviewWithId = { ...reviewData, id: doc.id }
+        reviewsArray.push(reviewWithId)
+      })
+      setMoviesReviewsForId(reviewsArray)
+    })
+
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   const fetchMovieReviews = async () => {
@@ -88,21 +101,23 @@ const ReviewSection = () => {
                   <ul className="flex gap-1">
                     {review.tags.map((tag, index) => {
                       return (
-                        <li className="p-1 text-sm text-slate-400" key={index}>#{tag}</li>
+                        <li className="p-1 text-sm text-slate-400" key={index}>
+                          #{tag}
+                        </li>
                       )
                     })}
                   </ul>
                 </div>
                 <div className="like">
-                  <div className="like-btn flex items-center">
-                    <FaHeart className="mr-1 text-xs text-slate-800" />
-                    <span className="mr-2 text-xs text-slate-800">
-                      點讚評論
-                    </span>
-                    <span className="text-xs text-slate-500">
-                      {review.likes_count} 個人點讚
-                    </span>
-                  </div>
+                  <Like
+                    postId={review.id}
+                    count={review.likes_count}
+                    authorId={review.userId}
+                    isLiked={
+                      review.likesUser &&
+                      review.likesUser.includes(user.userId)
+                    }
+                  />
                 </div>
               </div>
             </div>

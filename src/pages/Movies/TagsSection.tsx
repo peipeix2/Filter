@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { collection, query, getDocs, where } from 'firebase/firestore'
+import { collection, query, getDocs, where, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 
 interface MoviesCommentsForIdState {
@@ -22,7 +22,7 @@ const TagsSection = () => {
   const [moviesComments, setMoviesComments] =
     useState<MoviesCommentsForIdState[]>([])
   const { id } = useParams()
-  const commentsArray: any = []
+  let commentsArray: any = []
 
   useEffect(() => {
     const filterPopularTags = async () => {
@@ -38,13 +38,14 @@ const TagsSection = () => {
 
 
   const fetchMoviesCommentsAndReviews = async (docName:string) => {
-    const ref = collection(db, docName)
+    const ref = collectionGroup(db, docName)
     const q = query(ref, where('movie_id', '==', Number(id)))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach((doc) => {
       const commentData = doc.data()
       const commentWithId = { ...commentData, id: doc.id }
       commentsArray.push(commentWithId)
+      console.log('get')
     })
     setMoviesComments(commentsArray)
   }
@@ -66,7 +67,7 @@ const TagsSection = () => {
   const filterTags = (tagsForMovie: string[]) => {
     const tagsForRender: string[] = []
     tagsForMovie.forEach(tag => {
-      if (count.get(tag) / tagsForMovie.length > 1/2) {
+      if (count.get(tag) / tagsForMovie.length > 0.5) {
         tagsForRender.push(tag)
       }
     })

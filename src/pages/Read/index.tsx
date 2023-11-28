@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getDocs, collectionGroup, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore'
+import { getDocs, collectionGroup, deleteDoc, doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import parser from 'html-react-parser'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
+import Like from '../../components/Like'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
@@ -13,7 +14,18 @@ const Read = () => {
   const [review, setReview] = useState<any>([])
 
   useEffect(() => {
-    getMoviesReview()
+    // getMoviesReview()
+    const unsubscribe = onSnapshot(collectionGroup(db, "REVIEWS"), (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        if (doc.id === id) {
+          setReview(doc.data())
+        }
+      })
+    })
+
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
@@ -119,13 +131,12 @@ const Read = () => {
           </div>
 
           <div className="like">
-            <div className="like-btn flex items-center">
-              <FaHeart className="mr-1 text-xs text-slate-800" />
-              <span className="mr-2 text-xs text-slate-800">點讚評論</span>
-              <span className="text-xs text-slate-500">
-                {review.likes_count} 個人點讚
-              </span>
-            </div>
+            <Like
+              postId={id}
+              isLiked={review.likesUser && review.likesUser.includes(user.userId)}
+              count={review.likes_count}
+              authorId={review.userId}
+            />
           </div>
         </div>
 

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
-import { collection, getDocs, collectionGroup, where, query } from 'firebase/firestore'
+import { collection, getDocs, collectionGroup, where, query, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Divider, Image } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt, FaHeart } from 'react-icons/fa'
 import parser from 'html-react-parser'
+import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 
 const Discover = () => {
   const [followingUserIds, setFollowingUserIds] = useState<any>([])
@@ -43,6 +44,7 @@ const Discover = () => {
   const fetchFollowingUserPosts = async() => {
     const allPosts:any = []
     for (const followingUserId of followingUserIds) {
+      
       const followingUserCommentsQuery = query(
         collectionGroup(db, 'COMMENTS'),
         where('userId', '==', followingUserId)
@@ -64,7 +66,6 @@ const Discover = () => {
         const post = doc.data()
         allPosts.push({id: doc.id, ...post})
       })
-      
     }
 
     const sortedPosts = allPosts.sort((a:any, b:any) => b.updated_at - a.updated_at)
@@ -126,12 +127,14 @@ const Discover = () => {
 
                   <div className="comment-content my-5">
                     <p className="comment">{post.comment}</p>
-                    <p className="comment">{post.review ? parser(post.review) : null}</p>
+                    <p className="comment">
+                      {post.review ? parser(post.review) : null}
+                    </p>
                   </div>
 
                   <div className="tags">
                     <ul className="flex gap-1">
-                      {post.tags.map((tag:string, index: number) => {
+                      {post.tags.map((tag: string, index: number) => {
                         return (
                           <li
                             className="p-1 text-sm text-slate-400"
@@ -144,19 +147,15 @@ const Discover = () => {
                     </ul>
                   </div>
 
-                  <div className="like-btn flex items-center">
-                    {post.userId !== userId && (
-                      <>
-                        <FaHeart className="mr-1 text-xs text-slate-800" />
-                        <span className="mr-2 text-xs text-slate-800">
-                          點讚評論
-                        </span>
-                      </>
-                    )}
-                    <span className="text-xs text-slate-500">
-                      {post.likes_count} 個人點讚
-                    </span>
-                  </div>
+                  <CommentLikeBtn
+                    postId={post.id}
+                    count={post.likes_count}
+                    authorId={post.userId}
+                    isLiked={
+                      post.likesUser &&
+                      post.likesUser.includes(user.userId)
+                    }
+                  />
                 </div>
               </div>
               <Divider />

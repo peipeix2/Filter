@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { db } from '../../../firebase'
 import { Image, Divider } from '@nextui-org/react'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, onSnapshot } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import { FaCommentAlt } from 'react-icons/fa'
+import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 
 const Activity = () => {
   const {
@@ -20,7 +21,34 @@ const Activity = () => {
   if (!userId) return
 
   useEffect(() => {
-    Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+    // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+    const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
+    const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
+
+    const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
+      const comments: any = []
+      querySnapshot.forEach((doc) => {
+        const commentsData = doc.data()
+        const commentsWithId = { ...commentsData, id: doc.id }
+        comments.push(commentsWithId)
+      })
+      setUserMoviesComments(comments)
+    })
+
+    const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
+      const reviews: any = []
+      querySnapshot.forEach((doc) => {
+        const reviewsData = doc.data()
+        const reviewsWithId = { ...reviewsData, id: doc.id }
+        reviews.push(reviewsWithId)
+      })
+      setUserMoviesReviews(reviews)
+    })
+
+    return () => {
+      unsubscribeComments()
+      unsubscribeReviews()
+    }
   }, [])
 
   const fetchUserComments = async (userId: string) => {
@@ -157,9 +185,9 @@ const Activity = () => {
                             <span className="text-sm font-semibold text-slate-800">
                               {comment.author}
                             </span>
-                          </div>)
-                          :
-                          (<div className="comment-user mr-2 flex">
+                          </div>
+                        ) : (
+                          <div className="comment-user mr-2 flex">
                             <span className="mr-1 text-sm text-slate-400">
                               評論日期
                             </span>
@@ -184,7 +212,7 @@ const Activity = () => {
 
                     <div className="tags">
                       <ul className="flex gap-1">
-                        {comment.tags.map((tag:string, index:number) => {
+                        {comment.tags.map((tag: string, index: number) => {
                           return (
                             <li
                               className="p-1 text-sm text-slate-400"
@@ -197,19 +225,15 @@ const Activity = () => {
                       </ul>
                     </div>
 
-                    <div className="like-btn flex items-center">
-                      {comment.userId !== userId && (
-                        <>
-                          <FaHeart className="mr-1 text-xs text-slate-800" />
-                          <span className="mr-2 text-xs text-slate-800">
-                            點讚評論
-                          </span>
-                        </>
-                      )}
-                      <span className="text-xs text-slate-500">
-                        {comment.likes_count} 個人點讚
-                      </span>
-                    </div>
+                    <CommentLikeBtn
+                      postId={comment.id}
+                      count={comment.likes_count}
+                      authorId={comment.userId}
+                      isLiked={
+                        comment.likesUser &&
+                        comment.likesUser.includes(user.userId)
+                      }
+                    />
                   </div>
                 </div>
                 <Divider />

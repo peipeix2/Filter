@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Divider } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt, FaHeart } from 'react-icons/fa'
+import { FaCommentAlt } from 'react-icons/fa'
 import { onSnapshot, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 // import useMoviesDetailStore from '../../store/moviesDetailStore'
@@ -9,6 +9,7 @@ import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useParams, Link } from 'react-router-dom'
 import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
+import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 
 const CommentsSection = () => {
   const moviesCommentsForId = useMoviesCommentStore(
@@ -99,13 +100,14 @@ const CommentsSection = () => {
                   </ul>
                 </div>
 
-                <div className="like-btn flex items-center">
-                  <FaHeart className="mr-1 text-xs text-slate-800" />
-                  <span className="mr-2 text-xs text-slate-800">點讚評論</span>
-                  <span className="text-xs text-slate-500">
-                    {comment.likes_count} 個人點讚
-                  </span>
-                </div>
+                <CommentLikeBtn
+                  postId={comment.id}
+                  count={comment.likes_count}
+                  authorId={comment.userId}
+                  isLiked={
+                    comment.likesUser && comment.likesUser.includes(user.userId)
+                  }
+                />
               </div>
             </div>
             <Divider />

@@ -36,6 +36,7 @@ interface MoviesReviewsForIdState {
   movie_backdrop_path: string
   movie_poster: string
   movie_release: string
+  likesUser: string[]
 }
 
 interface MoviesReviewsStoreState {
