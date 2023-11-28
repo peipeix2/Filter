@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { collection, query, getDocs, where, collectionGroup } from 'firebase/firestore'
+import { query, getDocs, where, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 
 interface MoviesCommentsForIdState {
