@@ -19,7 +19,9 @@ interface SubCommentsState {
 
 const SubCommentsReview = (Props: SubCommentsState) => {
   const [subComments, setSubComments] = useState<any>([])
+  const [editingComments, setEditingComments] = useState<any>([])
   const [text, setText] = useState<string>('')
+  const [editTextMap, setEditTextMap] = useState<any>({})
   const user = useUserStore((state) => state.user)
 
   useEffect(() => {
@@ -92,6 +94,48 @@ const SubCommentsReview = (Props: SubCommentsState) => {
     }
   }
 
+  const handleEditComment = async (
+    subCommentId: string,
+    subCommentBody: string
+  ) => {
+    if (editingComments.includes(subCommentId)) {
+      setEditingComments((prev: any) =>
+        prev.filter((id: string) => id !== subCommentId)
+      )
+    } else {
+      setEditingComments((prev: any) => [...prev, subCommentId])
+    }
+    setEditTextMap((prev: any) => ({ ...prev, [subCommentId]: subCommentBody }))
+  }
+
+  const handleUpdateComment = async (subCommentId: string) => {
+    const subCommentRef = doc(
+      db,
+      'USERS',
+      Props.userId,
+      'REVIEWS',
+      Props.commentId,
+      'SUBCOMMENTS',
+      subCommentId
+    )
+
+    try {
+      await setDoc(
+        subCommentRef,
+        {
+          subcomment: editTextMap[subCommentId],
+          updated_at: serverTimestamp(),
+        },
+        { merge: true }
+      )
+      setEditingComments((prev: any) =>
+        prev.filter((id: string) => id !== subCommentId)
+      )
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   const handleDeleteComment = async (subCommentId: string) => {
     const subCommentRef = doc(
       db,
@@ -133,12 +177,43 @@ const SubCommentsReview = (Props: SubCommentsState) => {
               <span className="font-bold">{subComment.username}</span>
               <span>{subComment.created_at?.toDate().toDateString()}</span>
             </div>
-            <div className="comment-body text-right">
-              {subComment.subcomment}
-            </div>
+
+            {editingComments.includes(subComment.id) ? (
+              <div className="flex flex-col">
+                <Textarea
+                  value={editTextMap[subComment.id]}
+                  onChange={(e) =>
+                    setEditTextMap((prev: any) => ({
+                      ...prev,
+                      [subComment.id]: e.target.value,
+                    }))
+                  }
+                />
+                <div className="flex w-full justify-end">
+                  <Button
+                    className="mt-2"
+                    onClick={() => handleUpdateComment(subComment.id)}
+                  >
+                    更新
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="comment-body text-right">
+                {subComment.subcomment}
+              </div>
+            )}
             {user.userId === subComment.userId && (
               <div className="mt-3 text-right">
-                <Button>編輯</Button>
+                <Button
+                  onClick={() =>
+                    handleEditComment(subComment.id, subComment.subcomment)
+                  }
+                >
+                  {editingComments.includes(subComment.id)
+                    ? '取消編輯'
+                    : '編輯'}
+                </Button>
                 <Button onClick={() => handleDeleteComment(subComment.id)}>
                   刪除
                 </Button>
