@@ -16,6 +16,7 @@ import Activity from './pages/Profile/Activity.tsx'
 import Network from './pages/Profile/Network.tsx'
 import EditPage from './pages/Review/EditPage.tsx'
 import Likes from './pages/Profile/Likes.tsx'
+import Setting from './pages/Profile/Setting.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NextUIProvider } from '@nextui-org/react'
 import './index.css'
@@ -44,6 +45,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
               <Route path="activity" element={<Activity />} />
               <Route path="network" element={<Network />} />
               <Route path="likes" element={<Likes />} />
+              <Route path="setting" element={<Setting />} />
             </Route>
           </Route>
         </Routes>

@@ -133,14 +133,14 @@ const Read = () => {
             />
           </div>
         </div>
-
-        {review.userId === user.userId && (
-          <div className="flex gap-2">
-            <a href={`/review/revision/${id}`}>修改</a>
-            <button onClick={handleDeleteReview}>刪除</button>
-          </div>
-        )}
       </div>
+
+      {review.userId === user.userId && (
+        <div className="mx-auto my-5 flex w-2/3 gap-2">
+          <a href={`/review/revision/${id}`}>修改</a>
+          <button onClick={handleDeleteReview}>刪除</button>
+        </div>
+      )}
 
       <div className="mx-auto my-5 flex w-2/3">
         <SubCommentsReview commentId={id} userId={userId} />

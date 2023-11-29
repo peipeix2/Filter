@@ -112,7 +112,7 @@ const Profile = () => {
     { name: '追蹤列表', link: './network' },
     { name: '點讚', link: './likes' },
     { name: '日曆', link: './calender' },
-    { name: '設定', link: './customize' },
+    { name: '設定', link: './setting' },
   ]
 
   return (
