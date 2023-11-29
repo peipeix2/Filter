@@ -204,7 +204,7 @@ const RatingPanel = () => {
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
-        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating}</p>
+        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating?.toFixed(1)}</p>
       </div>
 
       <Divider />
