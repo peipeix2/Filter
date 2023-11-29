@@ -31,10 +31,27 @@ import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
+import useUserStore from '../../store/userStore'
+import { isMovieCommented } from '../../utils/render'
+
+interface MoviesState {
+  id: number
+  title: string
+  original_title: string
+  overview: string
+  poster_path: string
+  rating: number
+  ratings_count: number
+  comments_count: number
+  reviews_count: number
+  wishes_count: number
+  tag: string[]
+  release_date: string
+}
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
-  const [moviesData, setMoviesData] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<MoviesState | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -49,15 +66,32 @@ const RatingPanel = () => {
     (state) => state.moviesReviewsForId
   )
   const { id } = useParams()
+  const { user, hasCommented, setHasCommented, isLogin } = useUserStore()
+  const userId = user.userId
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
-      const movies = doc.data()
+      const movies:any = doc.data()
+      if (movies === undefined) return
       setMoviesData(movies)
     })
 
+    if (!user?.userId) return 
+
+    const unsubsComments = onSnapshot(
+      collection(db, 'USERS', userId, 'COMMENTS'),
+      (querySnapshot) => {
+        const userComment:any = []
+        querySnapshot.forEach((doc) => {
+          userComment.push(doc.data()) 
+        })
+        setHasCommented(isMovieCommented(userComment, Number(id)))
+      }
+    )
+
     return () => {
       unsubscribe()
+      unsubsComments()
     }
   }, [])
 
@@ -67,19 +101,26 @@ const RatingPanel = () => {
       return
     }
 
-    try {
-      const docRef = await addDoc(collection(db, 'COMMENTS'), {
-        ...moviesComment,
-        tags: tags,
-        author: '001',
-        avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
-        created_at: serverTimestamp(),
-        updated_at: serverTimestamp(),
-        movie_id: moviesDetail.id,
-      })
-      await resetMoviesComment()
-      console.log('Document written with ID: ', docRef.id)
+    const commentData = {
+      ...moviesComment,
+      tags: tags,
+      userId: user.userId,
+      author: user.username,
+      avatar: user.avatar,
+      created_at: serverTimestamp(),
+      updated_at: serverTimestamp(),
+      movie_id: moviesDetail.id,
+      movie_title: moviesDetail.title,
+      movie_original_title: moviesDetail.original_title,
+      movie_backdrop_path: moviesDetail.backdrop_path,
+      movie_poster: moviesDetail.poster_path,
+      movie_release: moviesDetail.release_date
+    }
 
+    try {
+      const userRef = collection(db, 'USERS')
+      await addDoc(collection(userRef, user.userId, 'COMMENTS'), commentData)
+      await resetMoviesComment()
       await updateMovieRatings()
     } catch (e) {
       console.error('Error adding document: ', e)
@@ -120,18 +161,34 @@ const RatingPanel = () => {
     return rating
   }
 
-  
   const formInvalid = !moviesComment.rating
 
+  if (!moviesData) return
+
   return (
-    <div className="rating-data-wrapper mx-auto w-4/5 bg-slate-100 py-3">
+    <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
+      {!isLogin && (
+        <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
+          <div className=" text-center text-white">
+            <p>Sign in to enjoy more feature</p>
+          </div>
+        </div>
+      )}
       <div className="watched-status flex justify-around pb-3">
         <div
           className="flex cursor-pointer flex-col items-center"
-          onClick={onOpen}
+          onClick={hasCommented ? undefined : onOpen}
         >
-          <IoEyeOutline className="cursor-pointer text-4xl text-[#94a3ab]" />
-          <span className="cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565]">
+          <IoEyeOutline
+            className={`cursor-pointer text-4xl text-[#94a3ab] ${
+              hasCommented ? 'text-indigo-500' : 'text-[#94a3ab]'
+            }`}
+          />
+          <span
+            className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
+              hasCommented ? 'text-indigo-500' : 'text-[#beccdc]'
+            }`}
+          >
             看過
           </span>
         </div>
@@ -147,7 +204,7 @@ const RatingPanel = () => {
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
-        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating}</p>
+        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating?.toFixed(1)}</p>
       </div>
 
       <Divider />
@@ -205,7 +262,12 @@ const RatingPanel = () => {
                     }
                   />
 
-                <TagsInput tags={tags} setTags={setTags} tagsInput={tagsInput} setTagsInput={setTagsInput} />
+                  <TagsInput
+                    tags={tags}
+                    setTags={setTags}
+                    tagsInput={tagsInput}
+                    setTagsInput={setTagsInput}
+                  />
 
                   <div className="rating-privacy mt-5 flex justify-between">
                     <div className="flex items-center">
