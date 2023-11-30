@@ -19,7 +19,7 @@ interface LikeState {
 }
 
 const DiscoverLikeBtn = (Props: LikeState) => {
-  const user = useUserStore((state) => state.user)
+  const { user, isLogin } = useUserStore()
 
   const updateLocalLikesUser = (followingUsersComments:any, postId:string, isLiked:boolean, count:number) => {
     const updatedComments = [...followingUsersComments]
@@ -47,6 +47,10 @@ const DiscoverLikeBtn = (Props: LikeState) => {
   }
 
   const handleLikeClick = async () => {
+    if (!isLogin) {
+      return alert('請先登入或註冊！')
+    }
+    
     const userRef = doc(db, 'USERS', user.userId)
     const docRef = collection(db, 'USERS')
 

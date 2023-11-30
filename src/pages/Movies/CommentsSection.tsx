@@ -18,8 +18,7 @@ const CommentsSection = () => {
   const setMoviesCommentsForId = useMoviesCommentStore(
     (state) => state.setMoviesCommentsForId
   )
-  const user = useUserStore((state) => state.user)
-  const setHasCommented = useUserStore((state) => state.setHasCommented)
+  const { user, setHasCommented } = useUserStore()
   const { id } = useParams()
 
   useEffect(() => {
@@ -100,14 +99,17 @@ const CommentsSection = () => {
                   </ul>
                 </div>
 
-                <CommentLikeBtn
-                  postId={comment.id}
-                  count={comment.likes_count}
-                  authorId={comment.userId}
-                  isLiked={
-                    comment.likesUser && comment.likesUser.includes(user.userId)
-                  }
-                />
+                
+                  <CommentLikeBtn
+                    postId={comment.id}
+                    count={comment.likes_count}
+                    authorId={comment.userId}
+                    isLiked={
+                      comment.likesUser &&
+                      comment.likesUser.includes(user.userId)
+                    }
+                  />
+                
               </div>
             </div>
             <Divider />

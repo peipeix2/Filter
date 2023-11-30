@@ -95,17 +95,16 @@ const ReviewSection = () => {
                     })}
                   </ul>
                 </div>
-                <div className="like">
+                
                   <Like
                     postId={review.id}
                     count={review.likes_count}
                     authorId={review.userId}
                     isLiked={
-                      review.likesUser &&
-                      review.likesUser.includes(user.userId)
+                      review.likesUser && review.likesUser.includes(user.userId)
                     }
                   />
-                </div>
+                
               </div>
             </div>
             <Divider />

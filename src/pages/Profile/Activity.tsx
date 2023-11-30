@@ -132,72 +132,72 @@ const Activity = () => {
         displayComments.slice(0,3).map((comment:any,index:number) => {
           return (
             <div className="comment-card" key={index}>
-              
-                <div className="comment-card my-5 flex items-center">
-                  <div className="avatar-wrapper flex w-[100px] items-start">
-                    <Image
-                      src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
-                      alt={comment.original_title}
-                      isBlurred
-                    />
+              <div className="comment-card my-5 flex items-center">
+                <div className="avatar-wrapper flex w-[100px] items-start">
+                  <Image
+                    src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
+                    alt={comment.original_title}
+                    isBlurred
+                  />
+                </div>
+                <div className="comment-rating ml-10 flex-grow">
+                  <div className="movie-info-header mb-2 flex items-baseline text-lg">
+                    <h1 className="mr-2 font-bold">{comment.movie_title}</h1>
+                    <span className="text-sm">
+                      {comment.movie_original_title}
+                    </span>
                   </div>
-                  <div className="comment-rating ml-10 flex-grow">
-                    <div className="movie-info-header mb-2 flex items-baseline text-lg">
-                      <h1 className="mr-2 font-bold">{comment.movie_title}</h1>
-                      <span className="text-sm">
-                        {comment.movie_original_title}
-                      </span>
-                    </div>
-                    <Link to={`/comment/${comment.userId}/${comment.id}`}>
-                      <div className="comment-header flex">
-                        {comment.userId !== userId ? (
-                          <div className="comment-user mr-2 flex">
-                            <span className="mr-1 text-sm text-slate-400">
-                              評論作者
-                            </span>
-                            <span className="text-sm font-semibold text-slate-800">
-                              {comment.author}
-                            </span>
-                          </div>
-                        ) : (
-                          <div className="comment-user mr-2 flex">
-                            <span className="mr-1 text-sm text-slate-400">
-                              評論日期
-                            </span>
-                            <span className="text-sm font-semibold text-slate-800">
-                              {comment.created_at.toDate().toDateString()}
-                            </span>
-                          </div>
-                        )}
-                        <CommentStar rating={comment.rating} />
-                        <div className="comment-count ml-2 flex items-center">
-                          <FaCommentAlt className="text-xs" />
-                          <span className="ml-1 text-sm">
-                            {comment.comments_count}
+                  <Link to={`/comment/${comment.userId}/${comment.id}`}>
+                    <div className="comment-header flex">
+                      {comment.userId !== userId ? (
+                        <div className="comment-user mr-2 flex">
+                          <span className="mr-1 text-sm text-slate-400">
+                            評論作者
+                          </span>
+                          <span className="text-sm font-semibold text-slate-800">
+                            {comment.author}
                           </span>
                         </div>
+                      ) : (
+                        <div className="comment-user mr-2 flex">
+                          <span className="mr-1 text-sm text-slate-400">
+                            評論日期
+                          </span>
+                          <span className="text-sm font-semibold text-slate-800">
+                            {comment.created_at.toDate().toDateString()}
+                          </span>
+                        </div>
+                      )}
+                      <CommentStar rating={comment.rating} />
+                      <div className="comment-count ml-2 flex items-center">
+                        <FaCommentAlt className="text-xs" />
+                        <span className="ml-1 text-sm">
+                          {comment.comments_count}
+                        </span>
                       </div>
-                    </Link>
-
-                    <div className="comment-content my-5">
-                      <p className="comment">{comment.comment}</p>
                     </div>
+                  </Link>
 
-                    <div className="tags">
-                      <ul className="flex gap-1">
-                        {comment.tags.map((tag: string, index: number) => {
-                          return (
-                            <li
-                              className="p-1 text-sm text-slate-400"
-                              key={index}
-                            >
-                              #{tag}
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
+                  <div className="comment-content my-5">
+                    <p className="comment">{comment.comment}</p>
+                  </div>
 
+                  <div className="tags">
+                    <ul className="flex gap-1">
+                      {comment.tags.map((tag: string, index: number) => {
+                        return (
+                          <li
+                            className="p-1 text-sm text-slate-400"
+                            key={index}
+                          >
+                            #{tag}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+
+                  
                     <CommentLikeBtn
                       postId={comment.id}
                       count={comment.likes_count}
@@ -207,10 +207,10 @@ const Activity = () => {
                         comment.likesUser.includes(user.userId)
                       }
                     />
-                  </div>
+                
                 </div>
-                <Divider />
-              
+              </div>
+              <Divider />
             </div>
           )
         })

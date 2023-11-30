@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import Like from '../../components/Like'
 import CommentStar from '../../components/Star/CommentStar'
 import { Image, Divider } from '@nextui-org/react'
 import { Link, useParams } from 'react-router-dom'
@@ -175,14 +174,16 @@ const Likes = () => {
                     </ul>
                   </div>
 
-                  <DiscoverLikeBtn
-                    postId={comment.id}
-                    count={comment.likes_count}
-                    authorId={comment.userId}
-                    isLiked={comment.likesUser?.includes(user.userId)}
-                    followingUsersComments={likedComments}
-                    setFollowingUsersComments={setLikedComments}
-                  />
+                  
+                    <DiscoverLikeBtn
+                      postId={comment.id}
+                      count={comment.likes_count}
+                      authorId={comment.userId}
+                      isLiked={comment.likesUser?.includes(user.userId)}
+                      followingUsersComments={likedComments}
+                      setFollowingUsersComments={setLikedComments}
+                    />
+              
                 </div>
               </div>
               <Divider />
@@ -261,16 +262,19 @@ const Likes = () => {
                     </ul>
                   </div>
 
-                  <DiscoverLikeReviewBtn
-                    postId={review.id}
-                    count={review.likes_count}
-                    authorId={review.userId}
-                    isLiked={
-                      review.likesUser && review.likesUser.includes(user.userId)
-                    }
-                    followingUsersReviews={likedReviews}
-                    setFollowingUsersReviews={setLikedReviews}
-                  />
+                  
+                    <DiscoverLikeReviewBtn
+                      postId={review.id}
+                      count={review.likes_count}
+                      authorId={review.userId}
+                      isLiked={
+                        review.likesUser &&
+                        review.likesUser.includes(user.userId)
+                      }
+                      followingUsersReviews={likedReviews}
+                      setFollowingUsersReviews={setLikedReviews}
+                    />
+                  
                 </div>
               </div>
               <Divider />
