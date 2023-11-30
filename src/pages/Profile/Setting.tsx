@@ -20,8 +20,8 @@ import { useParams } from 'react-router-dom'
 
 const Setting = () => {
   const { user } = useUserStore()
-  const profileRef = useRef(null)
-  const backdropRef = useRef(null)
+  const profileRef = useRef<HTMLInputElement>(null)
+  const backdropRef = useRef<HTMLInputElement>(null)
   const [profileUser, setProfileUser] = useState<any>(null)
   const [selectedProfile, setSelectedProfile] = useState(null)
   const [selectedBackdrop, setSelectedBackdrop] = useState(null)
@@ -46,11 +46,15 @@ const Setting = () => {
   }
 
   const handleImageClick = () => {
-    profileRef.current.click()
+    if (profileRef.current) {
+      profileRef.current.click()
+    }
   }
 
   const handleBackdropClick = () => {
-    backdropRef.current.click()
+    if (backdropRef.current) {
+      backdropRef.current.click()
+    }
   }
 
   const handleImageChange = (event:any) => {
@@ -124,7 +128,7 @@ const Setting = () => {
     <Table aria-label="profile-table">
       <TableHeader>
         <TableColumn>欄位</TableColumn>
-        <TableColumn>名稱</TableColumn>
+        <TableColumn>使用圖片</TableColumn>
         <TableColumn>修改</TableColumn>
       </TableHeader>
       <TableBody>
