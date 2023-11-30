@@ -22,14 +22,29 @@ const Profile = () => {
   const { userId } = useParams()
   let profileUserFollowerRef: any
   let profileUserFollowingRef: any
+  let docRef:any
 
   useEffect(() => {
     if (userId) {
-      fetchUser(userId) //onSnapshot??
+      docRef = doc(db, 'USERS', userId)
+    }
+
+    const unsubs = onSnapshot(docRef, (doc:any) => {
+      const profileData = doc.data()
+      setProfileUser(profileData)
+    })
+    
+    return () => {
+      unsubs()
+    }
+
+  }, [userId])
+
+  useEffect(() => {
+    if (userId) {
       profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
       profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
     }
-    console.log('userId', userId)
 
     const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot:QuerySnapshot) => {
       setFollowersCount(querySnapshot.size)
