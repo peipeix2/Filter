@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 import Like from '../../components/Like'
 import CommentStar from '../../components/Star/CommentStar'
 import { Image, Divider } from '@nextui-org/react'
@@ -9,6 +8,8 @@ import { Link, useParams } from 'react-router-dom'
 import { FaCommentAlt } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
 import parser from 'html-react-parser'
+import DiscoverLikeBtn from '../../components/Like/DiscoverLikeBtn'
+import DiscoverLikeReviewBtn from '../../components/Like/DiscoverLikeReviewBtn'
 
 interface userMoviesCommentsState {
   id: string
@@ -174,14 +175,13 @@ const Likes = () => {
                     </ul>
                   </div>
 
-                  <CommentLikeBtn
+                  <DiscoverLikeBtn
                     postId={comment.id}
                     count={comment.likes_count}
                     authorId={comment.userId}
-                    isLiked={
-                      comment.likesUser &&
-                      comment.likesUser.includes(user.userId)
-                    }
+                    isLiked={comment.likesUser?.includes(user.userId)}
+                    followingUsersComments={likedComments}
+                    setFollowingUsersComments={setLikedComments}
                   />
                 </div>
               </div>
@@ -261,13 +261,15 @@ const Likes = () => {
                     </ul>
                   </div>
 
-                  <Like
+                  <DiscoverLikeReviewBtn
                     postId={review.id}
                     count={review.likes_count}
                     authorId={review.userId}
                     isLiked={
                       review.likesUser && review.likesUser.includes(user.userId)
                     }
+                    followingUsersReviews={likedReviews}
+                    setFollowingUsersReviews={setLikedReviews}
                   />
                 </div>
               </div>
