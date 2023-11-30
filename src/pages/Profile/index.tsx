@@ -25,7 +25,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (userId) {
-      fetchUser(userId)
+      fetchUser(userId) //onSnapshot??
       profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
       profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
     }
@@ -119,7 +119,7 @@ const Profile = () => {
     <>
       <div
         style={{
-          backgroundImage: `url('https://image.tmdb.org/t/p/original/mRmRE4RknbL7qKALWQDz64hWKPa.jpg')`,
+          backgroundImage: `url(${profileUser.backdrop})`,
         }}
         className="w-100% h-[500px] bg-cover bg-center bg-no-repeat"
       />

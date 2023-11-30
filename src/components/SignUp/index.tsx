@@ -15,6 +15,8 @@ const SignUp = () => {
 
   const DEFAULT_PROFILE =
     'https://firebasestorage.googleapis.com/v0/b/filter-14ea1.appspot.com/o/default-profile-pic-e1513291410505.jpeg?alt=media&token=cacce2e3-5b21-4b89-96c2-d94003b3063d'
+  const DEFAULT_BACKDROP =
+    'https://image.tmdb.org/t/p/original/mRmRE4RknbL7qKALWQDz64hWKPa.jpg'
 
   const handleSignUp = async() => {
     try {
@@ -30,7 +32,7 @@ const SignUp = () => {
           userId: currentUser?.uid,
           username: userName,
           email: currentUser?.email,
-          avatar: DEFAULT_PROFILE
+          avatar: DEFAULT_PROFILE,
         })
         postUserInfo(currentUser?.uid, currentUser.email)
       }
@@ -43,13 +45,14 @@ const SignUp = () => {
 
   const postUserInfo = async (id:string | undefined, email:string | null) => {
     try {
-      await setDoc(doc(db, "USERS", `${id}`), {
+      await setDoc(doc(db, 'USERS', `${id}`), {
         userId: id,
         username: userName,
         email: email,
         avatar: DEFAULT_PROFILE,
         followers_count: 0,
-        follows_count: 0
+        follows_count: 0,
+        backdrop: DEFAULT_BACKDROP
       })
     } catch (error) {
       console.log(error)
