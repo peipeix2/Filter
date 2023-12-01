@@ -17,17 +17,23 @@ import Network from './pages/Profile/Network.tsx'
 import EditPage from './pages/Review/EditPage.tsx'
 import Likes from './pages/Profile/Likes.tsx'
 import Setting from './pages/Profile/Setting.tsx'
+import Gallery from './pages/Gallery/index.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NextUIProvider } from '@nextui-org/react'
+import { QueryClientProvider, QueryClient } from 'react-query'
 import './index.css'
+
+const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
     <NextUIProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<App />}>
             <Route index element={<Home />} />
+            <Route path='/:category' element={<Gallery />} />
             <Route path="/movies/:id" element={<Movies />}>
               <Route index element={<Cast />} />
               <Route path="cast" element={<Cast />} />
@@ -51,5 +57,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </Routes>
       </BrowserRouter>
     </NextUIProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 )

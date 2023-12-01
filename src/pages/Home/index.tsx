@@ -156,9 +156,9 @@ const Home = () => {
         </Navbar>
 
         <div className="mx-auto my-10 w-4/5">
-          <div className='flex items-center justify-between'>
+          <div className="flex items-center justify-between">
             <h3 className="font-semibold">熱門電影</h3>
-            <span>More</span>
+            <Link to={`/popular`}>More</Link>
           </div>
 
           <div className="my-5 flex gap-2">
@@ -196,10 +196,10 @@ const Home = () => {
         </div>
 
         <div className="mx-auto my-10 w-4/5">
-          <div className='flex items-center justify-between'>
+          <div className="flex items-center justify-between">
             <h3 className="font-semibold">正在上映</h3>
-            <span>More</span>
-            </div>
+            <Link to={`/now_playing`}>More</Link>
+          </div>
           <div className="my-5 flex gap-2">
             {nowPlaying.map((movie, index) => {
               return (
