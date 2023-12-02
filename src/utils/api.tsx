@@ -14,6 +14,12 @@ const api = {
     )
     return await response.json()
   },
+  async queryMovies(keyword: string, page: number) {
+    const response = await fetch(
+      `${this.HOSTNAME}/search/movie?query=${keyword}&include_adult=false&language=zh-TW&api_key=${this.API_KEY}&page=${page}`
+    )
+    return await response.json()
+  }
 }
 
 export default api

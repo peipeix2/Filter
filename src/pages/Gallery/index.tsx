@@ -1,21 +1,51 @@
 import { useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useSearchParams } from "react-router-dom"
 import { useQuery } from 'react-query'
 import api from "../../utils/api"
 import firestore from "../../utils/firestore"
 import { Image, Skeleton, Pagination } from '@nextui-org/react'
 import { Link } from "react-router-dom"
+import { collectionGroup, getDocs, query, where } from "firebase/firestore"
+import { db } from "../../../firebase"
+
 
 const Gallery = () => {
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchParams, setSearchPrams] = useSearchParams()
   const { category } = useParams()
+  const searchValue = searchParams.get('keyword')
 
   if (!category) return
-  const getMoviesFromCategory = async ({queryKey}) => {
+  const getMoviesFromCategory = async ({ queryKey }) => {
+    if (category === 'search' && searchValue) {
+      const data = await api.queryMovies(
+        encodeURIComponent(searchValue),
+        queryKey[1]
+      )
+      firestore.createMoviesDoc(data.results)
+      return data.results
+    }
+
+    if (category === 'tag' && searchValue) {
+      return queryMoviesTag(searchValue)
+    }
+
     const data = await api.getMoviesWithCategories(category, queryKey[1])
     firestore.createMoviesDoc(data.results)
     return data.results
   }
+
+  const queryMoviesTag = async (tag:string) => {
+    const commentRef = collectionGroup(db, 'COMMENTS')
+    const q = query(commentRef, where('tags', 'array-contains', tag))
+    const querySnapshot = await getDocs(q)
+    const data:any = []
+    querySnapshot.forEach(doc => {
+      data.push(doc.data())
+    })
+    return data
+  }
+
   const { data, isLoading } = useQuery(['getMovies', currentPage], getMoviesFromCategory)
 
   return (
@@ -29,10 +59,12 @@ const Gallery = () => {
             ))}
         {data && data.map((movie: any, index: number) => {
           return (
-            <Link to={`/movies/${movie.id}`} key={index} className='w-[19%]'>
+            <Link to={`/movies/${movie.id || movie.movie_id}`} key={index} className="w-[19%]">
               <Image
                 alt="film-poster"
-                src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w500/${
+                  movie.poster_path || movie.movie_poster
+                }`}
                 className="w-full"
               />
             </Link>

@@ -3,22 +3,14 @@ import { Link } from 'react-router-dom'
 import { collection, getDocs, query, setDoc, where, doc } from 'firebase/firestore'
 import { db } from '../../../firebase.ts'
 import {
-    Navbar,
-    NavbarContent,
-    Input,
-    DropdownItem,
-    DropdownTrigger,
-    Dropdown,
-    DropdownMenu,
     Card,
     CardHeader,
     CardBody,
     Image,
-    Button,
 } from '@nextui-org/react'
-import { CiSearch } from 'react-icons/ci'
 import api from '../../utils/api.tsx'
 import Star from '../../components/Star/index.tsx'
+import SubNavbar from './SubNavbar.tsx'
 
 interface Movie {
     id: number
@@ -106,55 +98,7 @@ const Home = () => {
 
     return (
       <>
-        <Navbar
-          position="static"
-          className="mx-auto my-5 flex w-4/5 items-center justify-around bg-slate-400"
-        >
-          <NavbarContent>
-            <span>篩選電影</span>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button variant="bordered">類型</Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>喜劇</DropdownItem>
-                <DropdownItem>劇情</DropdownItem>
-                <DropdownItem>動作</DropdownItem>
-                <DropdownItem>冒險</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-
-            <Dropdown>
-              <DropdownTrigger>
-                <Button variant="bordered">評分</Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>5分</DropdownItem>
-                <DropdownItem>4分</DropdownItem>
-                <DropdownItem>3分</DropdownItem>
-                <DropdownItem>2分</DropdownItem>
-                <DropdownItem>1分</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarContent>
-
-          <div className="flex items-center">
-            <Input
-              classNames={{
-                base: 'max-w-full sm:max-w-[10rem] h-10',
-                mainWrapper: 'h-full',
-                input: 'text-small',
-                inputWrapper:
-                  'h-full font-normal text-default-500 bg-slate-800 dark:bg-default-500/20',
-              }}
-              placeholder="搜尋電影"
-              size="sm"
-              startContent={<CiSearch size={18} />}
-              type="search"
-            />
-          </div>
-        </Navbar>
-
+        <SubNavbar />
         <div className="mx-auto my-10 w-4/5">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold">熱門電影</h3>
