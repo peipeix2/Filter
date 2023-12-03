@@ -3,14 +3,13 @@ import { Link } from 'react-router-dom'
 import { collection, getDocs, query, setDoc, where, doc } from 'firebase/firestore'
 import { db } from '../../../firebase.ts'
 import {
-    Card,
-    CardHeader,
-    CardBody,
-    Image,
+    Image, Divider
 } from '@nextui-org/react'
 import api from '../../utils/api.tsx'
-import Star from '../../components/Star/index.tsx'
-import SubNavbar from './SubNavbar.tsx'
+import HeroImg from '../../components/HeroImg/index.tsx'
+import { FaStar } from 'react-icons/fa'
+import { IoEyeSharp } from 'react-icons/io5'
+import PopularComments from './PopularComments.tsx'
 
 interface Movie {
     id: number
@@ -45,9 +44,7 @@ const Home = () => {
             setNowPlaying(data)
         }
 
-        getPopularMovie()
-        getNowPlayingMovie()
-        getMoviesRating()
+        // Promise.all([(getPopularMovie(), getNowPlayingMovie()), getMoviesRating()])
     }, [])
 
     const getMoviesRating = async () => {
@@ -98,84 +95,129 @@ const Home = () => {
 
     return (
       <>
-        <SubNavbar />
-        <div className="mx-auto my-10 w-4/5">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">熱門電影</h3>
-            <Link to={`/popular`}>More</Link>
+        <HeroImg backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg" />
+
+        <div className="movie-lists-container mx-auto my-40 w-3/5">
+          <div className="mx-auto mb-2 text-right font-extrabold">
+            <p className="text-sm">最新熱映</p>
+            <p className="text-2xl">/ Popular, Now in Cinema</p>
           </div>
 
-          <div className="my-5 flex gap-2">
-            {moviesFromAPI.map((movie, index) => {
-              return (
-                <Link to={`/movies/${movie.id}`} key={index}>
-                  <Card className="w-23% py-4">
-                    <CardBody>
-                      <Image
-                        alt="film-poster"
-                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                      />
-                    </CardBody>
-                    <CardHeader className="flex-col items-center">
-                      <p className="text-center text-xs">{movie.title}</p>
-                      <small className="text-center text-xs">
-                        {movie.original_title}
-                      </small>
-                      {moviesRating.map((item) => {
-                        if (item.id === movie.id) {
-                          return (
-                            <Star
-                              rating={item.rating}
-                              count={item.ratings_count}
-                            />
-                          )
-                        }
-                      })}
-                    </CardHeader>
-                  </Card>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
+          <div className="popular-container mt-20">
+            <div className="title-wrapper flex items-center justify-between">
+              <p className="text-base font-semibold text-[#475565]">熱門電影</p>
+              <Link to={`/popular`} className="text-sm text-[#475565]">
+                More
+              </Link>
+            </div>
+            <Divider className="mt-1" />
 
-        <div className="mx-auto my-10 w-4/5">
-          <div className="flex items-center justify-between">
-            <h3 className="font-semibold">正在上映</h3>
-            <Link to={`/now_playing`}>More</Link>
+            <div className="my-5 flex gap-2">
+              {moviesFromAPI.map((movie, index) => {
+                return (
+                  <Link
+                    to={`/movies/${movie.id}`}
+                    key={index}
+                    className="group relative block"
+                  >
+                    <Image
+                      radius="sm"
+                      className="w-23%"
+                      alt="film-poster"
+                      src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    />
+                    <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
+                      <div className="flex h-full flex-col items-center justify-center text-[#475565] opacity-0 group-hover:opacity-100">
+                        <p className="text-center text-xs font-semibold">
+                          {movie.title}
+                        </p>
+                        <small className="text-center text-xs">
+                          {movie.original_title}
+                        </small>
+                        {moviesRating.map((item) => {
+                          if (item.id === movie.id) {
+                            return (
+                              <div className="mt-2">
+                                <div className="flex items-center gap-4 text-[36px]">
+                                  <FaStar color="orange" />
+                                  <span>{item.rating}</span>
+                                </div>
+                                <div className="flex items-center gap-4 text-[36px]">
+                                  <IoEyeSharp color="green" />
+                                  <span>{item.ratings_count}</span>
+                                </div>
+                              </div>
+                            )
+                          }
+                        })}
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
           </div>
-          <div className="my-5 flex gap-2">
-            {nowPlaying.map((movie, index) => {
-              return (
-                <Link to={`/movies/${movie.id}`} key={index}>
-                  <Card className="w-23% py-4">
-                    <CardBody>
-                      <Image
-                        alt="film-poster"
-                        src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-                      />
-                    </CardBody>
-                    <CardHeader className="flex-col items-center">
-                      <p className="text-center">{movie.title}</p>
-                      <small className="text-center">
-                        {movie.original_title}
-                      </small>
-                      {moviesRating.map((item) => {
-                        if (item.id === movie.id) {
-                          return (
-                            <Star
-                              rating={item.rating}
-                              count={item.ratings_count}
-                            />
-                          )
-                        }
-                      })}
-                    </CardHeader>
-                  </Card>
-                </Link>
-              )
-            })}
+
+          <div className="now-playing-container mt-20">
+            <div className="title-wrapper flex items-center justify-between">
+              <p className="text-base font-semibold text-[#475565]">上映電影</p>
+              <Link to={`/now_playing`} className="text-sm text-[#475565]">
+                More
+              </Link>
+            </div>
+            <Divider className="mt-1" />
+
+            <div className="my-5 flex gap-2">
+              {nowPlaying.map((movie, index) => {
+                return (
+                  <Link
+                    to={`/movies/${movie.id}`}
+                    key={index}
+                    className="group relative block"
+                  >
+                    <Image
+                      radius="sm"
+                      className="w-23%"
+                      alt="film-poster"
+                      src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    />
+                    <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
+                      <div className="flex h-full flex-col items-center justify-center opacity-0 group-hover:opacity-100">
+                        <p className="text-center text-xs font-semibold">
+                          {movie.title}
+                        </p>
+                        <small className="text-center text-xs">
+                          {movie.original_title}
+                        </small>
+                        {moviesRating.map((item) => {
+                          if (item.id === movie.id) {
+                            return (
+                              <div className="mt-2">
+                                <div className="flex items-center gap-4 text-[36px]">
+                                  <FaStar color="orange" />
+                                  <span>{item.rating}</span>
+                                </div>
+                                <div className="flex items-center gap-4 text-[36px]">
+                                  <IoEyeSharp color="green" />
+                                  <span>{item.ratings_count}</span>
+                                </div>
+                              </div>
+                            )
+                          }
+                        })}
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
           </div>
+
+          <div className="mx-auto mb-2 mt-40 text-right font-extrabold">
+            <p className="text-sm">全站熱門</p>
+            <p className="text-2xl">/ Latest on Filter</p>
+          </div>
+          <PopularComments />
         </div>
       </>
     )

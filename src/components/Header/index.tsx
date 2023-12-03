@@ -14,7 +14,7 @@ import SignUp from '../SignUp'
 import SignIn from '../SignIn'
 import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
-import { Link } from 'react-router-dom'
+import SubNavbar from '../../pages/Home/SubNavbar'
 
 function Header() {
     const { user, isLogin } = useUserStore()
@@ -22,25 +22,18 @@ function Header() {
     if (!user) return
 
     return (
-      <Navbar className="bg-slate-200">
+      <Navbar
+        className="items-center bg-white px-32"
+        maxWidth="full"
+        height="90px"
+        position='static'
+      >
         <NavbarBrand>
           <a href="/">SiteLogo</a>
         </NavbarBrand>
 
-        <NavbarContent as="div" justify="end">
-          <Input
-            classNames={{
-              base: 'max-w-full sm:max-w-[10rem] h-10',
-              mainWrapper: 'h-full',
-              input: 'text-small',
-              inputWrapper:
-                'h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20',
-            }}
-            placeholder="全站搜尋"
-            size="sm"
-            startContent={<CiSearch size={18} />}
-            type="search"
-          />
+        <NavbarContent className='flex items-center w-2/3 gap-5' justify='end'>
+          <SubNavbar />
           {!isLogin && (
             <>
               <SignUp />

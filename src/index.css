@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Noto Sans TC', 'DM Serif Display', sans-serif;
+  font-family: 'Lato', 'Noto Sans TC', 'DM Serif Display', sans-serif;
 }
 
 /* :root {
