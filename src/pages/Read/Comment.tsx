@@ -47,27 +47,27 @@ const Comment = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // const unsubscribe = onSnapshot(
-    //   collectionGroup(db, 'COMMENTS'),
-    //   (querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       if (doc.id === id) {
-    //         setComment(doc.data())
-    //         setTags(doc.data().tags)
-    //         setRevisedMoviesComment('comment', doc.data().comment)
-    //       }
-    //     })
-    //   }
-    // )
-    // return () => {
-    //   unsubscribe()
-    // }
+    const unsubscribe = onSnapshot(
+      collectionGroup(db, 'COMMENTS'),
+      (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          if (doc.id === id) {
+            setComment(doc.data())
+            setTags(doc.data().tags)
+            setRevisedMoviesComment('comment', doc.data().comment)
+          }
+        })
+      }
+    )
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
-    // if (comment) {
-    //   getMoviesDetail(comment.movie_id)
-    // }
+    if (comment) {
+      getMoviesDetail(comment.movie_id)
+    }
   }, [comment])
 
   const { id } = useParams()
@@ -176,8 +176,8 @@ const Comment = () => {
           <Divider />
         </div>
 
-        <div className="comment-card mx-auto my-5 flex items-center">
-          <div className="avatar-wrapper flex h-full justify-start">
+        <div className="comment-card mx-auto my-5 flex items-start">
+          <div className="avatar-wrapper mt-5 flex">
             <div
               className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
               style={{
@@ -186,7 +186,7 @@ const Comment = () => {
             />
           </div>
           <div className="comment-content-btn-container mx-auto flex w-full items-center justify-between">
-            <div className="comment-rating flex-grow">
+            <div className="comment-rating w-2/3">
               <h1 className="mb-5 font-bold">{comment.title}</h1>
 
               <div className="comment-header flex">

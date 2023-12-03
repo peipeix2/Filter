@@ -19,12 +19,7 @@ import PopularReviewers from './PopularReviewers'
 
 const PopularComments = () => {
   const [followingUsersComments, setFollowingUsersComments] = useState('')
-  // const [popularComments, setPopularComments] = useState([])
   const user = useUserStore((state) => state.user)
-
-  // useEffect(() => {
-  //   queryPopularComments()
-  // }, [])
 
   const queryPopularComments = async () => {
     const commentRef = collectionGroup(db, 'COMMENTS')
@@ -76,7 +71,7 @@ const PopularComments = () => {
                     isBlurred
                   />
                 </div>
-                <div className="comment-rating ml-10 flex-grow">
+                <div className="comment-rating ml-10 w-2/3">
                   <div className="movie-info-header mb-2 flex items-baseline text-lg">
                     <h1 className="mr-2 font-bold">{post.movie_title}</h1>
                     <span className="text-sm">{post.movie_original_title}</span>
@@ -115,7 +110,7 @@ const PopularComments = () => {
                   </Link>
 
                   <div className="comment-content my-5">
-                    <p className="comment">{post.comment}</p>
+                    <p className="comment text-sm">{post.comment}</p>
                   </div>
 
                   <div className="tags">

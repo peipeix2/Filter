@@ -25,27 +25,27 @@ const SubComments = (Props: SubCommentsState) => {
   const user = useUserStore((state) => state.user)
 
   useEffect(() => {
-    // const commentRef = collection(
-    //   db,
-    //   'USERS',
-    //   Props.userId,
-    //   'COMMENTS',
-    //   Props.commentId,
-    //   'SUBCOMMENTS'
-    // )
-    // const unsubscribe = onSnapshot(commentRef, (querySnapshot) => {
-    //   const subCommentsData: any = []
-    //   querySnapshot.forEach((doc) => {
-    //     subCommentsData.push({ ...doc.data(), id: doc.id })
-    //   })
-    //   const subCommentsDataSorted = subCommentsData.sort(
-    //     (a: any, b: any) => a.created_at - b.created_at
-    //   )
-    //   setSubComments(subCommentsDataSorted)
-    // })
-    // return () => {
-    //   unsubscribe()
-    // }
+    const commentRef = collection(
+      db,
+      'USERS',
+      Props.userId,
+      'COMMENTS',
+      Props.commentId,
+      'SUBCOMMENTS'
+    )
+    const unsubscribe = onSnapshot(commentRef, (querySnapshot) => {
+      const subCommentsData: any = []
+      querySnapshot.forEach((doc) => {
+        subCommentsData.push({ ...doc.data(), id: doc.id })
+      })
+      const subCommentsDataSorted = subCommentsData.sort(
+        (a: any, b: any) => a.created_at - b.created_at
+      )
+      setSubComments(subCommentsDataSorted)
+    })
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   const handlePostComment = async () => {
@@ -201,7 +201,7 @@ const SubComments = (Props: SubCommentsState) => {
                 </div>
               </div>
             ) : (
-              <div className="comment-body text-right">
+              <div className="comment-body mb-10 text-right">
                 {subComment.subcomment}
               </div>
             )}

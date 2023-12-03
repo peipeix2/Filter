@@ -23,16 +23,19 @@ const Read = () => {
   const [review, setReview] = useState<any>([])
 
   useEffect(() => {
-    // const unsubscribe = onSnapshot(collectionGroup(db, "REVIEWS"), (querySnapshot) => {
-    //   querySnapshot.forEach((doc) => {
-    //     if (doc.id === id) {
-    //       setReview(doc.data())
-    //     }
-    //   })
-    // })
-    // return () => {
-    //   unsubscribe()
-    // }
+    const unsubscribe = onSnapshot(
+      collectionGroup(db, 'REVIEWS'),
+      (querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          if (doc.id === id) {
+            setReview(doc.data())
+          }
+        })
+      }
+    )
+    return () => {
+      unsubscribe()
+    }
   }, [])
 
   useEffect(() => {
@@ -114,7 +117,7 @@ const Read = () => {
             />
           </div>
           <div className="comment-content-btn-container mx-auto flex w-full items-center justify-between">
-            <div className="comment-rating flex-grow">
+            <div className="comment-rating">
               <h1 className="mb-5 font-bold">{review.title}</h1>
 
               <div className="comment-header flex">
