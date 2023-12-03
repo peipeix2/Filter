@@ -16,7 +16,7 @@ const post = {
   id: 'xez',
   author: '王小明',
   created_at: Date.now(),
-  rating: 5,
+  rating: 3.5,
   comments_count: 2,
   likes_count: 2,
   comment: 'very good',

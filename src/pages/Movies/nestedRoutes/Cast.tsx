@@ -20,7 +20,7 @@ const Cast = () => {
     }, [])
 
     return (
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap gap-2 min-h-[150px] py-5">
             {moviesCast.map((item:any) => {
                 return (
                     <Tooltip content={item.character} size="sm">
