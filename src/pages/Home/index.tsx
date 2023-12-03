@@ -49,7 +49,7 @@ const Home = () => {
       setNowPlaying(data)
     }
 
-    // Promise.all([(getPopularMovie(), getNowPlayingMovie()), getMoviesRating()])
+    Promise.all([(getPopularMovie(), getNowPlayingMovie()), getMoviesRating()])
   }, [])
 
   const getMoviesRating = async () => {
@@ -144,11 +144,11 @@ const Home = () => {
                           return (
                             <div className="mt-2">
                               <div className="flex items-center gap-4 text-[36px]">
-                                <FaStar color="orange" />
+                                <FaStar color="#95aeac" />
                                 <span>{item.rating}</span>
                               </div>
                               <div className="flex items-center gap-4 text-[36px]">
-                                <IoEyeSharp color="green" />
+                                <IoEyeSharp color="#95aeac" />
                                 <span>{item.ratings_count}</span>
                               </div>
                             </div>
@@ -199,11 +199,11 @@ const Home = () => {
                           return (
                             <div className="mt-2">
                               <div className="flex items-center gap-4 text-[36px]">
-                                <FaStar color="orange" />
+                                <FaStar color="#95aeac" />
                                 <span>{item.rating}</span>
                               </div>
                               <div className="flex items-center gap-4 text-[36px]">
-                                <IoEyeSharp color="green" />
+                                <IoEyeSharp color="#95aeac" />
                                 <span>{item.ratings_count}</span>
                               </div>
                             </div>
