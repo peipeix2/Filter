@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <div className="footer-container mt-[52px] h-[120px] w-full px-[128px] text-sm font-semibold text-[#222222]">
+    <div className="footer-container mt-[150px] h-[120px] w-full px-[128px] text-sm font-semibold text-[#222222]">
       <h1>Site Logo</h1>
       <div className='flex justify-between w-full font-thin mt-10'>
         <ul className="legal term flex gap-3">
