@@ -6,7 +6,8 @@ import {
   getDoc,
   setDoc,
   doc,
-  deleteDoc, onSnapshot, 
+  deleteDoc,
+  onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import CommentStar from '../../components/Star/CommentStar'
@@ -33,7 +34,8 @@ import SubComments from '../../components/SubComments'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
-  const { revisedMoviesComment, setRevisedMoviesComment } = useMoviesCommentStore()
+  const { revisedMoviesComment, setRevisedMoviesComment } =
+    useMoviesCommentStore()
   const [moviesData, setMoviesData] = useState<any>([])
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
@@ -45,28 +47,27 @@ const Comment = () => {
 
   useEffect(() => {
     // getMoviesComment()
-    const unsubscribe = onSnapshot(
-      collectionGroup(db, 'COMMENTS'),
-      (querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          if (doc.id === id) {
-            setComment(doc.data())
-            setTags(doc.data().tags)
-            setRevisedMoviesComment('comment', doc.data().comment)
-          }
-        })
-      }
-    )
-
-    return () => {
-      unsubscribe()
-    }
+    // const unsubscribe = onSnapshot(
+    //   collectionGroup(db, 'COMMENTS'),
+    //   (querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       if (doc.id === id) {
+    //         setComment(doc.data())
+    //         setTags(doc.data().tags)
+    //         setRevisedMoviesComment('comment', doc.data().comment)
+    //       }
+    //     })
+    //   }
+    // )
+    // return () => {
+    //   unsubscribe()
+    // }
   }, [])
 
   useEffect(() => {
-    if (comment) {
-      getMoviesDetail(comment.movie_id)
-    }
+    // if (comment) {
+    //   getMoviesDetail(comment.movie_id)
+    // }
   }, [comment])
 
   const { id } = useParams()
@@ -75,10 +76,10 @@ const Comment = () => {
   if (!id) return
   if (!userId) return
 
-  const getMoviesDetail = async (movieId:any) => {
+  const getMoviesDetail = async (movieId: any) => {
     const movieRef = doc(db, 'MOVIES', String(movieId))
     const docSnap = await getDoc(movieRef)
-    if(docSnap.exists()) {
+    if (docSnap.exists()) {
       const movieInfo = docSnap.data()
       setMoviesData(movieInfo)
     }
@@ -111,7 +112,11 @@ const Comment = () => {
       await setDoc(
         doc(db, 'MOVIES', `${comment.movie_id}`),
         {
-          rating: ((moviesData.rating * moviesData.ratings_count) - comment.rating + revisedMoviesComment.rating) / moviesData.ratings_count,
+          rating:
+            (moviesData.rating * moviesData.ratings_count -
+              comment.rating +
+              revisedMoviesComment.rating) /
+            moviesData.ratings_count,
         },
         { merge: true }
       )
@@ -141,7 +146,7 @@ const Comment = () => {
           rating:
             (moviesData.rating * moviesData.ratings_count - comment.rating) /
             (moviesData.ratings_count - 1),
-          ratings_count: moviesData.ratings_count - 1
+          ratings_count: moviesData.ratings_count - 1,
         },
         { merge: true }
       )
@@ -332,11 +337,8 @@ const Comment = () => {
         </div>
       </div>
 
-      <div className="comments-section mx-auto my-5 flex w-2/3 items-center">
-        <SubComments
-          commentId={id}
-          userId={userId}
-        />
+      <div className="comments-section mx-auto my-5 flex w-2/5 items-center">
+        <SubComments commentId={id} userId={userId} />
       </div>
     </>
   )

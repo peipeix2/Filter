@@ -23,7 +23,7 @@ const Movies = () => {
       await fetchMoviesDetail(URL)
     }
 
-    // fetchData()
+    fetchData()
   }, [])
 
   const isLoading = moviesDetail.length === 0
@@ -66,7 +66,7 @@ const Movies = () => {
                   return <span key={index}>{genre.name}</span>
                 })}
               </div>
-              <div className="run-time flex gap-1 text-sm text-[#2a3037] mt-1">
+              <div className="run-time mt-1 flex gap-1 text-sm text-[#2a3037]">
                 <span className="mr-2 font-bold">片長 /</span>
                 <p className="text-sm text-[#2a3037]">
                   {moviesDetail.runtime} 分鐘

@@ -71,19 +71,19 @@ const RatingPanel = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
-      const movies:any = doc.data()
+      const movies: any = doc.data()
       if (movies === undefined) return
       setMoviesData(movies)
     })
 
-    if (!user?.userId) return 
+    if (!user?.userId) return
 
     const unsubsComments = onSnapshot(
       collection(db, 'USERS', userId, 'COMMENTS'),
       (querySnapshot) => {
-        const userComment:any = []
+        const userComment: any = []
         querySnapshot.forEach((doc) => {
-          userComment.push(doc.data()) 
+          userComment.push(doc.data())
         })
         setHasCommented(isMovieCommented(userComment, Number(id)))
       }
@@ -114,7 +114,7 @@ const RatingPanel = () => {
       movie_original_title: moviesDetail.original_title,
       movie_backdrop_path: moviesDetail.backdrop_path,
       movie_poster: moviesDetail.poster_path,
-      movie_release: moviesDetail.release_date
+      movie_release: moviesDetail.release_date,
     }
 
     try {
@@ -181,12 +181,12 @@ const RatingPanel = () => {
         >
           <IoEyeOutline
             className={`cursor-pointer text-4xl text-[#94a3ab] ${
-              hasCommented ? 'text-indigo-500' : 'text-[#94a3ab]'
+              hasCommented ? 'text-teal-800' : 'text-[#94a3ab]'
             }`}
           />
           <span
             className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
-              hasCommented ? 'text-indigo-500' : 'text-[#beccdc]'
+              hasCommented ? 'text-teal-800' : 'text-[#beccdc]'
             }`}
           >
             看過
@@ -204,7 +204,9 @@ const RatingPanel = () => {
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
-        <p className="mt-2 text-[10px] text-[#beccdc]">{moviesData.rating?.toFixed(1)}</p>
+        <p className="mt-2 text-[10px] text-[#beccdc]">
+          {moviesData.rating?.toFixed(1)}
+        </p>
       </div>
 
       <Divider />
