@@ -49,32 +49,59 @@ const Gallery = () => {
   const { data, isLoading } = useQuery(['getMovies', currentPage], getMoviesFromCategory)
 
   return (
-    <>
-      <div className="mx-auto mt-20 flex w-3/5 flex-wrap gap-2">
+    <div className="mx-auto w-3/5">
+      {searchValue && (
+        <div className="mx-auto mb-2 mt-20 text-right font-extrabold">
+          <p className="text-sm">關鍵字</p>
+          <p className="text-2xl">{searchValue}</p>
+        </div>
+      )}
+
+      <div className="mx-auto mt-20 flex flex-wrap justify-evenly gap-2">
         {isLoading &&
           Array(20)
             .fill(undefined)
             .map((_, index) => (
               <Skeleton className="h-[346px] w-1/5" key={index} />
             ))}
-        {data && data.map((movie: any, index: number) => {
-          return (
-            <Link to={`/movies/${movie.id || movie.movie_id}`} key={index} className="w-[19%]">
-              <Image
-                alt="film-poster"
-                src={`https://image.tmdb.org/t/p/w500/${
-                  movie.poster_path || movie.movie_poster
-                }`}
-                className="w-full"
-              />
-            </Link>
-          )
-        })}
+        {data &&
+          data.map((movie: any, index: number) => {
+            return (
+              <Link
+                to={`/movies/${movie.id || movie.movie_id}`}
+                key={index}
+                className="w-[19%]"
+              >
+                <Image
+                  alt="film-poster"
+                  src={`https://image.tmdb.org/t/p/w500/${
+                    movie.poster_path || movie.movie_poster
+                  }`}
+                  className="w-full"
+                />
+              </Link>
+            )
+          })}
       </div>
-      <div className='w-full flex justify-center'>
-        <Pagination showControls total={10} initialPage={1} page={currentPage} className="mt-20" onChange={(e) => setCurrentPage(e)} />
+      <div className="flex w-full justify-center">
+        <Pagination
+          isCompact
+          showControls
+          total={10}
+          initialPage={1}
+          page={currentPage}
+          className="mt-20"
+          classNames={{
+            wrapper: 'gap-2',
+            item: 'text-[#475565] font-thin bg-transparent shadow-none',
+            cursor: 'bg-slate-500',
+            prev: 'text-[#475565] font-thin bg-transparent shadow-none',
+            next: 'text-[#475565] font-thin bg-transparent shadow-none',
+          }}
+          onChange={(e) => setCurrentPage(e)}
+        />
       </div>
-    </>
+    </div>
   )
 }
 
