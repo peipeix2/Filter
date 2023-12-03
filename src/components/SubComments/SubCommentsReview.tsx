@@ -170,12 +170,14 @@ const SubCommentsReview = (Props: SubCommentsState) => {
 
   return (
     <div className="w-full">
-      {subComments.map((subComment: any, index:number) => {
+      {subComments.map((subComment: any, index: number) => {
         return (
           <div className="subComment-card my-5" key={index}>
-            <div className="header flex gap-2">
+            <div className="header flex items-center gap-2">
               <span className="font-bold">{subComment.username}</span>
-              <span>{subComment.created_at?.toDate().toDateString()}</span>
+              <span className="text-sm text-slate-400">
+                {subComment.created_at?.toDate().toDateString()}
+              </span>
             </div>
 
             {editingComments.includes(subComment.id) ? (
@@ -192,6 +194,7 @@ const SubCommentsReview = (Props: SubCommentsState) => {
                 <div className="flex w-full justify-end">
                   <Button
                     className="mt-2"
+                    size="sm"
                     onClick={() => handleUpdateComment(subComment.id)}
                   >
                     更新
@@ -199,13 +202,14 @@ const SubCommentsReview = (Props: SubCommentsState) => {
                 </div>
               </div>
             ) : (
-              <div className="comment-body text-right">
+              <div className="comment-body mb-10 text-right">
                 {subComment.subcomment}
               </div>
             )}
             {user.userId === subComment.userId && (
-              <div className="mt-3 text-right">
+              <div className="my-3 flex justify-end gap-2">
                 <Button
+                  size="sm"
                   onClick={() =>
                     handleEditComment(subComment.id, subComment.subcomment)
                   }
@@ -214,7 +218,11 @@ const SubCommentsReview = (Props: SubCommentsState) => {
                     ? '取消編輯'
                     : '編輯'}
                 </Button>
-                <Button onClick={() => handleDeleteComment(subComment.id)}>
+                <Button
+                  size="sm"
+                  color="danger"
+                  onClick={() => handleDeleteComment(subComment.id)}
+                >
                   刪除
                 </Button>
               </div>
