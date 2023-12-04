@@ -188,7 +188,7 @@ const Activity = () => {
                 </Link>
 
                 <div className="comment-content my-5">
-                  <p className="comment">{comment.comment}</p>
+                  <p className="comment text-sm">{comment.comment}</p>
                 </div>
 
                 <div className="tags mb-3">
