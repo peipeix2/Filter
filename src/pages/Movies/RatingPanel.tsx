@@ -181,12 +181,12 @@ const RatingPanel = () => {
         >
           <IoEyeOutline
             className={`cursor-pointer text-4xl text-[#94a3ab] ${
-              hasCommented ? 'text-teal-800' : 'text-[#94a3ab]'
+              hasCommented ? 'text-[#81a3a3]' : 'text-[#94a3ab]'
             }`}
           />
           <span
             className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
-              hasCommented ? 'text-teal-800' : 'text-[#beccdc]'
+              hasCommented ? 'text-[#81a3a3]' : 'text-[#beccdc]'
             }`}
           >
             看過
