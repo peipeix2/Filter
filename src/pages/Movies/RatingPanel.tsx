@@ -127,6 +127,8 @@ const RatingPanel = () => {
     }
   }
 
+  console.log('hasCommented', hasCommented)
+
   const updateMovieRatings = async () => {
     try {
       await setDoc(
@@ -181,12 +183,12 @@ const RatingPanel = () => {
         >
           <IoEyeOutline
             className={`cursor-pointer text-4xl text-[#94a3ab] ${
-              hasCommented ? 'text-[#81a3a3]' : 'text-[#94a3ab]'
+              hasCommented ? 'text-red-600' : 'text-[#94a3ab]'
             }`}
           />
           <span
             className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
-              hasCommented ? 'text-[#81a3a3]' : 'text-[#beccdc]'
+              hasCommented ? 'text-red-600' : 'text-[#beccdc]'
             }`}
           >
             看過

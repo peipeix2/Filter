@@ -2,10 +2,10 @@ interface HeroImgState {
   backdrop: string
 }
 
-const HeroImg = (Props:HeroImgState) => {
+const HeroImg = (Props: HeroImgState) => {
   return (
     <div
-      className="group relative h-[600px] w-full bg-cover bg-center bg-no-repeat"
+      className="group relative h-[600px] w-full bg-cover bg-fixed bg-center bg-no-repeat"
       style={{
         backgroundImage: `url(https://image.tmdb.org/t/p/original${Props.backdrop})`,
       }}
