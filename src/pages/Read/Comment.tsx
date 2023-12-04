@@ -164,7 +164,7 @@ const Comment = () => {
         style={{
           backgroundImage: `url('https://image.tmdb.org/t/p/original/${comment.movie_backdrop_path}')`,
         }}
-        className="w-100% h-[500px] bg-cover bg-center bg-no-repeat"
+        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
       />
 
       <div className="container mx-auto mb-20 w-2/5">
