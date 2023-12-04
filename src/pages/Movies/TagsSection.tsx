@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { query, getDocs, where, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
+import { Link } from 'react-router-dom'
+import { FaTag } from 'react-icons/fa6'
+import { Chip } from '@nextui-org/react'
 
 interface MoviesCommentsForIdState {
   author: string
@@ -19,8 +22,9 @@ interface MoviesCommentsForIdState {
 
 const TagsSection = () => {
   const [tagsForMovie, setTagsForMovie] = useState<string[]>([])
-  const [moviesComments, setMoviesComments] =
-    useState<MoviesCommentsForIdState[]>([])
+  const [moviesComments, setMoviesComments] = useState<
+    MoviesCommentsForIdState[]
+  >([])
   const { id } = useParams()
   let commentsArray: any = []
 
@@ -36,8 +40,7 @@ const TagsSection = () => {
     fetchMovieTags(moviesComments)
   }, [moviesComments])
 
-
-  const fetchMoviesCommentsAndReviews = async (docName:string) => {
+  const fetchMoviesCommentsAndReviews = async (docName: string) => {
     const ref = collectionGroup(db, docName)
     const q = query(ref, where('movie_id', '==', Number(id)))
     const querySnapshot = await getDocs(q)
@@ -51,8 +54,8 @@ const TagsSection = () => {
   }
 
   const fetchMovieTags = (moviesComments: MoviesCommentsForIdState[]) => {
-    const movieTags:string[] = []
-    moviesComments.forEach(comment => {
+    const movieTags: string[] = []
+    moviesComments.forEach((comment) => {
       movieTags.push(...comment.tags)
     })
     const popularTags = filterTags(movieTags)
@@ -66,7 +69,7 @@ const TagsSection = () => {
 
   const filterTags = (tagsForMovie: string[]) => {
     const tagsForRender: string[] = []
-    tagsForMovie.forEach(tag => {
+    tagsForMovie.forEach((tag) => {
       if (count.get(tag) / tagsForMovie.length > 0.5) {
         tagsForRender.push(tag)
       }
@@ -74,16 +77,23 @@ const TagsSection = () => {
     return tagsForMovie
   }
 
-
   return (
-    <div className='gap-2'>
+    <div className="mt-2 flex gap-2">
       {tagsForMovie.map((tag, index) => {
-      return (
-        <span className='text-sm mr-2' key={index}>#{tag}</span>
-      )
-    })}
+        return (
+          <Link to={`/tag?keyword=${tag}`}>
+            <Chip
+              className="p-1 text-xs text-slate-100"
+              key={index}
+              size="sm"
+              startContent={<FaTag size={12} color="#f1f5f9" />}
+            >
+              {tag}
+            </Chip>
+          </Link>
+        )
+      })}
     </div>
-    
   )
 }
 
