@@ -35,7 +35,7 @@ const Movies = () => {
         style={{
           backgroundImage: `url('https://image.tmdb.org/t/p/original${moviesDetail.backdrop_path}')`,
         }}
-        className="w-100% h-[500px] bg-cover bg-center bg-no-repeat"
+        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
       />
       <section className="film-introduction mx-auto mt-10 flex w-4/5">
         <div className="film-poster w-1/4">
@@ -98,7 +98,7 @@ const Movies = () => {
                 <CommentsSection />
               </section>
 
-              <section className="comments-section mx-auto mt-10">
+              <section className="comments-section mx-auto mt-20">
                 <ReviewSection />
               </section>
             </div>
