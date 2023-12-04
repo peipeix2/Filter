@@ -9,13 +9,14 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
-import { Divider, Image, User, Skeleton } from '@nextui-org/react'
+import { Divider, Image, Chip, Skeleton } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import DiscoverLikeBtn from '../../components/Like/DiscoverLikeBtn'
 import { useQuery } from 'react-query'
 import useUserStore from '../../store/userStore'
 import PopularReviewers from './PopularReviewers'
+import { FaTag } from 'react-icons/fa6'
 
 const PopularComments = () => {
   const [followingUsersComments, setFollowingUsersComments] = useState('')
@@ -64,13 +65,15 @@ const PopularComments = () => {
           return (
             <>
               <div className="comment-card my-5 flex items-center" key={index}>
-                <div className="avatar-wrapper flex w-[100px] items-start">
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}
-                    alt={post.original_title}
-                    isBlurred
-                  />
-                </div>
+                <Link to={`/movies/${post.movie_id}`}>
+                  <div className="avatar-wrapper flex w-[100px] items-start">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}
+                      alt={post.original_title}
+                      isBlurred
+                    />
+                  </div>
+                </Link>
                 <div className="comment-rating ml-10 w-2/3">
                   <div className="movie-info-header mb-2 flex items-baseline text-lg">
                     <h1 className="mr-2 font-bold">{post.movie_title}</h1>
@@ -91,10 +94,10 @@ const PopularComments = () => {
                       </div>
 
                       <div className="comment-user mr-2 flex">
-                        <span className="mr-1 text-xs text-slate-400">
+                        {/* <span className="mr-1 text-xs text-slate-400">
                           評論日期
-                        </span>
-                        <span className="text-xs font-semibold text-slate-800">
+                        </span> */}
+                        <span className="text-xs font-thin text-slate-800">
                           {post.created_at.toDate().toDateString()}
                         </span>
                       </div>
@@ -113,16 +116,20 @@ const PopularComments = () => {
                     <p className="comment text-sm">{post.comment}</p>
                   </div>
 
-                  <div className="tags">
-                    <ul className="flex gap-1">
+                  <div className="tags mb-3">
+                    <ul className="flex items-center gap-1">
                       {post.tags.map((tag: string, index: number) => {
                         return (
-                          <li
-                            className="p-1 text-sm text-slate-400"
-                            key={index}
-                          >
-                            #{tag}
-                          </li>
+                          <Link to={`/tag?keyword=${tag}`}>
+                            <Chip
+                              className="p-1 text-xs text-slate-100"
+                              key={index}
+                              size="sm"
+                              startContent={<FaTag size={12} color="#f1f5f9" />}
+                            >
+                              {tag}
+                            </Chip>
+                          </Link>
                         )
                       })}
                     </ul>

@@ -9,9 +9,10 @@ import {
   query,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import { Divider, Image } from '@nextui-org/react'
+import { Divider, Image, Chip } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
+import { FaTag } from 'react-icons/fa6'
 import parser from 'html-react-parser'
 import DiscoverLikeBtn from '../../components/Like/DiscoverLikeBtn'
 import DiscoverLikeReviewBtn from '../../components/Like/DiscoverLikeReviewBtn'
@@ -84,13 +85,15 @@ const Discover = () => {
           <div className="comment-card">
             <>
               <div className="comment-card my-5 flex items-center" key={index}>
-                <div className="avatar-wrapper flex w-[100px] items-start">
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}
-                    alt={post.original_title}
-                    isBlurred
-                  />
-                </div>
+                <Link to={`/movies/${post.movie_id}`}>
+                  <div className="avatar-wrapper flex w-[100px] items-start">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}
+                      alt={post.original_title}
+                      isBlurred
+                    />
+                  </div>
+                </Link>
                 <div className="comment-rating ml-10 w-2/3">
                   <div className="movie-info-header mb-2 flex items-baseline text-lg">
                     <h1 className="mr-2 font-bold">{post.movie_title}</h1>
@@ -108,10 +111,10 @@ const Discover = () => {
                       </div>
 
                       <div className="comment-user mr-2 flex">
-                        <span className="mr-1 text-sm text-slate-400">
+                        {/* <span className="mr-1 text-sm text-slate-400">
                           評論日期
-                        </span>
-                        <span className="text-sm font-semibold text-slate-800">
+                        </span> */}
+                        <span className="text-sm font-thin text-slate-800">
                           {post.created_at.toDate().toDateString()}
                         </span>
                       </div>
@@ -133,16 +136,20 @@ const Discover = () => {
                     </p>
                   </div>
 
-                  <div className="tags">
-                    <ul className="flex gap-1">
+                  <div className="tags mb-3">
+                    <ul className="flex items-center gap-1">
                       {post.tags.map((tag: string, index: number) => {
                         return (
-                          <li
-                            className="p-1 text-sm text-slate-400"
-                            key={index}
-                          >
-                            #{tag}
-                          </li>
+                          <Link to={`/tag?keyword=${tag}`}>
+                            <Chip
+                              className="p-1 text-xs text-slate-100"
+                              key={index}
+                              size="sm"
+                              startContent={<FaTag size={12} color="#f1f5f9" />}
+                            >
+                              {tag}
+                            </Chip>
+                          </Link>
                         )
                       })}
                     </ul>
@@ -170,13 +177,15 @@ const Discover = () => {
           <div className="comment-card">
             <>
               <div className="comment-card my-5 flex items-center" key={index}>
-                <div className="avatar-wrapper flex w-[100px] items-start">
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}
-                    alt={post.original_title}
-                    isBlurred
-                  />
-                </div>
+                <Link to={`/movies/${post.movie_id}`}>
+                  <div className="avatar-wrapper flex w-[100px] items-start">
+                    <Image
+                      src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}
+                      alt={post.original_title}
+                      isBlurred
+                    />
+                  </div>
+                </Link>
                 <div className="comment-rating ml-10 w-2/3">
                   <div className="movie-info-header mb-2 flex items-baseline text-lg">
                     <h1 className="mr-2 font-bold">{post.movie_title}</h1>
@@ -194,10 +203,10 @@ const Discover = () => {
                       </div>
 
                       <div className="comment-user mr-2 flex">
-                        <span className="mr-1 text-sm text-slate-400">
+                        {/* <span className="mr-1 text-sm text-slate-400">
                           評論日期
-                        </span>
-                        <span className="text-sm font-semibold text-slate-800">
+                        </span> */}
+                        <span className="text-sm font-thin text-slate-800">
                           {post.created_at.toDate().toDateString()}
                         </span>
                       </div>
@@ -219,16 +228,20 @@ const Discover = () => {
                     </p>
                   </div>
 
-                  <div className="tags">
-                    <ul className="flex gap-1">
+                  <div className="tags mb-3">
+                    <ul className="flex items-center gap-1">
                       {post.tags.map((tag: string, index: number) => {
                         return (
-                          <li
-                            className="p-1 text-sm text-slate-400"
-                            key={index}
-                          >
-                            #{tag}
-                          </li>
+                          <Link to={`/tag?keyword=${tag}`}>
+                            <Chip
+                              className="p-1 text-xs text-slate-100"
+                              key={index}
+                              size="sm"
+                              startContent={<FaTag size={12} color="#f1f5f9" />}
+                            >
+                              {tag}
+                            </Chip>
+                          </Link>
                         )
                       })}
                     </ul>

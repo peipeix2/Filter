@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Divider } from '@nextui-org/react'
+import { Divider, Chip } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import { onSnapshot, collectionGroup } from 'firebase/firestore'
@@ -10,6 +10,7 @@ import { useParams, Link } from 'react-router-dom'
 import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
+import { FaTag } from 'react-icons/fa6'
 
 const CommentsSection = () => {
   const moviesCommentsForId = useMoviesCommentStore(
@@ -28,7 +29,7 @@ const CommentsSection = () => {
         const comments: any = []
         querySnapshot.forEach((doc) => {
           const commentsData = doc.data()
-          const commentsWithId = {...commentsData, id: doc.id}
+          const commentsWithId = { ...commentsData, id: doc.id }
           comments.push(commentsWithId)
         })
         const publicComments = renderComments(comments, Number(id))
@@ -51,8 +52,8 @@ const CommentsSection = () => {
       {moviesCommentsForId.map((comment, index) => {
         return (
           <>
-            <div className="comment-card my-5 flex items-center" key={index}>
-              <div className="avatar-wrapper flex h-[100px] w-1/5 items-start">
+            <div className="comment-card my-5 flex items-start" key={index}>
+              <div className="avatar-wrapper mx-10 mt-5 flex">
                 <Link to={`/profile/${comment.userId}/activity`}>
                   <div
                     className="avatar mx-auto h-10 w-10 rounded-full bg-contain"
@@ -62,7 +63,7 @@ const CommentsSection = () => {
                   />
                 </Link>
               </div>
-              <div className="comment-rating flex-grow">
+              <div className="comment-rating w-3/4">
                 <Link to={`/comment/${comment.userId}/${comment.id}`}>
                   <div className="comment-header flex">
                     <div className="comment-user mr-2 flex">
@@ -83,33 +84,37 @@ const CommentsSection = () => {
                   </div>
                 </Link>
 
-                <div className="comment-content my-5">
+                <div className="comment-content my-5 text-sm">
                   <p className="comment">{comment.comment}</p>
                 </div>
 
-                <div className="tags">
+                <div className="tags mb-3">
                   <ul className="flex gap-1">
                     {comment.tags.map((tag, index) => {
                       return (
-                        <li className="p-1 text-sm text-slate-400" key={index}>
-                          #{tag}
-                        </li>
+                        <Link to={`/tag?keyword=${tag}`}>
+                          <Chip
+                            className="p-1 text-xs text-slate-100"
+                            key={index}
+                            size="sm"
+                            startContent={<FaTag size={12} color="#f1f5f9" />}
+                          >
+                            {tag}
+                          </Chip>
+                        </Link>
                       )
                     })}
                   </ul>
                 </div>
 
-                
-                  <CommentLikeBtn
-                    postId={comment.id}
-                    count={comment.likes_count}
-                    authorId={comment.userId}
-                    isLiked={
-                      comment.likesUser &&
-                      comment.likesUser.includes(user.userId)
-                    }
-                  />
-                
+                <CommentLikeBtn
+                  postId={comment.id}
+                  count={comment.likes_count}
+                  authorId={comment.userId}
+                  isLiked={
+                    comment.likesUser && comment.likesUser.includes(user.userId)
+                  }
+                />
               </div>
             </div>
             <Divider />

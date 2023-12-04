@@ -49,7 +49,7 @@ const Home = () => {
       setNowPlaying(data)
     }
 
-    Promise.all([(getPopularMovie(), getNowPlayingMovie()), getMoviesRating()])
+    // Promise.all([(getPopularMovie(), getNowPlayingMovie()), getMoviesRating()])
   }, [])
 
   const getMoviesRating = async () => {
