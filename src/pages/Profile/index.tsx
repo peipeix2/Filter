@@ -12,6 +12,7 @@ import {
   deleteDoc,
   QuerySnapshot,
 } from 'firebase/firestore'
+import { useLocation } from 'react-router-dom'
 
 interface UserState {
   userId: string
@@ -97,6 +98,8 @@ const Profile = () => {
     }
   }, [user.userId])
 
+  const location = useLocation()
+
   const fetchUser = async (userId: string) => {
     const docRef = doc(db, 'USERS', userId)
     const docSnap = await getDoc(docRef)
@@ -148,12 +151,12 @@ const Profile = () => {
   }
 
   const profileTabLinks = [
-    { name: '動態', link: './discover' },
-    { name: '筆記', link: './activity' },
-    { name: '追蹤列表', link: './network' },
-    { name: '點讚', link: './likes' },
-    { name: '日曆', link: './calender' },
-    { name: '設定', link: './setting' },
+    { name: '動態', link: './discover', linkName: 'discover' },
+    { name: '筆記', link: './activity', linkName: 'activity' },
+    { name: '追蹤列表', link: './network', linkName: 'network' },
+    { name: '點讚', link: './likes', linkName: 'likes' },
+    { name: '日曆', link: './calender', linkName: 'calender' },
+    { name: '設定', link: './setting', linkName: 'setting' },
   ]
 
   return (
@@ -162,7 +165,7 @@ const Profile = () => {
         style={{
           backgroundImage: `url(${profileUser.backdrop})`,
         }}
-        className="w-100% h-[500px] bg-cover bg-center bg-no-repeat"
+        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
       />
       <section className="profile mx-auto mt-10 flex w-4/5 flex-col">
         <div className="header flex w-full items-center justify-between">
@@ -223,7 +226,11 @@ const Profile = () => {
               <Link
                 to={tab.link}
                 key={index}
-                className="text-md font-['DM_Serif_Display'] tracking-wide"
+                className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
+                  location.pathname?.includes(tab.linkName)
+                    ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
+                    : 'font-extrabold text-slate-300'
+                }`}
               >
                 {tab.name}
               </Link>
@@ -231,7 +238,7 @@ const Profile = () => {
           })}
         </div>
 
-        <Divider className="mx-auto w-1/2" />
+        {/* <Divider className="mx-auto w-1/2" /> */}
 
         <div className="mx-auto mt-20 w-3/5">
           <Outlet />

@@ -98,7 +98,7 @@ const Network = () => {
               <>
                 <div className="flex items-center justify-between py-5">
                   <a
-                    href={`/profile/${profileUser.userId}`}
+                    href={`/profile/${profileUser.userId}/activity`}
                     className="user-card flex items-center p-2"
                   >
                     <Avatar src={profileUser.avatar} className="mr-2" />
@@ -161,7 +161,7 @@ const Network = () => {
               <>
                 <div className="flex items-center justify-between py-5">
                   <a
-                    href={`/profile/${profileUser.userId}`}
+                    href={`/profile/${profileUser.userId}/activity`}
                     className="user-card flex items-center p-2"
                   >
                     <Avatar src={profileUser.avatar} className="mr-2" />
