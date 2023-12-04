@@ -1,13 +1,12 @@
-import { useState } from "react"
-import { useParams, useSearchParams } from "react-router-dom"
+import { useState } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import api from "../../utils/api"
-import firestore from "../../utils/firestore"
+import api from '../../utils/api'
+import firestore from '../../utils/firestore'
 import { Image, Skeleton, Pagination } from '@nextui-org/react'
-import { Link } from "react-router-dom"
-import { collectionGroup, getDocs, query, where } from "firebase/firestore"
-import { db } from "../../../firebase"
-
+import { Link } from 'react-router-dom'
+import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
+import { db } from '../../../firebase'
 
 const Gallery = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -35,18 +34,22 @@ const Gallery = () => {
     return data.results
   }
 
-  const queryMoviesTag = async (tag:string) => {
+  const queryMoviesTag = async (tag: string) => {
     const commentRef = collectionGroup(db, 'COMMENTS')
     const q = query(commentRef, where('tags', 'array-contains', tag))
     const querySnapshot = await getDocs(q)
-    const data:any = []
-    querySnapshot.forEach(doc => {
+    const data: any = []
+    querySnapshot.forEach((doc) => {
       data.push(doc.data())
     })
     return data
   }
 
-  const { data, isLoading } = useQuery(['getMovies', currentPage], getMoviesFromCategory)
+  const { data, isLoading } = useQuery(
+    ['getMovies', currentPage],
+    getMoviesFromCategory,
+    { refetchOnWindowFocus: false }
+  )
 
   return (
     <div className="mx-auto w-3/5">
@@ -87,7 +90,7 @@ const Gallery = () => {
         <Pagination
           isCompact
           showControls
-          total={10}
+          total={data ? Math.ceil(data.length / 20) : 1}
           initialPage={1}
           page={currentPage}
           className="mt-20"
