@@ -75,10 +75,14 @@ const PopularComments = () => {
                   </div>
                 </Link>
                 <div className="comment-rating ml-10 w-2/3">
-                  <div className="movie-info-header mb-2 flex items-baseline text-lg">
-                    <h1 className="mr-2 font-bold">{post.movie_title}</h1>
-                    <span className="text-sm">{post.movie_original_title}</span>
-                  </div>
+                  <Link to={`/movies/${post.movie_id}`}>
+                    <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
+                      <h1 className="mr-2 font-bold">{post.movie_title}</h1>
+                      <span className="text-sm">
+                        {post.movie_original_title}
+                      </span>
+                    </div>
+                  </Link>
                   <Link
                     to={`/comment/${post.userId}/${post.id}`}
                     className="w-full"

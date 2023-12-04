@@ -79,7 +79,7 @@ const Discover = () => {
 
   return (
     <div>
-      <h1>他們的評論</h1>
+      <h1 className="text-base font-semibold text-[#475565]">他們的評論</h1>
       {followingUsersComments.map((post: any, index: number) => {
         return (
           <div className="comment-card">
@@ -95,10 +95,15 @@ const Discover = () => {
                   </div>
                 </Link>
                 <div className="comment-rating ml-10 w-2/3">
-                  <div className="movie-info-header mb-2 flex items-baseline text-lg">
-                    <h1 className="mr-2 font-bold">{post.movie_title}</h1>
-                    <span className="text-sm">{post.movie_original_title}</span>
-                  </div>
+                  <Link to={`/movies/${post.movie_id}`}>
+                    <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
+                      <h1 className="mr-2 font-bold">{post.movie_title}</h1>
+                      <span className="text-sm">
+                        {post.movie_original_title}
+                      </span>
+                    </div>
+                  </Link>
+
                   <Link to={`/comment/${post.userId}/${post.id}`}>
                     <div className="comment-header flex">
                       <div className="comment-user mr-2 flex">
@@ -171,7 +176,9 @@ const Discover = () => {
         )
       })}
 
-      <h1 className="mt-20">他們的影評</h1>
+      <h1 className="mt-40 text-base font-semibold text-[#475565]">
+        他們的影評
+      </h1>
       {followingUsersReviews.map((post: any, index: number) => {
         return (
           <div className="comment-card">
@@ -187,10 +194,14 @@ const Discover = () => {
                   </div>
                 </Link>
                 <div className="comment-rating ml-10 w-2/3">
-                  <div className="movie-info-header mb-2 flex items-baseline text-lg">
-                    <h1 className="mr-2 font-bold">{post.movie_title}</h1>
-                    <span className="text-sm">{post.movie_original_title}</span>
-                  </div>
+                  <Link to={`/movies/${post.movie_id}`}>
+                    <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
+                      <h1 className="mr-2 font-bold">{post.movie_title}</h1>
+                      <span className="text-sm">
+                        {post.movie_original_title}
+                      </span>
+                    </div>
+                  </Link>
                   <Link to={`/read/${post.userId}/${post.id}`}>
                     <div className="comment-header flex">
                       <div className="comment-user mr-2 flex">

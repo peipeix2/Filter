@@ -137,22 +137,25 @@ const Activity = () => {
         return (
           <div className="comment-card" key={index}>
             <div className="comment-card my-5 flex items-center">
-              <Link to={`/movies/${comment.movie_id}`}>
-                <div className="avatar-wrapper flex w-[100px] items-start">
+              <div className="avatar-wrapper flex w-[100px] items-start">
+                <Link to={`/movies/${comment.movie_id}`}>
                   <Image
                     src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
                     alt={comment.original_title}
                     isBlurred
                   />
-                </div>
-              </Link>
+                </Link>
+              </div>
+
               <div className="comment-rating ml-10 w-2/3">
-                <div className="movie-info-header mb-2 flex items-baseline text-lg">
-                  <h1 className="mr-2 font-bold">{comment.movie_title}</h1>
-                  <span className="text-sm">
-                    {comment.movie_original_title}
-                  </span>
-                </div>
+                <Link to={`/movies/${comment.movie_id}`}>
+                  <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
+                    <h1 className="mr-2 font-bold">{comment.movie_title}</h1>
+                    <span className="text-sm">
+                      {comment.movie_original_title}
+                    </span>
+                  </div>
+                </Link>
                 <Link to={`/comment/${comment.userId}/${comment.id}`}>
                   <div className="comment-header flex">
                     {comment.userId !== userId ? (
