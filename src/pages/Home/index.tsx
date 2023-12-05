@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   collection,
@@ -35,6 +35,7 @@ const Home = () => {
   const [moviesRating, setMoviesRating] = useState<Array<MovieRating>>([])
   const [moviesFromAPI, setMoviesFromAPI] = useState<Array<Movie>>([])
   const [nowPlaying, setNowPlaying] = useState<Array<Movie>>([])
+  const featureIntroRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     async function getPopularMovie() {
@@ -110,9 +111,18 @@ const Home = () => {
     }
   }
 
+  const handleOnClick = () => {
+    if (featureIntroRef.current) {
+      window.scrollTo(0, featureIntroRef.current.offsetTop)
+    }
+  }
+
   return (
     <>
-      <HeroImg backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg" />
+      <HeroImg
+        backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg"
+        handleOnClick={handleOnClick}
+      />
 
       <div className="movie-lists-container mx-auto my-40 w-3/5">
         <div className="mx-auto mb-2 text-right font-extrabold">
@@ -231,7 +241,9 @@ const Home = () => {
         </div>
       </div>
 
-      <MidHero backdrop="/bWIIWhnaoWx3FTVXv6GkYDv3djL.jpg" />
+      <div ref={featureIntroRef}>
+        <MidHero backdrop="/bWIIWhnaoWx3FTVXv6GkYDv3djL.jpg" />
+      </div>
 
       <div className="mx-auto w-3/5">
         <div className="mx-auto mb-2 mt-40 text-right font-extrabold">

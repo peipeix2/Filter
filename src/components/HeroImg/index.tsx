@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 interface HeroImgState {
   backdrop: string
+  handleOnClick: () => void
 }
 
 const HeroImg = (Props: HeroImgState) => {
@@ -21,12 +22,12 @@ const HeroImg = (Props: HeroImgState) => {
           Film Lovers
         </p>
         <div className="relative flex w-full justify-center">
-          <Link
-            to=""
+          <span
+            onClick={Props.handleOnClick}
             className="absolute mx-auto mt-10 w-max border border-white bg-white bg-opacity-30 p-4 text-white opacity-0 hover:cursor-pointer hover:bg-opacity-80 group-hover:opacity-100"
           >
             Discover more
-          </Link>
+          </span>
         </div>
       </div>
     </div>
