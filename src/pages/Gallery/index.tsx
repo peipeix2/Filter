@@ -8,14 +8,16 @@ import { Link } from 'react-router-dom'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../../firebase'
 
+type QueryKey = [string, number, string, string | null | undefined]
+
 const Gallery = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [searchParams, setSearchPrams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const { category } = useParams()
   const searchValue = searchParams.get('keyword')
 
   if (!category) return
-  const getMoviesFromCategory = async ({ queryKey }) => {
+  const getMoviesFromCategory = async ({ queryKey }: any) => {
     if (category === 'search' && searchValue) {
       const data = await api.queryMovies(
         encodeURIComponent(searchValue),
@@ -46,13 +48,15 @@ const Gallery = () => {
   }
 
   const { data, isLoading } = useQuery(
-    ['getMovies', currentPage],
+    ['getMovies', currentPage, category, searchValue] as QueryKey,
     getMoviesFromCategory,
     { refetchOnWindowFocus: false }
   )
 
+  if (!data) return
+
   return (
-    <div className="mx-auto w-3/5">
+    <div className="mx-auto min-h-screen w-3/5">
       {searchValue && (
         <div className="mx-auto mb-2 mt-20 text-right font-extrabold">
           <p className="text-sm">關鍵字</p>
@@ -67,7 +71,7 @@ const Gallery = () => {
             .map((_, index) => (
               <Skeleton className="h-[346px] w-1/5" key={index} />
             ))}
-        {data &&
+        {data.length !== 0 ? (
           data.map((movie: any, index: number) => {
             return (
               <Link
@@ -84,13 +88,16 @@ const Gallery = () => {
                 />
               </Link>
             )
-          })}
+          })
+        ) : (
+          <h1>查無搜尋結果</h1>
+        )}
       </div>
       <div className="flex w-full justify-center">
         <Pagination
           isCompact
           showControls
-          total={data ? Math.ceil(data.length / 20) : 1}
+          total={data ? Math.ceil(data.length / 20) : 5}
           initialPage={1}
           page={currentPage}
           className="mt-20"
