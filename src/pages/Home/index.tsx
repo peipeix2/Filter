@@ -7,6 +7,7 @@ import {
   setDoc,
   where,
   doc,
+  getDoc,
 } from 'firebase/firestore'
 import { db } from '../../../firebase.ts'
 import { Image, Divider } from '@nextui-org/react'
@@ -40,6 +41,7 @@ const Home = () => {
       const data = result.results.slice(0, 5)
       createMoviesDoc(data)
       setMoviesFromAPI(data)
+      return data
     }
 
     async function getNowPlayingMovie() {
@@ -47,20 +49,29 @@ const Home = () => {
       const data = result.results.slice(0, 5)
       createMoviesDoc(data)
       setNowPlaying(data)
+      return data
     }
 
-    // Promise.all([(getPopularMovie(), getNowPlayingMovie()), getMoviesRating()])
+    Promise.all([getPopularMovie(), getNowPlayingMovie()]).then(
+      ([popularMovies, nowPlayingMovies]) => {
+        getMoviesRating(popularMovies, nowPlayingMovies)
+      }
+    )
   }, [])
 
-  const getMoviesRating = async () => {
-    const querySnapshot = await getDocs(collection(db, 'MOVIES'))
+  const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
+    const allMovies = [...popularMovies, ...nowPlayingMovies]
     const moviesData: any = []
-
-    querySnapshot.forEach((doc) => {
-      const movieData = doc.data()
-      moviesData.push(movieData)
-    })
-
+    const moviesIds: Number[] = []
+    for (const movie of allMovies) {
+      if (!moviesIds.includes(movie.id)) {
+        const docSnap = await getDoc(doc(db, 'MOVIES', String(movie.id)))
+        if (docSnap.exists()) {
+          moviesData.push(docSnap.data())
+        }
+        moviesIds.push(movie.id)
+      }
+    }
     setMoviesRating(moviesData)
   }
 
