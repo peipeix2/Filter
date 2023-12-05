@@ -1,9 +1,7 @@
-import { CiSearch } from 'react-icons/ci'
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
-  Input,
   DropdownItem,
   DropdownTrigger,
   Dropdown,
@@ -65,18 +63,11 @@ function Header() {
                   <p className="font-semibold">Signed in as {user.username}</p>
                   <p className="font-semibold">{user.email}</p>
                 </DropdownItem>
-                <DropdownItem key="profile" href={`/profile/${user.userId}`}>
+                <DropdownItem
+                  key="profile"
+                  href={`/profile/${user.userId}/activity`}
+                >
                   個人頁面
-                </DropdownItem>
-                <DropdownItem key="team_settings">Team Settings</DropdownItem>
-                <DropdownItem key="analytics">Analytics</DropdownItem>
-                <DropdownItem key="system">System</DropdownItem>
-                <DropdownItem key="configurations">Configurations</DropdownItem>
-                <DropdownItem key="help_and_feedback">
-                  Help & Feedback
-                </DropdownItem>
-                <DropdownItem key="logout" color="danger">
-                  Log Out
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>

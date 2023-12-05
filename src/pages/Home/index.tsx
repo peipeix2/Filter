@@ -16,6 +16,7 @@ import HeroImg from '../../components/HeroImg/index.tsx'
 import { FaStar } from 'react-icons/fa'
 import { IoEyeSharp } from 'react-icons/io5'
 import PopularComments from './PopularComments.tsx'
+import MidHero from '../../components/HeroImg/MidHero.tsx'
 
 interface Movie {
   id: number
@@ -52,11 +53,11 @@ const Home = () => {
       return data
     }
 
-    Promise.all([getPopularMovie(), getNowPlayingMovie()]).then(
-      ([popularMovies, nowPlayingMovies]) => {
-        getMoviesRating(popularMovies, nowPlayingMovies)
-      }
-    )
+    // Promise.all([getPopularMovie(), getNowPlayingMovie()]).then(
+    //   ([popularMovies, nowPlayingMovies]) => {
+    //     getMoviesRating(popularMovies, nowPlayingMovies)
+    //   }
+    // )
   }, [])
 
   const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
@@ -228,7 +229,11 @@ const Home = () => {
             })}
           </div>
         </div>
+      </div>
 
+      <MidHero backdrop="/bWIIWhnaoWx3FTVXv6GkYDv3djL.jpg" />
+
+      <div className="mx-auto w-3/5">
         <div className="mx-auto mb-2 mt-40 text-right font-extrabold">
           <p className="text-sm">全站熱門</p>
           <p className="text-2xl">/ Latest on Filter</p>

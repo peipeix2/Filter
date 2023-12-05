@@ -12,6 +12,7 @@
   "dependencies": {
     "@nextui-org/react": "^2.2.9",
     "@tailwindcss/line-clamp": "^0.4.4",
+    "@tiptap/extension-blockquote": "^2.1.13",
     "@tiptap/extension-bold": "^2.1.12",
     "@tiptap/extension-document": "^2.1.12",
     "@tiptap/extension-heading": "^2.1.12",
