@@ -184,7 +184,14 @@ const Setting = () => {
               Cover Photo
             </TableCell>
             <TableCell>
-              <img src={profileUser.backdrop} className="w-20" />
+              {selectedBackdrop ? (
+                <img
+                  src={URL.createObjectURL(selectedBackdrop)}
+                  className="w-20"
+                />
+              ) : (
+                <img src={profileUser.backdrop} className="w-20" />
+              )}
             </TableCell>
             <TableCell>
               <input

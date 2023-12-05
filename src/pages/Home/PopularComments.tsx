@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   collectionGroup,
   getDocs,
   orderBy,
   query,
-  where,
   limit,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'

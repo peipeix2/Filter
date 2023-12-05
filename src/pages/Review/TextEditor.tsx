@@ -38,8 +38,6 @@ import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
 
-const extensions = [StarterKit, Underline, Image]
-
 const content = '<p>Type something here!</p>'
 
 const TextEditor = () => {
