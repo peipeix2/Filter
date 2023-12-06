@@ -17,6 +17,7 @@ import { FaStar } from 'react-icons/fa'
 import { IoEyeSharp } from 'react-icons/io5'
 import PopularComments from './PopularComments.tsx'
 import MidHero from '../../components/HeroImg/MidHero.tsx'
+import useUserStore from '../../store/userStore.ts'
 
 interface Movie {
   id: number
@@ -35,7 +36,9 @@ const Home = () => {
   const [moviesRating, setMoviesRating] = useState<Array<MovieRating>>([])
   const [moviesFromAPI, setMoviesFromAPI] = useState<Array<Movie>>([])
   const [nowPlaying, setNowPlaying] = useState<Array<Movie>>([])
+  const [userProfile, setUserProfile] = useState<any>(null)
   const featureIntroRef = useRef<HTMLDivElement>(null)
+  const { isLogin, user } = useUserStore()
 
   useEffect(() => {
     async function getPopularMovie() {
@@ -60,6 +63,12 @@ const Home = () => {
     //   }
     // )
   }, [])
+
+  useEffect(() => {
+    if (isLogin && user) {
+      getUserProfile(user.userId)
+    }
+  }, [isLogin])
 
   const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
     const allMovies = [...popularMovies, ...nowPlayingMovies]
@@ -114,6 +123,13 @@ const Home = () => {
   const handleOnClick = () => {
     if (featureIntroRef.current) {
       window.scrollTo(0, featureIntroRef.current.offsetTop)
+    }
+  }
+
+  const getUserProfile = async (userId: string) => {
+    const docSnap = await getDoc(doc(db, 'USERS', userId))
+    if (docSnap.exists()) {
+      setUserProfile(docSnap.data())
     }
   }
 
@@ -242,7 +258,13 @@ const Home = () => {
       </div>
 
       <div ref={featureIntroRef}>
-        <MidHero backdrop="/bWIIWhnaoWx3FTVXv6GkYDv3djL.jpg" />
+        <MidHero
+          backdrop={
+            isLogin && userProfile
+              ? userProfile.backdrop
+              : 'https://image.tmdb.org/t/p/original/bWIIWhnaoWx3FTVXv6GkYDv3djL.jpg'
+          }
+        />
       </div>
 
       <div className="mx-auto w-3/5">
