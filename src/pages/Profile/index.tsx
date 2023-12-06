@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import useUserStore from '../../store/userStore'
-import { Avatar, Divider, Button } from '@nextui-org/react'
+import { Avatar, Button } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { db } from '../../../firebase'
 import {
   collection,
-  getDoc,
   doc,
   setDoc,
   onSnapshot,
@@ -100,13 +99,13 @@ const Profile = () => {
 
   const location = useLocation()
 
-  const fetchUser = async (userId: string) => {
-    const docRef = doc(db, 'USERS', userId)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      setProfileUser(docSnap.data())
-    }
-  }
+  // const fetchUser = async (userId: string) => {
+  //   const docRef = doc(db, 'USERS', userId)
+  //   const docSnap = await getDoc(docRef)
+  //   if (docSnap.exists()) {
+  //     setProfileUser(docSnap.data())
+  //   }
+  // }
 
   if (!profileUser) return
   // if (!user.userId) return

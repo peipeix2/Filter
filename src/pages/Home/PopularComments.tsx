@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   collectionGroup,
   getDocs,
@@ -12,14 +12,19 @@ import { Divider, Image, Chip, Skeleton } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import DiscoverLikeBtn from '../../components/Like/DiscoverLikeBtn'
-import { useQuery } from 'react-query'
+// import { useQuery } from 'react-query'
 import useUserStore from '../../store/userStore'
 import PopularReviewers from './PopularReviewers'
 import { FaTag } from 'react-icons/fa6'
 
 const PopularComments = () => {
-  const [followingUsersComments, setFollowingUsersComments] = useState('')
+  const [followingUsersComments, setFollowingUsersComments] = useState<any>([])
+  const [isLoading, setIsLoading] = useState(false)
   const user = useUserStore((state) => state.user)
+
+  useEffect(() => {
+    fetchPopularComments()
+  }, [])
 
   const queryPopularComments = async () => {
     const commentRef = collectionGroup(db, 'COMMENTS')
@@ -32,13 +37,20 @@ const PopularComments = () => {
     return data
   }
 
-  const { data, isLoading } = useQuery(
-    'getPopularComments',
-    queryPopularComments,
-    { refetchOnWindowFocus: false }
-  )
+  const fetchPopularComments = async () => {
+    setIsLoading(true)
+    const data = await queryPopularComments()
+    setIsLoading(false)
+    setFollowingUsersComments(data)
+  }
 
-  if (!data) return
+  // const { data, isLoading } = useQuery(
+  //   ['getPopularComments', followingUsersComments],
+  //   queryPopularComments,
+  //   { refetchOnWindowFocus: false }
+  // )
+
+  // if (!data) return
 
   return (
     <div className="popular-comments-container mt-20 flex justify-between">
@@ -60,7 +72,7 @@ const PopularComments = () => {
               </Skeleton>
             })}
 
-        {data.map((post: any, index: number) => {
+        {followingUsersComments.map((post: any, index: number) => {
           return (
             <>
               <div className="comment-card my-5 flex items-center" key={index}>

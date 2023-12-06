@@ -57,18 +57,18 @@ const Home = () => {
       return data
     }
 
-    // Promise.all([getPopularMovie(), getNowPlayingMovie()]).then(
-    //   ([popularMovies, nowPlayingMovies]) => {
-    //     getMoviesRating(popularMovies, nowPlayingMovies)
-    //   }
-    // )
+    Promise.all([getPopularMovie(), getNowPlayingMovie()]).then(
+      ([popularMovies, nowPlayingMovies]) => {
+        getMoviesRating(popularMovies, nowPlayingMovies)
+      }
+    )
   }, [])
 
   useEffect(() => {
-    if (isLogin && user) {
+    if (isLogin && user.userId) {
       getUserProfile(user.userId)
     }
-  }, [isLogin])
+  }, [isLogin, user])
 
   const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
     const allMovies = [...popularMovies, ...nowPlayingMovies]
@@ -132,6 +132,8 @@ const Home = () => {
       setUserProfile(docSnap.data())
     }
   }
+
+  if (isLogin && !userProfile) return
 
   return (
     <>

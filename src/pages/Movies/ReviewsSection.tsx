@@ -11,12 +11,13 @@ import useUserStore from '../../store/userStore'
 import parser from 'html-react-parser'
 import { useParams } from 'react-router-dom'
 import Like from '../../components/Like'
+import { renderComments } from '../../utils/render'
 
 const ReviewSection = () => {
   // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const { moviesReviewsForId, setMoviesReviewsForId } = useMoviesReviewStore()
   const user = useUserStore((state) => state.user)
-  
+
   const { id } = useParams()
 
   useEffect(() => {
@@ -29,7 +30,8 @@ const ReviewSection = () => {
         const reviewWithId = { ...reviewData, id: doc.id }
         reviewsArray.push(reviewWithId)
       })
-      setMoviesReviewsForId(reviewsArray)
+      const publicComments = renderComments(reviewsArray, Number(id))
+      setMoviesReviewsForId(publicComments)
     })
 
     return () => {
@@ -95,16 +97,15 @@ const ReviewSection = () => {
                     })}
                   </ul>
                 </div>
-                
-                  <Like
-                    postId={review.id}
-                    count={review.likes_count}
-                    authorId={review.userId}
-                    isLiked={
-                      review.likesUser && review.likesUser.includes(user.userId)
-                    }
-                  />
-                
+
+                <Like
+                  postId={review.id}
+                  count={review.likes_count}
+                  authorId={review.userId}
+                  isLiked={
+                    review.likesUser && review.likesUser.includes(user.userId)
+                  }
+                />
               </div>
             </div>
             <Divider />

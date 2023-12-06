@@ -21,7 +21,12 @@ interface LikeState {
 const DiscoverLikeBtn = (Props: LikeState) => {
   const { user, isLogin } = useUserStore()
 
-  const updateLocalLikesUser = (followingUsersComments:any, postId:string, isLiked:boolean, count:number) => {
+  const updateLocalLikesUser = (
+    followingUsersComments: any,
+    postId: string,
+    isLiked: boolean,
+    count: number
+  ) => {
     const updatedComments = [...followingUsersComments]
     const commentIndex = updatedComments.findIndex(
       (comment) => comment.id === postId
@@ -32,13 +37,15 @@ const DiscoverLikeBtn = (Props: LikeState) => {
         updatedComments[commentIndex] = {
           ...updatedComments[commentIndex],
           likes_count: count - 1,
-          likesUser: updatedComments[commentIndex].likesUser.filter((userId:string) => userId !== user.userId)
+          likesUser: updatedComments[commentIndex].likesUser.filter(
+            (userId: string) => userId !== user.userId
+          ),
         }
       } else {
         updatedComments[commentIndex] = {
           ...updatedComments[commentIndex],
           likes_count: count + 1,
-          likesUser: [...updatedComments[commentIndex].likesUser, user.userId]
+          likesUser: [...updatedComments[commentIndex].likesUser, user.userId],
         }
       }
     }
@@ -50,11 +57,17 @@ const DiscoverLikeBtn = (Props: LikeState) => {
     if (!isLogin) {
       return alert('請先登入或註冊！')
     }
-    
+
     const userRef = doc(db, 'USERS', user.userId)
     const docRef = collection(db, 'USERS')
+    console.log('run')
 
-    updateLocalLikesUser(Props.followingUsersComments, Props.postId, Props.isLiked, Props.count)
+    updateLocalLikesUser(
+      Props.followingUsersComments,
+      Props.postId,
+      Props.isLiked,
+      Props.count
+    )
 
     if (Props.isLiked) {
       await setDoc(
