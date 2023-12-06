@@ -14,10 +14,44 @@ interface LikeState {
   count: number
   isLiked: boolean
   authorId: string
+  followingUsersComments: any
+  setFollowingUsersComments: any
 }
 
-const Like = (Props: LikeState) => {
+const DiscoverLikeBtn = (Props: LikeState) => {
   const { user, isLogin } = useUserStore()
+
+  const updateLocalLikesUser = (
+    followingUsersComments: any,
+    postId: string,
+    isLiked: boolean,
+    count: number
+  ) => {
+    const updatedComments = [...followingUsersComments]
+    const commentIndex = updatedComments.findIndex(
+      (comment) => comment.id === postId
+    )
+
+    if (commentIndex !== -1) {
+      if (isLiked) {
+        updatedComments[commentIndex] = {
+          ...updatedComments[commentIndex],
+          likes_count: count - 1,
+          likesUser: updatedComments[commentIndex].likesUser.filter(
+            (userId: string) => userId !== user.userId
+          ),
+        }
+      } else {
+        updatedComments[commentIndex] = {
+          ...updatedComments[commentIndex],
+          likes_count: count + 1,
+          likesUser: [...updatedComments[commentIndex].likesUser, user.userId],
+        }
+      }
+    }
+
+    Props.setFollowingUsersComments(updatedComments)
+  }
 
   const handleLikeClick = async () => {
     if (!isLogin) {
@@ -26,6 +60,14 @@ const Like = (Props: LikeState) => {
 
     const userRef = doc(db, 'USERS', user.userId)
     const docRef = collection(db, 'USERS')
+    console.log('run')
+
+    updateLocalLikesUser(
+      Props.followingUsersComments,
+      Props.postId,
+      Props.isLiked,
+      Props.count
+    )
 
     if (Props.isLiked) {
       await setDoc(
@@ -34,10 +76,10 @@ const Like = (Props: LikeState) => {
         { merge: true }
       )
       await setDoc(
-        doc(docRef, Props.authorId, 'REVIEWS', Props.postId),
+        doc(docRef, Props.authorId, 'COMMENTS', Props.postId),
         {
           likes_count: Props.count - 1,
-          likesUser: arrayRemove(user.userId)
+          likesUser: arrayRemove(user.userId),
         },
         {
           merge: true,
@@ -50,22 +92,20 @@ const Like = (Props: LikeState) => {
         { merge: true }
       )
       await setDoc(
-        doc(docRef, Props.authorId, 'REVIEWS', Props.postId),
+        doc(docRef, Props.authorId, 'COMMENTS', Props.postId),
         {
           likes_count: Props.count + 1,
-          likesUser: arrayUnion(user.userId)
+          likesUser: arrayUnion(user.userId),
         },
         {
           merge: true,
         }
       )
     }
-
-    // setLiked(!liked)
   }
 
   return (
-    <div className="like-btn flex items-center" key={Props.count}>
+    <div className="like-btn flex items-center">
       <FaHeart
         className={
           Props.isLiked
@@ -82,4 +122,4 @@ const Like = (Props: LikeState) => {
   )
 }
 
-export default Like
+export default DiscoverLikeBtn

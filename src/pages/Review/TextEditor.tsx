@@ -1,39 +1,60 @@
 import StarterKit from '@tiptap/starter-kit'
 import { useEditor, EditorContent } from '@tiptap/react'
+import Heading from '@tiptap/extension-heading'
 import Underline from '@tiptap/extension-underline'
 import Image from '@tiptap/extension-image'
-import { useState } from 'react'
+import Blockquote from '@tiptap/extension-blockquote'
+import BulletList from '@tiptap/extension-bullet-list'
+import OrderedList from '@tiptap/extension-ordered-list'
+import { mergeAttributes } from '@tiptap/react'
+import { useState, useRef } from 'react'
 import { storage } from '../../../firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { v4 as uuidv4 } from 'uuid'
 import { Input, Button, Checkbox } from '@nextui-org/react'
-import { FaStar } from 'react-icons/fa'
+import {
+  FaStar,
+  FaBold,
+  FaItalic,
+  FaUnderline,
+  FaQuoteLeft,
+  FaImage,
+  FaUndoAlt,
+  FaRedoAlt,
+} from 'react-icons/fa'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
-import { collection, addDoc, serverTimestamp, setDoc, doc } from 'firebase/firestore'
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  setDoc,
+  doc,
+} from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { useNavigate } from 'react-router-dom'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
-
-const extensions = [StarterKit, Underline, Image]
+import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
 
 const content = '<p>Type something here!</p>'
 
 const TextEditor = () => {
-  const [image, setImage] = useState<File | string | null>(null)
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
+  const imgRef = useRef<HTMLInputElement>(null)
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
-  const moviesReview = useMoviesReviewStore((state) => state.moviesReview)
-  const setMoviesReview = useMoviesReviewStore((state) => state.setMoviesReview)
-  const resetMoviesReview = useMoviesReviewStore(
-    (state) => state.resetMoviesReview
+  const {
+    moviesReview,
+    setMoviesReview,
+    resetMoviesReview,
+    moviesReviewsForId,
+  } = useMoviesReviewStore()
+  const moviesCommentsForId = useMoviesCommentStore(
+    (state) => state.moviesCommentsForId
   )
-  const moviesCommentsForId = useMoviesCommentStore((state) => state.moviesCommentsForId)
-  const moviesReviewsForId = useMoviesReviewStore((state) => state.moviesReviewsForId)
   const user = useUserStore((state) => state.user)
   const navigate = useNavigate()
 
@@ -47,7 +68,49 @@ const TextEditor = () => {
         return text.toUpperCase()
       },
     },
-    extensions,
+    extensions: [
+      StarterKit,
+      Underline,
+      Image,
+      Heading.configure({ levels: [1, 2, 3] })
+        .extend({
+          levels: [1, 2, 3],
+          renderHTML({ node, HTMLAttributes }) {
+            const level = this.options.levels.includes(node.attrs.level)
+              ? node.attrs.level
+              : this.options.levels[0]
+            const classes: { [index: number]: string } = {
+              1: 'text-2xl font-extrabold',
+              2: 'text-xl font-extrabold',
+              3: 'text-lg font-bold',
+            }
+            return [
+              `h${level}`,
+              mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+                class: `${classes[level]}`,
+              }),
+              0,
+            ]
+          },
+        })
+        .configure({ levels: [1, 2, 3] }),
+      Blockquote.configure({
+        HTMLAttributes: {
+          class:
+            'p-4 my-4 italic font-medium leading-relaxed text-gray-900 dark:text-white border-l-4 border-gray-300',
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: 'p-4 list-decimal',
+        },
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: 'p-4 list-disc',
+        },
+      }),
+    ],
     content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
@@ -62,6 +125,12 @@ const TextEditor = () => {
 
   if (!user?.userId) return
 
+  const handleImageChange = (event: any) => {
+    const file = event.target.files[0]
+
+    addImage(file)
+  }
+
   const uploadImage = async (image: any) => {
     const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
     await uploadBytes(imageRef, image)
@@ -70,7 +139,7 @@ const TextEditor = () => {
     return downloadURL
   }
 
-  const addImage = async () => {
+  const addImage = async (image: any) => {
     let imageURL = null
     if (image) {
       imageURL = await uploadImage(image)
@@ -78,7 +147,12 @@ const TextEditor = () => {
 
     if (imageURL) {
       editor.chain().focus().setImage({ src: imageURL }).run()
-      setImage(null)
+    }
+  }
+
+  const handlePickImg = () => {
+    if (imgRef.current) {
+      imgRef.current.click()
     }
   }
 
@@ -107,7 +181,7 @@ const TextEditor = () => {
     try {
       const userRef = collection(db, 'USERS')
       addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData)
-      
+
       resetMoviesReview()
       window.alert('影評已送出！')
       await updateMovieRatings()
@@ -125,7 +199,7 @@ const TextEditor = () => {
           ratings_count:
             moviesCommentsForId.length + moviesReviewsForId.length + 1,
           rating: countRating(),
-          reviews_count: moviesReviewsForId.length + 1
+          reviews_count: moviesReviewsForId.length + 1,
         },
         { merge: true }
       )
@@ -154,7 +228,7 @@ const TextEditor = () => {
 
   return (
     <section className="text-editor-container mx-auto my-8 max-w-4xl">
-      <div className="mb-3 w-full">
+      <div className="mb-5 w-full">
         <Input
           type="text"
           label="標題"
@@ -163,7 +237,7 @@ const TextEditor = () => {
           onChange={(e) => setMoviesReview('title', e.target.value)}
         />
       </div>
-      <div className="rating-container mb-3 flex items-center">
+      <div className="rating-container mb-5 flex items-center">
         <span className="mr-2 text-sm">評分</span>
         {[...Array(5)].map((_, index) => {
           const ratingValue: number = index + 1
@@ -181,7 +255,7 @@ const TextEditor = () => {
                 size={30}
                 color={
                   ratingValue <= (hover || moviesReview.rating)
-                    ? 'orange'
+                    ? '#89a9a6'
                     : '#e4e5e9'
                 }
                 onMouseEnter={() => setHover(ratingValue)}
@@ -191,14 +265,14 @@ const TextEditor = () => {
           )
         })}
       </div>
-      <div className="buttons flex flex-wrap items-center gap-x-4 border-l border-r border-t border-gray-400 p-4">
+      <div className="buttons flex flex-wrap items-center justify-center gap-x-8 border-l border-r border-t border-gray-400 p-4">
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={
             editor.isActive('bold') ? 'rounded bg-gray-200 p-1' : 'p-1'
           }
         >
-          Bold
+          <FaBold />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -206,7 +280,7 @@ const TextEditor = () => {
             editor.isActive('italic') ? 'rounded bg-gray-200 p-1' : 'p-1'
           }
         >
-          Italic
+          <FaItalic />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -214,7 +288,7 @@ const TextEditor = () => {
             editor.isActive('underline') ? 'rounded bg-gray-200 p-1' : 'p-1'
           }
         >
-          Underline
+          <FaUnderline />
         </button>
         <button
           onClick={() =>
@@ -253,46 +327,47 @@ const TextEditor = () => {
           H3
         </button>
         <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive('orderedList') ? 'is-active' : ''}
-        >
-          OrderList
-        </button>
-        <button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={
             editor.isActive('blockquote') ? 'rounded bg-gray-200 p-1' : 'p-1'
           }
         >
-          Blockquote
+          <FaQuoteLeft />
+        </button>
+        <button
+          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+          className={editor.isActive('orderedList') ? 'is-active' : ''}
+        >
+          <AiOutlineOrderedList className="text-xl font-bold" />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={editor.isActive('bulletList') ? 'is-active' : ''}
         >
-          BulletList
+          <AiOutlineUnorderedList className="text-xl font-bold" />
         </button>
         <button
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().undo()}
         >
-          undo
+          <FaUndoAlt />
         </button>
         <button
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().redo()}
         >
-          redo
+          <FaRedoAlt />
         </button>
         <div>
-          <button onClick={addImage}>AddImage</button>
+          <button onClick={handlePickImg}>
+            <FaImage className="mt-1 text-xl" />
+          </button>
           <input
+            className="hidden"
             type="file"
             accept=".jpg, .png"
-            onChange={(e) => {
-              const files = e.target.files || []
-              setImage(files[0])
-            }}
+            ref={imgRef}
+            onChange={handleImageChange}
           />
         </div>
       </div>

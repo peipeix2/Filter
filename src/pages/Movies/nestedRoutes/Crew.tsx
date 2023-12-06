@@ -23,17 +23,21 @@ const Crew = () => {
     }, [])
 
     return (
-        <div className="mt-5 flex flex-wrap gap-2">
-            {moviesCrew.map((item: any) => {
-                if (item.job === 'Director' || item.job === 'Producer' || item.job === 'Writer') {
-                    return (
-                        <Tooltip content={item.job} size="sm">
-                            <Button size="sm">{item.name}</Button>
-                        </Tooltip>
-                    )
-                }
-            })}
-        </div>
+      <div className="mt-5 flex min-h-[150px] flex-wrap gap-2 py-5">
+        {moviesCrew.map((item: any) => {
+          if (
+            item.job === 'Director' ||
+            item.job === 'Producer' ||
+            item.job === 'Writer'
+          ) {
+            return (
+              <Tooltip content={item.job} size="sm">
+                <Button size="sm">{item.name}</Button>
+              </Tooltip>
+            )
+          }
+        })}
+      </div>
     )
 }
 

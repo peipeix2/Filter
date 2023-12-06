@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react'
 import useUserStore from '../../store/userStore'
-import { Avatar, Divider, Button } from '@nextui-org/react'
+import { Avatar, Button } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { db } from '../../../firebase'
-import { collection, getDoc, doc, setDoc, onSnapshot, deleteDoc, QuerySnapshot } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  setDoc,
+  onSnapshot,
+  deleteDoc,
+  QuerySnapshot,
+} from 'firebase/firestore'
+import { useLocation } from 'react-router-dom'
 
 interface UserState {
   userId: string
@@ -18,38 +26,68 @@ const Profile = () => {
   const [followersCount, setFollowersCount] = useState<number>(0)
   const [followingCount, setFollowingCount] = useState<number>(0)
   const [isHoverBtn, setIsHoverBtn] = useState<boolean>(false)
-  const { user, userMoviesComments, userMoviesReviews, setUserFollowings, setUserFollowers, isLogin } = useUserStore()
+  const {
+    user,
+    userMoviesComments,
+    userMoviesReviews,
+    setUserFollowings,
+    setUserFollowers,
+    isLogin,
+  } = useUserStore()
   const { userId } = useParams()
   let profileUserFollowerRef: any
   let profileUserFollowingRef: any
+  let docRef: any
 
   useEffect(() => {
     if (userId) {
-      fetchUser(userId)
+      docRef = doc(db, 'USERS', userId)
+    }
+
+    const unsubs = onSnapshot(docRef, (doc: any) => {
+      const profileData = doc.data()
+      setProfileUser(profileData)
+    })
+
+    return () => {
+      unsubs()
+    }
+  }, [userId])
+
+  useEffect(() => {
+    if (userId) {
       profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
       profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
     }
-    console.log('userId', userId)
 
-    const unsubs = onSnapshot(profileUserFollowerRef, (querySnapshot:QuerySnapshot) => {
-      setFollowersCount(querySnapshot.size)
-      const currentFollowers:any = []
-      querySnapshot.forEach(doc => {
-        const data = doc.data() as UserState
-        currentFollowers.push(data)
-      })
-      setIsFollowing(currentFollowers.some((follower:UserState) => follower.userId === user.userId))
-      setUserFollowers(currentFollowers)
-    })
+    const unsubs = onSnapshot(
+      profileUserFollowerRef,
+      (querySnapshot: QuerySnapshot) => {
+        setFollowersCount(querySnapshot.size)
+        const currentFollowers: any = []
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as UserState
+          currentFollowers.push(data)
+        })
+        setIsFollowing(
+          currentFollowers.some(
+            (follower: UserState) => follower.userId === user.userId
+          )
+        )
+        setUserFollowers(currentFollowers)
+      }
+    )
 
-    const unsubsFollowing = onSnapshot(profileUserFollowingRef,(querySnapshot:QuerySnapshot) => {
-      setFollowingCount(querySnapshot.size)
-      const currentFollowings: any = []
-      if (querySnapshot)
-      querySnapshot.forEach(doc => {
-        currentFollowings.push(doc.data())
-      })
-      setUserFollowings(currentFollowings)
+    const unsubsFollowing = onSnapshot(
+      profileUserFollowingRef,
+      (querySnapshot: QuerySnapshot) => {
+        setFollowingCount(querySnapshot.size)
+        const currentFollowings: any = []
+        if (querySnapshot)
+          querySnapshot.forEach((doc) => {
+            currentFollowings.push(doc.data())
+          })
+        setUserFollowings(currentFollowings)
       }
     )
 
@@ -59,19 +97,24 @@ const Profile = () => {
     }
   }, [user.userId])
 
-  const fetchUser = async (userId: string) => {
-    const docRef = doc(db, 'USERS', userId)
-    const docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-      setProfileUser(docSnap.data())
-    }
-  }
+  const location = useLocation()
+
+  // const fetchUser = async (userId: string) => {
+  //   const docRef = doc(db, 'USERS', userId)
+  //   const docSnap = await getDoc(docRef)
+  //   if (docSnap.exists()) {
+  //     setProfileUser(docSnap.data())
+  //   }
+  // }
 
   if (!profileUser) return
   // if (!user.userId) return
   if (!userId) return
 
-  const handleFollowUser = async (profileUserId: string, currentUserId:string) => {
+  const handleFollowUser = async (
+    profileUserId: string,
+    currentUserId: string
+  ) => {
     const currentUserRef = doc(
       db,
       'USERS',
@@ -87,7 +130,7 @@ const Profile = () => {
       currentUserId
     )
 
-    if(isFollowing) {
+    if (isFollowing) {
       await deleteDoc(currentUserRef)
       await deleteDoc(profileUserRef)
     } else {
@@ -107,34 +150,38 @@ const Profile = () => {
   }
 
   const profileTabLinks = [
-    { name: '動態', link: './discover' },
-    { name: '筆記', link: './activity' },
-    { name: '追蹤列表', link: './network' },
-    { name: '點讚', link: './likes' },
-    { name: '日曆', link: './calender' },
-    { name: '設定', link: './setting' },
+    { name: '動態', link: './discover', linkName: 'discover' },
+    { name: '筆記', link: './activity', linkName: 'activity' },
+    { name: '追蹤列表', link: './network', linkName: 'network' },
+    { name: '點讚', link: './likes', linkName: 'likes' },
+    { name: '日曆', link: './calender', linkName: 'calender' },
+    { name: '設定', link: './setting', linkName: 'setting' },
   ]
 
   return (
     <>
       <div
         style={{
-          backgroundImage: `url('https://image.tmdb.org/t/p/original/mRmRE4RknbL7qKALWQDz64hWKPa.jpg')`,
+          backgroundImage: `url(${profileUser.backdrop})`,
         }}
-        className="w-100% h-[500px] bg-cover bg-center bg-no-repeat"
+        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
       />
       <section className="profile mx-auto mt-10 flex w-4/5 flex-col">
         <div className="header flex w-full items-center justify-between">
           <div className="profile flex items-center">
-            <div className="profile-info flex items-baseline">
+            <div className="profile-info flex items-center">
               <Avatar src={profileUser.avatar} size="lg" />
-              <p>{profileUser.username}</p>
+              <p className="ml-3 text-2xl font-extrabold">
+                {profileUser.username}
+              </p>
             </div>
             {userId !== user.userId && isLogin && (
               <Button
                 size="sm"
                 className="ml-5"
-                color={isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'}
+                color={
+                  isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'
+                }
                 onClick={() => handleFollowUser(userId, user.userId)}
                 onMouseEnter={() => setIsHoverBtn(true)}
                 onMouseLeave={() => setIsHoverBtn(false)}
@@ -146,20 +193,28 @@ const Profile = () => {
 
           <div className="follows-data flex gap-2">
             <div className="comments-count flex flex-col items-center">
-              <span>評論數</span>
-              <span>{userMoviesComments && userMoviesComments.length}</span>
+              <span className="text-sm text-slate-300">評論數</span>
+              <span className="text-2xl font-extrabold text-[#89a9a6]">
+                {userMoviesComments && userMoviesComments.length}
+              </span>
             </div>
             <div className="reviews-count flex flex-col items-center">
-              <span>影評數</span>
-              <span>{userMoviesReviews && userMoviesReviews.length}</span>
+              <span className="text-sm text-slate-300">影評數</span>
+              <span className="text-2xl font-extrabold text-[#89a9a6]">
+                {userMoviesReviews && userMoviesReviews.length}
+              </span>
             </div>
             <div className="followers-count flex flex-col items-center">
-              <span>追蹤人數</span>
-              <span>{followingCount}</span>
+              <span className="text-sm text-slate-300">追蹤人數</span>
+              <span className="text-2xl font-extrabold text-[#89a9a6]">
+                {followingCount}
+              </span>
             </div>
             <div className="following-count flex flex-col items-center">
-              <span>粉絲人數</span>
-              <span>{followersCount}</span>
+              <span className="text-sm text-slate-300">粉絲人數</span>
+              <span className="text-2xl font-extrabold text-[#89a9a6]">
+                {followersCount}
+              </span>
             </div>
           </div>
         </div>
@@ -170,7 +225,11 @@ const Profile = () => {
               <Link
                 to={tab.link}
                 key={index}
-                className="text-md font-['DM_Serif_Display'] tracking-wide"
+                className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
+                  location.pathname?.includes(tab.linkName)
+                    ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
+                    : 'font-extrabold text-slate-300'
+                }`}
               >
                 {tab.name}
               </Link>
@@ -178,7 +237,7 @@ const Profile = () => {
           })}
         </div>
 
-        <Divider className="mx-auto w-1/2" />
+        {/* <Divider className="mx-auto w-1/2" /> */}
 
         <div className="mx-auto mt-20 w-3/5">
           <Outlet />

@@ -5,7 +5,7 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
-  QuerySnapshot
+  QuerySnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Avatar, Divider, Button } from '@nextui-org/react'
@@ -27,13 +27,16 @@ const Network = () => {
       userFollowingRef = collection(db, 'USERS', 'guest', 'FOLLOWING')
     }
 
-    const unsub = onSnapshot(userFollowingRef, (querySnapshot:QuerySnapshot) => {
-      const followingIds: any = []
-      querySnapshot.forEach((doc) => {
-        followingIds.push(doc.id)
-      })
-      setFollowingUserIds(followingIds)
-    })
+    const unsub = onSnapshot(
+      userFollowingRef,
+      (querySnapshot: QuerySnapshot) => {
+        const followingIds: any = []
+        querySnapshot.forEach((doc) => {
+          followingIds.push(doc.id)
+        })
+        setFollowingUserIds(followingIds)
+      }
+    )
 
     return () => {
       unsub()
@@ -84,16 +87,18 @@ const Network = () => {
   if (!userId) return
 
   return (
-    <div>
-      <div>
-        <h1 className="mb-3">追蹤用戶</h1>
+    <div className="page-container flex justify-between">
+      <div className="following-section w-5/12">
+        <h1 className="text-center text-base font-semibold text-[#475565]">
+          追蹤用戶
+        </h1>
         <div className="user-data-panel min-h-[100px]">
           {userFollowings.map((profileUser) => {
             return (
               <>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between py-5">
                   <a
-                    href={`/profile/${profileUser.userId}`}
+                    href={`/profile/${profileUser.userId}/activity`}
                     className="user-card flex items-center p-2"
                   >
                     <Avatar src={profileUser.avatar} className="mr-2" />
@@ -112,16 +117,20 @@ const Network = () => {
                             : 'primary'
                         }
                         onClick={() =>
-                          handleFollowUser(profileUser.userId, user.userId, profileUser)
+                          handleFollowUser(
+                            profileUser.userId,
+                            user.userId,
+                            profileUser
+                          )
                         }
                         onMouseEnter={() =>
-                          setUserHoverState((prev:any) => ({
+                          setUserHoverState((prev: any) => ({
                             ...prev,
                             [profileUser.userId]: true,
                           }))
                         }
                         onMouseLeave={() =>
-                          setUserHoverState((prev:any) => ({
+                          setUserHoverState((prev: any) => ({
                             ...prev,
                             [profileUser.userId]: false,
                           }))
@@ -142,15 +151,17 @@ const Network = () => {
           })}
         </div>
       </div>
-      <div>
-        <h1 className="mb-3">粉絲</h1>
+      <div className="follower-section w-5/12">
+        <h1 className="text-center text-base font-semibold text-[#475565]">
+          粉絲
+        </h1>
         <div className="user-data-panel min-h-[100px]">
           {userFollowers.map((profileUser) => {
             return (
               <>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between py-5">
                   <a
-                    href={`/profile/${profileUser.userId}`}
+                    href={`/profile/${profileUser.userId}/activity`}
                     className="user-card flex items-center p-2"
                   >
                     <Avatar src={profileUser.avatar} className="mr-2" />
@@ -177,13 +188,13 @@ const Network = () => {
                           )
                         }
                         onMouseEnter={() =>
-                          setUserHoverState((prev:any) => ({
+                          setUserHoverState((prev: any) => ({
                             ...prev,
                             [profileUser.userId]: true,
                           }))
                         }
                         onMouseLeave={() =>
-                          setUserHoverState((prev:any) => ({
+                          setUserHoverState((prev: any) => ({
                             ...prev,
                             [profileUser.userId]: false,
                           }))
