@@ -21,10 +21,11 @@ function Header() {
 
   return (
     <Navbar
-      className="items-center bg-white px-32"
+      className="items-center bg-white px-32 shadow-lg"
       maxWidth="full"
       height="90px"
-      position="static"
+      position="sticky"
+      isBordered
     >
       <NavbarBrand>
         <a href="/">
