@@ -1,13 +1,22 @@
-import { useState } from "react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Input } from "@nextui-org/react";
-import { auth } from "../../../firebase";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { useState } from 'react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Input,
+} from '@nextui-org/react'
+import { auth } from '../../../firebase'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-import { db } from "../../../firebase";
-import useUserStore from "../../store/userStore";
+import { db } from '../../../firebase'
+import useUserStore from '../../store/userStore'
 
 const SignUp = () => {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [userName, setUserName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -18,14 +27,13 @@ const SignUp = () => {
   const DEFAULT_BACKDROP =
     'https://image.tmdb.org/t/p/original/mRmRE4RknbL7qKALWQDz64hWKPa.jpg'
 
-  const handleSignUp = async() => {
+  const handleSignUp = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password)
-      const currentUser:any = auth.currentUser
+      const currentUser: any = auth.currentUser
       await updateProfile(currentUser, {
         displayName: userName,
-        photoURL:
-          DEFAULT_PROFILE,
+        photoURL: DEFAULT_PROFILE,
       })
       if (currentUser) {
         setUser({
@@ -43,7 +51,7 @@ const SignUp = () => {
     }
   }
 
-  const postUserInfo = async (id:string | undefined, email:string | null) => {
+  const postUserInfo = async (id: string | undefined, email: string | null) => {
     try {
       await setDoc(doc(db, 'USERS', `${id}`), {
         userId: id,
@@ -52,7 +60,7 @@ const SignUp = () => {
         avatar: DEFAULT_PROFILE,
         followers_count: 0,
         follows_count: 0,
-        backdrop: DEFAULT_BACKDROP
+        backdrop: DEFAULT_BACKDROP,
       })
     } catch (error) {
       console.log(error)
@@ -61,7 +69,11 @@ const SignUp = () => {
 
   return (
     <>
-      <span onClick={onOpen} color="primary">
+      <span
+        onClick={onOpen}
+        color="primary"
+        className="cursor-pointer hover:text-gray-500"
+      >
         Sign Up
       </span>
       <Modal
@@ -104,7 +116,12 @@ const SignUp = () => {
                 <Button color="default" variant="flat" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="default" onPress={onClose} className="bg-slate-600 text-white" onClick={handleSignUp}>
+                <Button
+                  color="default"
+                  onPress={onClose}
+                  className="bg-slate-600 text-white"
+                  onClick={handleSignUp}
+                >
                   Sign up
                 </Button>
               </ModalFooter>

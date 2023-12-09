@@ -1,6 +1,6 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../firebase';
-import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../../../firebase'
+import { useState } from 'react'
 import {
   Modal,
   ModalContent,
@@ -11,12 +11,12 @@ import {
   useDisclosure,
   Input,
 } from '@nextui-org/react'
-import SignUp from '../SignUp';
+import SignUp from '../SignUp'
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const handleSignIn = async () => {
     try {
@@ -28,7 +28,11 @@ const SignIn = () => {
 
   return (
     <>
-      <span onClick={onOpen} color="primary">
+      <span
+        onClick={onOpen}
+        color="primary"
+        className="cursor-pointer hover:text-gray-500"
+      >
         Sign In
       </span>
       <Modal
