@@ -269,7 +269,7 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={
-            editor.isActive('bold') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('bold') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaBold />
@@ -277,7 +277,7 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={
-            editor.isActive('italic') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('italic') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaItalic />
@@ -285,7 +285,7 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={
-            editor.isActive('underline') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('underline') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaUnderline />
@@ -296,7 +296,7 @@ const TextEditor = () => {
           }
           className={
             editor.isActive('heading', { level: 1 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -308,7 +308,7 @@ const TextEditor = () => {
           }
           className={
             editor.isActive('heading', { level: 2 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -320,7 +320,7 @@ const TextEditor = () => {
           }
           className={
             editor.isActive('heading', { level: 3 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -329,20 +329,24 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={
-            editor.isActive('blockquote') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('blockquote') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaQuoteLeft />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive('orderedList') ? 'is-active' : ''}
+          className={
+            editor.isActive('orderedList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
+          }
         >
           <AiOutlineOrderedList className="text-xl font-bold" />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive('bulletList') ? 'is-active' : ''}
+          className={
+            editor.isActive('bulletList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
+          }
         >
           <AiOutlineUnorderedList className="text-xl font-bold" />
         </button>
@@ -395,7 +399,11 @@ const TextEditor = () => {
       </div>
 
       <div className="submit-btn mt-5 flex justify-end">
-        <Button size="lg" className="w-[200px]" onClick={handleSubmitReview}>
+        <Button
+          size="lg"
+          className="w-[100px] bg-[#89a9a6] text-white"
+          onClick={handleSubmitReview}
+        >
           送出
         </Button>
       </div>
