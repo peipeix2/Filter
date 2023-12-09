@@ -9,13 +9,13 @@ import {
   query,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import { Divider, Image, Chip } from '@nextui-org/react'
+import { Divider, Image } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
-import { FaTag } from 'react-icons/fa6'
 import parser from 'html-react-parser'
 import DiscoverLikeBtn from '../../components/Like/DiscoverLikeBtn'
 import DiscoverLikeReviewBtn from '../../components/Like/DiscoverLikeReviewBtn'
+import Tag from '../../components/Tag'
 
 const Discover = () => {
   const [followingUserIds, setFollowingUserIds] = useState<any>([])
@@ -144,18 +144,7 @@ const Discover = () => {
                   <div className="tags mb-3">
                     <ul className="flex items-center gap-1">
                       {post.tags.map((tag: string, index: number) => {
-                        return (
-                          <Link to={`/tag?keyword=${tag}`}>
-                            <Chip
-                              className="p-1 text-xs text-slate-100"
-                              key={index}
-                              size="sm"
-                              startContent={<FaTag size={12} color="#f1f5f9" />}
-                            >
-                              {tag}
-                            </Chip>
-                          </Link>
-                        )
+                        return <Tag tag={tag} index={index} />
                       })}
                     </ul>
                   </div>
@@ -242,18 +231,7 @@ const Discover = () => {
                   <div className="tags mb-3">
                     <ul className="flex items-center gap-1">
                       {post.tags.map((tag: string, index: number) => {
-                        return (
-                          <Link to={`/tag?keyword=${tag}`}>
-                            <Chip
-                              className="p-1 text-xs text-slate-100"
-                              key={index}
-                              size="sm"
-                              startContent={<FaTag size={12} color="#f1f5f9" />}
-                            >
-                              {tag}
-                            </Chip>
-                          </Link>
-                        )
+                        return <Tag tag={tag} index={index} />
                       })}
                     </ul>
                   </div>

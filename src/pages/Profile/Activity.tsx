@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { db } from '../../../firebase'
-import { Image, Divider, Chip } from '@nextui-org/react'
+import { Image, Divider } from '@nextui-org/react'
 import { collection, onSnapshot } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
-import { FaTag } from 'react-icons/fa6'
+import Tag from '../../components/Tag'
 
 const Activity = () => {
   const {
@@ -79,14 +79,14 @@ const Activity = () => {
     <div>
       <div className="mb-5 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">評論的電影</p>
-        {displayComments.length > 5 && <span>More</span>}
+        {/* {displayComments.length > 5 && <span>More</span>} */}
       </div>
 
-      <div className="flex gap-2">
-        {displayComments.slice(0, 5).map((comment) => {
+      <div className="flex flex-wrap gap-2">
+        {displayComments.map((comment) => {
           return (
             <div
-              className="movie-card flex w-1/5 flex-col gap-3"
+              className="movie-card flex w-[18%] flex-col gap-3"
               key={comment.id}
             >
               <Link to={`/comment/${comment.userId}/${comment.id}`}>
@@ -105,14 +105,14 @@ const Activity = () => {
 
       <div className="mb-5 mt-20 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">撰寫的影評</p>
-        {displayReviews.length > 5 && <span>More</span>}
+        {/* {displayReviews.length > 5 && <span>More</span>} */}
       </div>
 
       <div className="flex gap-2">
-        {displayReviews.slice(0, 5).map((review) => {
+        {displayReviews.map((review) => {
           return (
             <div
-              className="movie-card flex w-1/5 flex-col gap-3"
+              className="movie-card flex w-[18%] flex-col gap-3"
               key={review.id}
             >
               <Link to={`/read/${review.userId}/${review.id}`}>
@@ -194,18 +194,7 @@ const Activity = () => {
                 <div className="tags mb-3">
                   <ul className="flex items-center gap-1">
                     {comment.tags.map((tag: string, index: number) => {
-                      return (
-                        <Link to={`/tag?keyword=${tag}`}>
-                          <Chip
-                            className="p-1 text-xs text-slate-100"
-                            key={index}
-                            size="sm"
-                            startContent={<FaTag size={12} color="#f1f5f9" />}
-                          >
-                            {tag}
-                          </Chip>
-                        </Link>
-                      )
+                      return <Tag tag={tag} index={index} />
                     })}
                   </ul>
                 </div>
