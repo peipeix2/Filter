@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Divider, Chip } from '@nextui-org/react'
+import { Divider } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import { onSnapshot, collectionGroup } from 'firebase/firestore'
@@ -10,7 +10,7 @@ import { useParams, Link } from 'react-router-dom'
 import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
-import { FaTag } from 'react-icons/fa6'
+import Tag from '../../components/Tag'
 
 const CommentsSection = () => {
   const moviesCommentsForId = useMoviesCommentStore(
@@ -91,18 +91,7 @@ const CommentsSection = () => {
                 <div className="tags mb-3">
                   <ul className="flex gap-1">
                     {comment.tags.map((tag, index) => {
-                      return (
-                        <Link to={`/tag?keyword=${tag}`}>
-                          <Chip
-                            className="p-1 text-xs text-slate-100"
-                            key={index}
-                            size="sm"
-                            startContent={<FaTag size={12} color="#f1f5f9" />}
-                          >
-                            {tag}
-                          </Chip>
-                        </Link>
-                      )
+                      return <Tag tag={tag} index={index} />
                     })}
                   </ul>
                 </div>

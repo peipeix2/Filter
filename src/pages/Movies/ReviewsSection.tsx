@@ -12,6 +12,7 @@ import parser from 'html-react-parser'
 import { useParams } from 'react-router-dom'
 import Like from '../../components/Like'
 import { renderComments } from '../../utils/render'
+import Tag from '../../components/Tag'
 
 const ReviewSection = () => {
   // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
@@ -86,14 +87,10 @@ const ReviewSection = () => {
                   </p>
                 </div>
 
-                <div className="tags">
+                <div className="tags mb-3">
                   <ul className="flex gap-1">
                     {review.tags.map((tag, index) => {
-                      return (
-                        <li className="p-1 text-sm text-slate-400" key={index}>
-                          #{tag}
-                        </li>
-                      )
+                      return <Tag tag={tag} index={index} />
                     })}
                   </ul>
                 </div>

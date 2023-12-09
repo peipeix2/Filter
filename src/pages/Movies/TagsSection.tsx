@@ -3,8 +3,7 @@ import { useParams } from 'react-router-dom'
 import { query, getDocs, where, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
-import { FaTag } from 'react-icons/fa6'
-import { Chip } from '@nextui-org/react'
+import Tag from '../../components/Tag'
 
 interface MoviesCommentsForIdState {
   author: string
@@ -78,20 +77,9 @@ const TagsSection = () => {
   }
 
   return (
-    <div className="mt-2 flex gap-2">
+    <div className="mt-2 flex flex-wrap gap-2">
       {tagsForMovie.map((tag, index) => {
-        return (
-          <Link to={`/tag?keyword=${tag}`}>
-            <Chip
-              className="p-1 text-xs text-slate-100"
-              key={index}
-              size="sm"
-              startContent={<FaTag size={12} color="#f1f5f9" />}
-            >
-              {tag}
-            </Chip>
-          </Link>
-        )
+        return <Tag tag={tag} index={index} />
       })}
     </div>
   )
