@@ -23,11 +23,11 @@ const SubNavbar = () => {
       <div className="search-form flex h-12 items-center rounded-lg bg-[#d2d2d2] p-5">
         <div className="search-form-field flex flex-grow items-center">
           <button className="search-form-btn">
-            <CiSearch size={18} color="#9da3ae" />
+            <CiSearch size={18} color="#718096" />
           </button>
           <input
             type="text"
-            className="search-form-input focus: w-full bg-[#d2d2d2] px-2 outline-none"
+            className="search-form-input focus: w-full bg-[#d2d2d2] px-2 placeholder-gray-500 outline-none"
             placeholder="搜尋電影"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -35,10 +35,10 @@ const SubNavbar = () => {
           />
         </div>
         <div className="search-form-in-category flex items-center">
-          <div className="search-form-separator text-[#475565]">|</div>
+          <div className="search-form-separator text-[#9da3ae]">|</div>
           <div className="search-form-dropdown">
             <select
-              className="focus: bg-[#d2d2d2] px-3 text-sm outline-none"
+              className="focus: bg-[#d2d2d2] px-3 text-sm text-[#222222] outline-none"
               onChange={(e) => setSelectedValue(e.target.value)}
               defaultValue={[selectedValue]}
             >
