@@ -1,5 +1,7 @@
-import { FaDeleteLeft } from 'react-icons/fa6'
+import { TiDelete } from 'react-icons/ti'
 import { Input } from '@nextui-org/react'
+import { Chip } from '@nextui-org/react'
+import { FaTag } from 'react-icons/fa6'
 
 interface TagsProps {
   tags: string[]
@@ -8,7 +10,7 @@ interface TagsProps {
   setTagsInput: (value: string) => void
 }
 
-const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }:TagsProps) => {
+const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
   const addTags = (e: any) => {
     if (e.target.value.length !== '' && e.target.value.trim().length !== 0) {
       setTags([...tags, e.target.value])
@@ -34,16 +36,23 @@ const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }:TagsProps) => {
         <ul className="flex gap-1">
           {tags.map((tag, index) => {
             return (
-              <li
-                className="tag flex items-center rounded bg-slate-950 p-1 text-white"
+              <Chip
+                className="flex items-center bg-[#94a3ab] p-1 text-xs text-slate-100"
                 key={index}
+                size="sm"
+                startContent={
+                  <FaTag size={12} color="#f2f5f9" className="mx-1" />
+                }
+                endContent={
+                  <TiDelete
+                    className="mx-1 text-base"
+                    color="#222222"
+                    onClick={() => removeTags(index)}
+                  />
+                }
               >
-                <span className="text-sm">{tag}</span>
-                <FaDeleteLeft
-                  className="mx-1 text-xs"
-                  onClick={() => removeTags(index)}
-                />
-              </li>
+                {tag}
+              </Chip>
             )
           })}
         </ul>

@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { query, getDocs, where, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import { Link } from 'react-router-dom'
 import Tag from '../../components/Tag'
 
 interface MoviesCommentsForIdState {

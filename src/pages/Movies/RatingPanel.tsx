@@ -295,7 +295,7 @@ const RatingPanel = () => {
                               size={30}
                               color={
                                 ratingValue <= (hover || moviesComment.rating)
-                                  ? 'orange'
+                                  ? '#94a3ab'
                                   : '#e4e5e9'
                               }
                               onMouseEnter={() => setHover(ratingValue)}
@@ -323,11 +323,16 @@ const RatingPanel = () => {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
+                <Button
+                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+                  variant="flat"
+                  onPress={onClose}
+                >
+                  取消
                 </Button>
                 <Button
-                  color="primary"
+                  // color="default"
+                  className="bg-[#94a3ab] text-white"
                   onPress={onClose}
                   onClick={handleSubmitComment}
                 >
