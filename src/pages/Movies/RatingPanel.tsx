@@ -192,21 +192,13 @@ const RatingPanel = () => {
       )}
       <div className="watched-status flex justify-around pb-3">
         <div
-          className="flex cursor-pointer flex-col items-center"
+          className={`flex cursor-pointer flex-col items-center hover:text-[#475565] ${
+            hasCommented ? 'text-red-600' : 'text-[#94a3ab]'
+          }`}
           onClick={hasCommented ? undefined : onOpen}
         >
-          <IoEyeOutline
-            className={`cursor-pointer text-4xl text-[#94a3ab] ${
-              hasCommented ? 'text-red-600' : 'text-[#94a3ab]'
-            }`}
-          />
-          <span
-            className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
-              hasCommented ? 'text-red-600' : 'text-[#beccdc]'
-            }`}
-          >
-            看過
-          </span>
+          <IoEyeOutline className="text-4xl" />
+          <span className="text-xs">看過</span>
         </div>
         <Favorites isFavorites={userFavorites.includes(id)} movieId={id} />
       </div>
@@ -215,7 +207,7 @@ const RatingPanel = () => {
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
-        <p className="mt-2 text-[10px] text-[#beccdc]">
+        <p className="mt-2 text-sm text-[#94a3ab]">
           {moviesData.rating?.toFixed(1)}
         </p>
       </div>
@@ -224,7 +216,7 @@ const RatingPanel = () => {
 
       <Link to={`/review/${moviesDetail.id}`}>
         <div className="py-3">
-          <p className="text-center text-[14px] text-[#beccdc] hover:text-[#475565]">
+          <p className="text-center text-sm text-[#94a3ab] hover:text-[#475565]">
             寫影評
           </p>
         </div>
@@ -233,7 +225,7 @@ const RatingPanel = () => {
       <Divider />
 
       <div className="pt-3">
-        <p className="text-center text-[14px] text-[#beccdc]">分享</p>
+        <p className="text-center text-sm text-[#94a3ab]">分享</p>
       </div>
 
       {/* Modal Form */}
