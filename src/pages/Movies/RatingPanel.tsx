@@ -13,7 +13,6 @@ import {
   Textarea,
 } from '@nextui-org/react'
 import { IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineFavoriteBorder } from 'react-icons/md'
 import SimplisticStar from '../../components/Star/SimplisticStar'
 import { FaStar } from 'react-icons/fa'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
@@ -33,6 +32,7 @@ import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
+import Favorites from '../../components/Favorites'
 
 interface MoviesState {
   id: number
@@ -52,6 +52,7 @@ interface MoviesState {
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
   const [moviesData, setMoviesData] = useState<MoviesState | null>(null)
+  const [userFavorites, setUserFavorites] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -89,9 +90,21 @@ const RatingPanel = () => {
       }
     )
 
+    const unsubsFavorites = onSnapshot(
+      collection(db, 'USERS', userId, 'FAVORITES'),
+      (querySnapshot) => {
+        const favoriteIds: any = []
+        querySnapshot.forEach((doc) => {
+          favoriteIds.push(doc.id)
+        })
+        setUserFavorites(favoriteIds)
+      }
+    )
+
     return () => {
       unsubscribe()
       unsubsComments()
+      unsubsFavorites()
     }
   }, [])
 
@@ -166,6 +179,7 @@ const RatingPanel = () => {
   const formInvalid = !moviesComment.rating
 
   if (!moviesData) return
+  if (!id) return
 
   return (
     <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
@@ -194,12 +208,7 @@ const RatingPanel = () => {
             看過
           </span>
         </div>
-        <div className="flex cursor-pointer flex-col items-center hover:text-[#475565]">
-          <MdOutlineFavoriteBorder className="text-4xl text-[#94a3ab]" />
-          <span className="cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565]">
-            收藏
-          </span>
-        </div>
+        <Favorites isFavorites={userFavorites.includes(id)} movieId={id} />
       </div>
 
       <Divider />
