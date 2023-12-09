@@ -23,7 +23,7 @@ const CommentLikeBtn = (Props: LikeState) => {
     if (!isLogin) {
       return alert('請先登入或註冊！')
     }
-    
+
     const userRef = doc(db, 'USERS', user.userId)
     const docRef = collection(db, 'USERS')
 
@@ -65,11 +65,14 @@ const CommentLikeBtn = (Props: LikeState) => {
   return (
     <div className="like-btn flex items-center">
       <FaHeart
-        className={
-          Props.isLiked
-            ? 'mr-1 text-xs text-red-500'
-            : 'mr-1 text-xs text-slate-800'
-        }
+        className={`
+          hover:cursor-pointer
+          ${
+            Props.isLiked
+              ? 'mr-1 text-xs text-red-500'
+              : 'mr-1 text-xs text-slate-800'
+          }
+        `}
         onClick={handleLikeClick}
       />
       <span className="mr-2 text-xs text-slate-800">

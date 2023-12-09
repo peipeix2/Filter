@@ -14,8 +14,8 @@ interface LikeState {
   count: number
   isLiked: boolean
   authorId: string
-  followingUsersReviews:any
-  setFollowingUsersReviews:any
+  followingUsersReviews: any
+  setFollowingUsersReviews: any
 }
 
 const DiscoverLikeReviewBtn = (Props: LikeState) => {
@@ -61,7 +61,12 @@ const DiscoverLikeReviewBtn = (Props: LikeState) => {
     const userRef = doc(db, 'USERS', user.userId)
     const docRef = collection(db, 'USERS')
 
-    updateLocalLikesUser(Props.followingUsersReviews, Props.postId, Props.isLiked, Props.count)
+    updateLocalLikesUser(
+      Props.followingUsersReviews,
+      Props.postId,
+      Props.isLiked,
+      Props.count
+    )
 
     if (Props.isLiked) {
       await setDoc(
@@ -103,11 +108,14 @@ const DiscoverLikeReviewBtn = (Props: LikeState) => {
   return (
     <div className="like-btn flex items-center" key={Props.count}>
       <FaHeart
-        className={
-          Props.isLiked
-            ? 'mr-1 text-xs text-red-500'
-            : 'mr-1 text-xs text-slate-800'
-        }
+        className={`
+          hover:cursor-pointer
+          ${
+            Props.isLiked
+              ? 'mr-1 text-xs text-red-500'
+              : 'mr-1 text-xs text-slate-800'
+          }
+        `}
         onClick={handleLikeClick}
       />
       <span className="mr-2 text-xs text-slate-800">

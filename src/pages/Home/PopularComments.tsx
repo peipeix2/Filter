@@ -8,14 +8,14 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Link } from 'react-router-dom'
-import { Divider, Image, Chip, Skeleton } from '@nextui-org/react'
+import { Divider, Image, Skeleton } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import DiscoverLikeBtn from '../../components/Like/DiscoverLikeBtn'
 // import { useQuery } from 'react-query'
 import useUserStore from '../../store/userStore'
 import PopularReviewers from './PopularReviewers'
-import { FaTag } from 'react-icons/fa6'
+import Tag from '../../components/Tag'
 
 const PopularComments = () => {
   const [followingUsersComments, setFollowingUsersComments] = useState<any>([])
@@ -57,9 +57,6 @@ const PopularComments = () => {
       <section className="popular-comments w-2/3">
         <div className="title-wrapper flex items-center justify-between">
           <p className="text-base font-semibold text-[#475565]">熱門評論</p>
-          <Link to={`/popular`} className="text-sm text-[#475565]">
-            More
-          </Link>
         </div>
         <Divider className="mt-1" />
 
@@ -134,18 +131,7 @@ const PopularComments = () => {
                   <div className="tags mb-3">
                     <ul className="flex items-center gap-1">
                       {post.tags.map((tag: string, index: number) => {
-                        return (
-                          <Link to={`/tag?keyword=${tag}`}>
-                            <Chip
-                              className="p-1 text-xs text-slate-100"
-                              key={index}
-                              size="sm"
-                              startContent={<FaTag size={12} color="#f1f5f9" />}
-                            >
-                              {tag}
-                            </Chip>
-                          </Link>
-                        )
+                        return <Tag tag={tag} index={index} />
                       })}
                     </ul>
                   </div>
