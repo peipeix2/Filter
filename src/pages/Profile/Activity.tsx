@@ -150,7 +150,9 @@ const Activity = () => {
               <div className="comment-rating ml-10 w-2/3">
                 <Link to={`/movies/${comment.movie_id}`}>
                   <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
-                    <h1 className="mr-2 font-bold">{comment.movie_title}</h1>
+                    <h1 className="mr-2 font-semibold">
+                      {comment.movie_title}
+                    </h1>
                     <span className="text-sm">
                       {comment.movie_original_title}
                     </span>
@@ -178,7 +180,7 @@ const Activity = () => {
                       </div>
                     )}
                     <CommentStar rating={comment.rating} />
-                    <div className="comment-count ml-2 flex items-center">
+                    <div className="comment-count ml-2 flex items-center text-slate-400">
                       <FaCommentAlt className="text-xs" />
                       <span className="ml-1 text-sm">
                         {comment.comments_count}

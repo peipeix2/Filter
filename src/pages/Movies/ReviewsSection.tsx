@@ -73,7 +73,7 @@ const ReviewSection = () => {
                     </span>
                   </div>
                   <CommentStar rating={review.rating} />
-                  <div className="comment-count ml-2 flex items-center">
+                  <div className="comment-count ml-2 flex items-center text-slate-400">
                     <FaCommentAlt className="text-xs" />
                     <span className="ml-1 text-sm">
                       {review.comments_count}
