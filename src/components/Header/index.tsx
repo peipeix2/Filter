@@ -13,6 +13,7 @@ import SignIn from '../SignIn'
 import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
 import SubNavbar from '../../pages/Home/SubNavbar'
+import { Link } from 'react-router-dom'
 
 function Header() {
   const { user, isLogin } = useUserStore()
@@ -28,13 +29,13 @@ function Header() {
       isBordered
     >
       <NavbarBrand>
-        <a href="/">
+        <Link to="/">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/filter-14ea1.appspot.com/o/Filter-logos_transparent_cut.png?alt=media&token=d3119f34-30f8-4afe-8e1c-6e74367acf7c"
             alt="site-logo"
             className="h-auto w-[300px]"
           />
-        </a>
+        </Link>
       </NavbarBrand>
 
       <NavbarContent className="flex w-2/3 items-center gap-5" justify="end">
