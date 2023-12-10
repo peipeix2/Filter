@@ -185,7 +185,7 @@ const Comment = () => {
               }}
             />
           </div>
-          <div className="comment-content-btn-container mx-auto flex w-full items-center justify-between">
+          <div className="comment-content-btn-container mx-auto flex w-full flex-col items-start">
             <div className="comment-rating w-2/3">
               <h1 className="mb-5 font-bold">{comment.title}</h1>
 
@@ -197,7 +197,7 @@ const Comment = () => {
                   </span>
                 </div>
                 <CommentStar rating={comment.rating} />
-                <div className="comment-count ml-2 flex items-center">
+                <div className="comment-count ml-2 flex items-center text-slate-400">
                   <FaCommentAlt className="text-xs" />
                   <span className="ml-1 text-sm">{comment.comments_count}</span>
                 </div>
@@ -219,11 +219,19 @@ const Comment = () => {
               </div>
             </div>
             {comment.userId === user.userId && (
-              <div className="flex gap-2">
-                <Button size="sm" onClick={onOpen}>
+              <div className="mt-2 flex w-full justify-end gap-2">
+                <Button
+                  size="sm"
+                  className="bg-[#94a3ab] text-white"
+                  onClick={onOpen}
+                >
                   修改
                 </Button>
-                <Button size="sm" color="danger" onClick={handleDeleteComment}>
+                <Button
+                  size="sm"
+                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+                  onClick={handleDeleteComment}
+                >
                   刪除
                 </Button>
               </div>

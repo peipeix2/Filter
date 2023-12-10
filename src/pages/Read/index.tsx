@@ -16,6 +16,7 @@ import useUserStore from '../../store/userStore'
 import Like from '../../components/Like'
 import SubCommentsReview from '../../components/SubComments/SubCommentsReview'
 import { Divider, Button } from '@nextui-org/react'
+import { Link } from 'react-router-dom'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
@@ -116,7 +117,7 @@ const Read = () => {
               }}
             />
           </div>
-          <div className="comment-content-btn-container mx-auto flex w-full items-center justify-between">
+          <div className="comment-content-btn-container mx-auto flex w-full flex-col items-center">
             <div className="comment-rating">
               <h1 className="mb-5 font-bold">{review.title}</h1>
 
@@ -128,7 +129,7 @@ const Read = () => {
                   </span>
                 </div>
                 <CommentStar rating={review.rating} />
-                <div className="comment-count ml-2 flex items-center">
+                <div className="comment-count ml-2 flex items-center text-slate-400">
                   <FaCommentAlt className="text-xs" />
                   <span className="ml-1 text-sm">{review.comments_count}</span>
                 </div>
@@ -153,11 +154,15 @@ const Read = () => {
             </div>
 
             {review.userId === user.userId && (
-              <div className="flex gap-2">
-                <Button size="sm">
-                  <a href={`/review/revision/${id}`}>修改</a>
+              <div className="mt-2 flex w-full justify-end gap-2">
+                <Button size="sm" className="bg-[#94a3ab] text-white">
+                  <Link to={`/review/revision/${id}`}>修改</Link>
                 </Button>
-                <Button size="sm" color="danger" onClick={handleDeleteReview}>
+                <Button
+                  size="sm"
+                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+                  onClick={handleDeleteReview}
+                >
                   刪除
                 </Button>
               </div>
