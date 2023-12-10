@@ -38,7 +38,7 @@ const Movies = () => {
         className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
       />
       <section className="film-introduction mx-auto mt-10 flex w-4/5">
-        <div className="film-poster w-1/4">
+        <div className="film-poster sticky top-32 h-[500px] w-1/4">
           <Image
             src={`https://image.tmdb.org/t/p/w500${moviesDetail.poster_path}`}
             alt={moviesDetail.original_title}
