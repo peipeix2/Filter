@@ -9,11 +9,11 @@ const Logout = () => {
   const handleLogout = async () => {
     await signOut(auth)
     resetUser()
-    localStorage.removeItem("user")
+    localStorage.removeItem('user')
     alert('You has been logged out.')
   }
 
-  return <IoLogOutSharp className='text-3xl text-zinc-400' onClick={handleLogout} />
+  return <span onClick={handleLogout}>登出</span>
 }
 
 export default Logout
