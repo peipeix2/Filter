@@ -18,6 +18,7 @@ import { IoEyeSharp } from 'react-icons/io5'
 import PopularComments from './PopularComments.tsx'
 import MidHero from '../../components/HeroImg/MidHero.tsx'
 import useUserStore from '../../store/userStore.ts'
+import Carousel from '../../components/Carousel/index.tsx'
 
 interface Movie {
   id: number
@@ -65,10 +66,10 @@ const Home = () => {
   }, [])
 
   useEffect(() => {
-    if (isLogin && user.userId) {
+    if (user.userId) {
       getUserProfile(user.userId)
     }
-  }, [isLogin, user])
+  }, [isLogin])
 
   const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
     const allMovies = [...popularMovies, ...nowPlayingMovies]
@@ -137,10 +138,14 @@ const Home = () => {
 
   return (
     <>
-      <HeroImg
-        backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg"
-        handleOnClick={handleOnClick}
-      />
+      {isLogin ? (
+        <Carousel />
+      ) : (
+        <HeroImg
+          backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg"
+          handleOnClick={handleOnClick}
+        />
+      )}
 
       <div className="movie-lists-container mx-auto my-40 w-3/5">
         <div className="mx-auto mb-2 text-right font-extrabold">
