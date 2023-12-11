@@ -101,7 +101,7 @@ const CommentCard = (Props: CommentCardState) => {
           <div className="tags mb-3">
             <ul className="flex items-center gap-1">
               {Props.post.tags.map((tag: string, index: number) => {
-                return <Tag tag={tag} index={index} />
+                return <Tag tag={tag} index={index} key={index} />
               })}
             </ul>
           </div>

@@ -44,10 +44,14 @@ const PopularReviewers = () => {
         </Link> */}
       </div>
       <Divider className="mt-1" />
-      {users.map((user) => {
+      {users.map((user, index) => {
         return (
           <>
-            <Link to={`/profile/${user.userId}`} className="profile-card">
+            <Link
+              to={`/profile/${user.userId}`}
+              className="profile-card"
+              key={index}
+            >
               <User
                 name={user.username}
                 description={`評論數：10`}

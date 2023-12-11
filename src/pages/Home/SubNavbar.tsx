@@ -27,7 +27,7 @@ const SubNavbar = () => {
           </button>
           <input
             type="text"
-            className="search-form-input focus: w-full bg-[#d2d2d2] px-2 placeholder-gray-500 outline-none"
+            className="search-form-input w-full border-none bg-[#d2d2d2] px-2 placeholder-gray-500 outline-0 focus:outline-none"
             placeholder="搜尋電影"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -38,7 +38,7 @@ const SubNavbar = () => {
           <div className="search-form-separator text-[#9da3ae]">|</div>
           <div className="search-form-dropdown">
             <select
-              className="focus: bg-[#d2d2d2] px-3 text-sm text-[#222222] outline-none"
+              className="focus: border-none bg-[#d2d2d2] px-3 text-sm text-[#222222] outline-none"
               onChange={(e) => setSelectedValue(e.target.value)}
               defaultValue={[selectedValue]}
             >
