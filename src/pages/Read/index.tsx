@@ -79,8 +79,10 @@ const Read = () => {
         doc(db, 'MOVIES', `${review.movie_id}`),
         {
           rating:
-            (moviesData.rating * moviesData.ratings_count - review.rating) /
-            (moviesData.ratings_count - 1),
+            moviesData.ratings_count - 1 === 0
+              ? 0
+              : (moviesData.rating * moviesData.ratings_count - review.rating) /
+                (moviesData.ratings_count - 1),
           ratings_count: moviesData.ratings_count - 1,
         },
         { merge: true }

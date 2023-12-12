@@ -147,8 +147,11 @@ const Comment = () => {
         doc(db, 'MOVIES', `${comment.movie_id}`),
         {
           rating:
-            (moviesData.rating * moviesData.ratings_count - comment.rating) /
-            (moviesData.ratings_count - 1),
+            moviesData.ratings_count - 1 === 0
+              ? 0
+              : (moviesData.rating * moviesData.ratings_count -
+                  comment.rating) /
+                (moviesData.ratings_count - 1),
           ratings_count: moviesData.ratings_count - 1,
         },
         { merge: true }
