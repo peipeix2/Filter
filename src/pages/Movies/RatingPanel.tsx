@@ -33,6 +33,7 @@ import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
 import Favorites from '../../components/Favorites'
+import toast from 'react-hot-toast'
 
 interface MoviesState {
   id: number
@@ -110,7 +111,7 @@ const RatingPanel = () => {
 
   const handleSubmitComment = async () => {
     if (formInvalid) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -185,8 +186,8 @@ const RatingPanel = () => {
     <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
       {!isLogin && (
         <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
-          <div className=" text-center text-white">
-            <p>Sign in to enjoy more feature</p>
+          <div className="flex h-full w-full items-center justify-center text-center text-white">
+            <p>登入後享受更多功能！</p>
           </div>
         </div>
       )}

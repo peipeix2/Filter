@@ -14,6 +14,7 @@ import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import useUserStore from '../../store/userStore'
+import toast from 'react-hot-toast'
 
 const SignUp = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -27,7 +28,13 @@ const SignUp = () => {
   const DEFAULT_BACKDROP =
     'https://image.tmdb.org/t/p/original/mRmRE4RknbL7qKALWQDz64hWKPa.jpg'
 
+  const formInvalid = userName.trim().length === 0
+
   const handleSignUp = async () => {
+    if (formInvalid) {
+      return toast.error('每個欄位皆為必填')
+    }
+
     try {
       await createUserWithEmailAndPassword(auth, email, password)
       const currentUser: any = auth.currentUser
@@ -44,10 +51,10 @@ const SignUp = () => {
         })
         postUserInfo(currentUser?.uid, currentUser.email)
       }
-      alert('註冊成功！')
+      toast.success('註冊成功！')
     } catch (error) {
       console.log(error)
-      alert('註冊失敗！')
+      toast.error('註冊失敗！')
     }
   }
 

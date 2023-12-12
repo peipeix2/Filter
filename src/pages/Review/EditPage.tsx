@@ -37,6 +37,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
+import toast from 'react-hot-toast'
 
 const EditPage = () => {
   const [moviesData, setMoviesData] = useState<any>([])
@@ -205,7 +206,7 @@ const EditPage = () => {
 
   const handleSubmitReview = async () => {
     if (formInvalid) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -220,7 +221,7 @@ const EditPage = () => {
       await setDoc(doc(userRef, user.userId, 'REVIEWS', reviewId), reviewData, {
         merge: true,
       }),
-        window.alert('修改已送出！')
+        toast.success('修改已送出！')
       await updateMovieRatings()
       navigate(`/movies/${review.movie_id}`)
     } catch (e) {

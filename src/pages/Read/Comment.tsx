@@ -32,6 +32,7 @@ import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useNavigate } from 'react-router-dom'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 import SubComments from '../../components/SubComments'
+import toast from 'react-hot-toast'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
@@ -88,7 +89,7 @@ const Comment = () => {
 
   const handleSubmitComment = async () => {
     if (!revisedMoviesComment.rating) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -134,7 +135,7 @@ const Comment = () => {
       await deleteDoc(userRef)
       await updateDeleteMovieRatings()
       setIsLoading(false)
-      alert('評論已刪除！')
+      toast.success('評論已刪除！')
       navigate(`/movies/${comment.movie_id}`)
     } catch (e) {
       console.error('Error adding document: ', e)

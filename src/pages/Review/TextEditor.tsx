@@ -37,6 +37,7 @@ import useMoviesCommentStore from '../../store/moviesCommentStore'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
+import toast from 'react-hot-toast'
 
 const content = '<p>Type something here!</p>'
 
@@ -158,7 +159,7 @@ const TextEditor = () => {
 
   const handleSubmitReview = async () => {
     if (formInvalid) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -183,7 +184,7 @@ const TextEditor = () => {
       addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData)
 
       resetMoviesReview()
-      window.alert('影評已送出！')
+      toast.success('影評已送出！')
       await updateMovieRatings()
       navigate(`/movies/${moviesDetail.id}`)
     } catch (e) {

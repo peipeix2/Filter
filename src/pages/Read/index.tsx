@@ -17,6 +17,7 @@ import Like from '../../components/Like'
 import SubCommentsReview from '../../components/SubComments/SubCommentsReview'
 import { Divider, Button } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
@@ -66,7 +67,7 @@ const Read = () => {
       await deleteDoc(userRef)
       await updateDeleteMovieRatings()
       setIsLoading(false)
-      alert('評論已刪除！')
+      toast.success('評論已刪除！')
       navigate(`/movies/${review.movie_id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
