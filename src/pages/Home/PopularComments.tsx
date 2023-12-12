@@ -61,7 +61,7 @@ const PopularComments = () => {
 
         <FadeInOnce
           direction="right"
-          delay="0.25"
+          delay={0.25}
           fullWidth={false}
           padding={false}
         >
@@ -82,7 +82,7 @@ const PopularComments = () => {
       <section className="popular-reviewers w-1/5">
         <FadeInOnce
           direction="left"
-          delay="0.25"
+          delay={0.25}
           fullWidth={false}
           padding={false}
         >

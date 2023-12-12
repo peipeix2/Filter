@@ -35,7 +35,7 @@ const MidHero = (Props: HeroImgState) => {
             {isLogin ? (
               <FadeIn
                 direction="up"
-                delay="0.3"
+                delay={0.3}
                 fullWidth={false}
                 padding={false}
               >
@@ -53,7 +53,7 @@ const MidHero = (Props: HeroImgState) => {
             ) : (
               <FadeIn
                 direction="up"
-                delay="0.3"
+                delay={0.3}
                 fullWidth={false}
                 padding={false}
               >

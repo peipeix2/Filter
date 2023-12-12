@@ -19,8 +19,6 @@ import PopularComments from './PopularComments.tsx'
 import MidHero from '../../components/HeroImg/MidHero.tsx'
 import useUserStore from '../../store/userStore.ts'
 import Carousel from '../../components/Carousel/index.tsx'
-import { motion } from 'framer-motion'
-import FadeIn from '../../components/Animation/Fadein.tsx'
 
 interface Movie {
   id: number
@@ -156,7 +154,6 @@ const Home = () => {
           <p className="text-2xl">/ Popular, Now in Cinema</p>
         </div>
 
-        {/* <FadeIn direction="down" delay="0.2" fullWidth={false} padding={false}> */}
         <div className="popular-container mt-20">
           <div className="title-wrapper flex items-center justify-between">
             <p className="text-base font-semibold text-[#475565]">熱門電影</p>
@@ -266,7 +263,6 @@ const Home = () => {
             })}
           </div>
         </div>
-        {/* </FadeIn> */}
       </div>
 
       <div ref={featureIntroRef}>
