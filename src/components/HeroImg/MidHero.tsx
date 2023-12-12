@@ -1,7 +1,7 @@
 import { SlNotebook } from 'react-icons/sl'
 import { FaUserGroup, FaTag } from 'react-icons/fa6'
 import useUserStore from '../../store/userStore'
-import FadeIn from '../Animation/Fadein'
+import FadeIn from '../Animation/FadeEffect'
 
 interface HeroImgState {
   backdrop: string
