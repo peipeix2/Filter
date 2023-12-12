@@ -34,6 +34,8 @@ import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
 import Favorites from '../../components/Favorites'
 import toast from 'react-hot-toast'
+import Test from './Test'
+import { toPng } from 'html-to-image'
 
 interface MoviesState {
   id: number
@@ -56,6 +58,7 @@ const RatingPanel = () => {
   const [userFavorites, setUserFavorites] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
+  const [isCardVisible, setIsCardVisible] = useState<boolean>(false)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
@@ -177,6 +180,22 @@ const RatingPanel = () => {
     return rating
   }
 
+  const generateImage = () => {
+    setIsCardVisible(true)
+    const element = document.querySelector('#generated-card')
+    toPng(element as HTMLElement, { cacheBust: false })
+      .then((dataURL) => {
+        const link = document.createElement('a')
+        link.download = 'image.png'
+        link.href = dataURL
+        link.click()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    setIsCardVisible(false)
+  }
+
   const formInvalid = !moviesComment.rating
 
   if (!moviesData) return
@@ -226,7 +245,12 @@ const RatingPanel = () => {
       <Divider />
 
       <div className="pt-3">
-        <p className="text-center text-sm text-[#94a3ab]">分享</p>
+        <p
+          className="text-center text-sm text-[#94a3ab]"
+          onClick={generateImage}
+        >
+          分享
+        </p>
       </div>
 
       {/* Modal Form */}
@@ -344,6 +368,10 @@ const RatingPanel = () => {
           )}
         </ModalContent>
       </Modal>
+
+      <div className={isCardVisible ? 'absolute bottom-0' : 'hidden'}>
+        <Test />
+      </div>
     </div>
   )
 }
