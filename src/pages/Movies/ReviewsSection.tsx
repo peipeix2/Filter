@@ -49,8 +49,8 @@ const ReviewSection = () => {
       {moviesReviewsForId.map((review, index) => {
         return (
           <>
-            <div className="comment-card my-5 flex items-center" key={index}>
-              <div className="avatar-wrapper flex">
+            <div className="comment-card my-5 flex items-start" key={index}>
+              <div className="avatar-wrapper mt-5 flex">
                 <div
                   className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
                   style={{

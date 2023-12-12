@@ -13,7 +13,6 @@ import {
 } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
 import LoadingMode from './LoadingMode'
-import FadeIn from '../Animation/Fadein'
 
 const Carousel = () => {
   const [followingUsersReviews, setFollowingUsersReviews] = useState<any>([])

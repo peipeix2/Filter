@@ -1,7 +1,6 @@
 import { auth } from '../../../firebase'
 import { signOut } from 'firebase/auth'
 import useUserStore from '../../store/userStore'
-import { IoLogOutSharp } from 'react-icons/io5'
 
 const Logout = () => {
   const resetUser = useUserStore((state) => state.resetUser)
