@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs'
 import { RxDotFilled } from 'react-icons/rx'
-import { User, Button } from '@nextui-org/react'
+import { User, Button, Skeleton } from '@nextui-org/react'
 import parser from 'html-react-parser'
 import { db } from '../../../firebase'
 import {
@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
 import LoadingMode from './LoadingMode'
-import LoadingBlock from './LoadingBlock'
+import FadeIn from '../Animation/Fadein'
 
 const Carousel = () => {
   const [followingUsersReviews, setFollowingUsersReviews] = useState<any>([])
@@ -84,7 +84,11 @@ const Carousel = () => {
     }
   }
 
-  if (!followingUsersReviews[currentIndex]) return
+  if (!followingUsersReviews[currentIndex]) {
+    return (
+      <Skeleton className="group relative m-auto h-[780px] w-full max-w-[1920px]"></Skeleton>
+    )
+  }
 
   return (
     <div
