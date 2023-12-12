@@ -41,6 +41,7 @@ const Comment = () => {
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const user = useUserStore((state) => state.user)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -128,9 +129,11 @@ const Comment = () => {
 
   const handleDeleteComment = async () => {
     try {
+      setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
       await deleteDoc(userRef)
       await updateDeleteMovieRatings()
+      setIsLoading(false)
       alert('評論已刪除！')
       navigate(`/movies/${comment.movie_id}`)
     } catch (e) {
@@ -231,6 +234,7 @@ const Comment = () => {
                   size="sm"
                   className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
                   onClick={handleDeleteComment}
+                  isLoading={isLoading}
                 >
                   刪除
                 </Button>

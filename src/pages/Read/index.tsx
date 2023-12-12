@@ -22,6 +22,7 @@ const Read = () => {
   const user = useUserStore((state) => state.user)
   const [moviesData, setMoviesData] = useState<any>([])
   const [review, setReview] = useState<any>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -60,9 +61,11 @@ const Read = () => {
 
   const handleDeleteReview = async () => {
     try {
+      setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'REVIEWS', id)
       await deleteDoc(userRef)
       await updateDeleteMovieRatings()
+      setIsLoading(false)
       alert('評論已刪除！')
       navigate(`/movies/${review.movie_id}`)
     } catch (e) {
@@ -117,7 +120,7 @@ const Read = () => {
               }}
             />
           </div>
-          <div className="comment-content-btn-container mx-auto flex w-full flex-col items-center">
+          <div className="comment-content-btn-container mx-auto flex w-full flex-col items-start">
             <div className="comment-rating">
               <h1 className="mb-5 font-bold">{review.title}</h1>
 
@@ -155,13 +158,16 @@ const Read = () => {
 
             {review.userId === user.userId && (
               <div className="mt-2 flex w-full justify-end gap-2">
-                <Button size="sm" className="bg-[#94a3ab] text-white">
-                  <Link to={`/review/revision/${id}`}>修改</Link>
-                </Button>
+                <Link to={`/review/revision/${id}`}>
+                  <Button size="sm" className="bg-[#94a3ab] text-white">
+                    修改
+                  </Button>
+                </Link>
                 <Button
                   size="sm"
                   className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
                   onClick={handleDeleteReview}
+                  isLoading={isLoading}
                 >
                   刪除
                 </Button>
