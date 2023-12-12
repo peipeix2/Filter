@@ -12,6 +12,7 @@ import {
   QuerySnapshot,
 } from 'firebase/firestore'
 import { useLocation } from 'react-router-dom'
+import { Skeleton } from '@nextui-org/react'
 
 interface UserState {
   userId: string
@@ -99,16 +100,22 @@ const Profile = () => {
 
   const location = useLocation()
 
-  // const fetchUser = async (userId: string) => {
-  //   const docRef = doc(db, 'USERS', userId)
-  //   const docSnap = await getDoc(docRef)
-  //   if (docSnap.exists()) {
-  //     setProfileUser(docSnap.data())
-  //   }
-  // }
+  if (!profileUser) {
+    return (
+      <div>
+        <Skeleton className="w-100% h-[500px]"></Skeleton>
+        <Skeleton className="profile mx-auto mt-10 flex w-4/5 flex-col">
+          <Skeleton className="header flex w-full items-center justify-between">
+            <Skeleton className="profile flex items-center">
+              <Avatar size="lg" />
+              <Skeleton className="ml-3 h-4 w-1/5"></Skeleton>
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+      </div>
+    )
+  }
 
-  if (!profileUser) return
-  // if (!user.userId) return
   if (!userId) return
 
   const handleFollowUser = async (
@@ -154,7 +161,7 @@ const Profile = () => {
     { name: '筆記', link: './activity', linkName: 'activity' },
     { name: '追蹤列表', link: './network', linkName: 'network' },
     { name: '點讚', link: './likes', linkName: 'likes' },
-    { name: '日曆', link: './calender', linkName: 'calender' },
+    { name: '日曆', link: './calendar', linkName: 'calendar' },
     { name: '設定', link: './setting', linkName: 'setting' },
   ]
 
