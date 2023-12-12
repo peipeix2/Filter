@@ -11,6 +11,7 @@ import { db } from '../../../firebase'
 import { Avatar, Divider, Button } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import { useParams } from 'react-router-dom'
+import { Skeleton } from '@nextui-org/react'
 
 const Network = () => {
   const [followingUserIds, setFollowingUserIds] = useState<any>([])
@@ -85,6 +86,16 @@ const Network = () => {
   }
 
   if (!userId) return
+  if (!userFollowings) {
+    return (
+      <Skeleton className="flex w-5/12 items-center justify-between py-5"></Skeleton>
+    )
+  }
+  if (!userFollowers) {
+    return (
+      <Skeleton className="flex w-5/12 items-center justify-between py-5"></Skeleton>
+    )
+  }
 
   return (
     <div className="page-container flex justify-between">
@@ -93,62 +104,74 @@ const Network = () => {
           追蹤用戶
         </h1>
         <div className="user-data-panel min-h-[100px]">
-          {userFollowings.map((profileUser) => {
-            return (
-              <>
-                <div className="flex items-center justify-between py-5">
-                  <a
-                    href={`/profile/${profileUser.userId}/activity`}
-                    className="user-card flex items-center p-2"
-                  >
-                    <Avatar src={profileUser.avatar} className="mr-2" />
-                    <span>{profileUser.username}</span>
-                  </a>
-                  <div>
-                    {user.userId !== profileUser.userId && isLogin && (
-                      <Button
-                        size="sm"
-                        className="ml-5"
-                        color={
-                          isUserFollowed(profileUser.userId)
+          {userFollowings.length === 0 ? (
+            <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
+              <img
+                src="/undraw_conversation_re_c26v.svg"
+                className="h-[150px] w-[150px]"
+              />
+              <p className="text-sm font-bold text-[#94a3ab]">
+                你還沒有發摟任何人！
+              </p>
+            </div>
+          ) : (
+            userFollowings.map((profileUser) => {
+              return (
+                <>
+                  <div className="flex items-center justify-between py-5">
+                    <a
+                      href={`/profile/${profileUser.userId}/activity`}
+                      className="user-card flex items-center p-2"
+                    >
+                      <Avatar src={profileUser.avatar} className="mr-2" />
+                      <span>{profileUser.username}</span>
+                    </a>
+                    <div>
+                      {user.userId !== profileUser.userId && isLogin && (
+                        <Button
+                          size="sm"
+                          className="ml-5"
+                          color={
+                            isUserFollowed(profileUser.userId)
+                              ? userHoverStates[profileUser.userId]
+                                ? 'danger'
+                                : 'success'
+                              : 'primary'
+                          }
+                          onClick={() =>
+                            handleFollowUser(
+                              profileUser.userId,
+                              user.userId,
+                              profileUser
+                            )
+                          }
+                          onMouseEnter={() =>
+                            setUserHoverState((prev: any) => ({
+                              ...prev,
+                              [profileUser.userId]: true,
+                            }))
+                          }
+                          onMouseLeave={() =>
+                            setUserHoverState((prev: any) => ({
+                              ...prev,
+                              [profileUser.userId]: false,
+                            }))
+                          }
+                        >
+                          {isUserFollowed(profileUser.userId)
                             ? userHoverStates[profileUser.userId]
-                              ? 'danger'
-                              : 'success'
-                            : 'primary'
-                        }
-                        onClick={() =>
-                          handleFollowUser(
-                            profileUser.userId,
-                            user.userId,
-                            profileUser
-                          )
-                        }
-                        onMouseEnter={() =>
-                          setUserHoverState((prev: any) => ({
-                            ...prev,
-                            [profileUser.userId]: true,
-                          }))
-                        }
-                        onMouseLeave={() =>
-                          setUserHoverState((prev: any) => ({
-                            ...prev,
-                            [profileUser.userId]: false,
-                          }))
-                        }
-                      >
-                        {isUserFollowed(profileUser.userId)
-                          ? userHoverStates[profileUser.userId]
-                            ? '取消追蹤'
-                            : '追蹤中'
-                          : '追蹤'}
-                      </Button>
-                    )}
+                              ? '取消追蹤'
+                              : '追蹤中'
+                            : '追蹤'}
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <Divider />
-              </>
-            )
-          })}
+                  <Divider />
+                </>
+              )
+            })
+          )}
         </div>
       </div>
       <div className="follower-section w-5/12">
@@ -156,63 +179,75 @@ const Network = () => {
           粉絲
         </h1>
         <div className="user-data-panel min-h-[100px]">
-          {userFollowers.map((profileUser) => {
-            return (
-              <>
-                <div className="flex items-center justify-between py-5">
-                  <a
-                    href={`/profile/${profileUser.userId}/activity`}
-                    className="user-card flex items-center p-2"
-                  >
-                    <Avatar src={profileUser.avatar} className="mr-2" />
-                    <span>{profileUser.username}</span>
-                  </a>
+          {userFollowers.length === 0 ? (
+            <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
+              <img
+                src="/undraw_social_friends_re_7uaa.svg"
+                className="h-[150px] w-[150px]"
+              />
+              <p className="text-sm font-bold text-[#94a3ab]">
+                你的天才還等待世界發掘！
+              </p>
+            </div>
+          ) : (
+            userFollowers.map((profileUser) => {
+              return (
+                <>
+                  <div className="flex items-center justify-between py-5">
+                    <a
+                      href={`/profile/${profileUser.userId}/activity`}
+                      className="user-card flex items-center p-2"
+                    >
+                      <Avatar src={profileUser.avatar} className="mr-2" />
+                      <span>{profileUser.username}</span>
+                    </a>
 
-                  <div>
-                    {user.userId !== profileUser.userId && isLogin && (
-                      <Button
-                        size="sm"
-                        className="ml-5"
-                        color={
-                          isUserFollowed(profileUser.userId)
+                    <div>
+                      {user.userId !== profileUser.userId && isLogin && (
+                        <Button
+                          size="sm"
+                          className="ml-5"
+                          color={
+                            isUserFollowed(profileUser.userId)
+                              ? userHoverStates[profileUser.userId]
+                                ? 'danger'
+                                : 'success'
+                              : 'primary'
+                          }
+                          onClick={() =>
+                            handleFollowUser(
+                              profileUser.userId,
+                              user.userId,
+                              profileUser
+                            )
+                          }
+                          onMouseEnter={() =>
+                            setUserHoverState((prev: any) => ({
+                              ...prev,
+                              [profileUser.userId]: true,
+                            }))
+                          }
+                          onMouseLeave={() =>
+                            setUserHoverState((prev: any) => ({
+                              ...prev,
+                              [profileUser.userId]: false,
+                            }))
+                          }
+                        >
+                          {isUserFollowed(profileUser.userId)
                             ? userHoverStates[profileUser.userId]
-                              ? 'danger'
-                              : 'success'
-                            : 'primary'
-                        }
-                        onClick={() =>
-                          handleFollowUser(
-                            profileUser.userId,
-                            user.userId,
-                            profileUser
-                          )
-                        }
-                        onMouseEnter={() =>
-                          setUserHoverState((prev: any) => ({
-                            ...prev,
-                            [profileUser.userId]: true,
-                          }))
-                        }
-                        onMouseLeave={() =>
-                          setUserHoverState((prev: any) => ({
-                            ...prev,
-                            [profileUser.userId]: false,
-                          }))
-                        }
-                      >
-                        {isUserFollowed(profileUser.userId)
-                          ? userHoverStates[profileUser.userId]
-                            ? '取消追蹤'
-                            : '追蹤中'
-                          : '追蹤'}
-                      </Button>
-                    )}
+                              ? '取消追蹤'
+                              : '追蹤中'
+                            : '追蹤'}
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <Divider />
-              </>
-            )
-          })}
+                  <Divider />
+                </>
+              )
+            })
+          )}
         </div>
       </div>
     </div>
