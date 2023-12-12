@@ -4,7 +4,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import useUserStore from './store/userStore'
 import ScrollToTop from './components/ScrollToTop/index.tsx'
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   const { isLogin, checkIfLogin, getUserProfile } = useUserStore()
