@@ -11,6 +11,7 @@ import { Divider, Skeleton } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import PopularReviewers from './PopularReviewers'
 import CommentCard from '../../components/CommentCard'
+import FadeInOnce from '../../components/Animation/FadeInOnce'
 
 const PopularComments = () => {
   const [followingUsersComments, setFollowingUsersComments] = useState<any>([])
@@ -51,26 +52,42 @@ const PopularComments = () => {
           Array(5)
             .fill('')
             .map((_, index) => {
-              ;<Skeleton className="w-full max-w-[165px]" key={index}>
-                <div className="w-full max-w-[165px]"></div>
-              </Skeleton>
+              return (
+                <Skeleton className="w-full max-w-[165px]" key={index}>
+                  <div className="w-full max-w-[165px]"></div>
+                </Skeleton>
+              )
             })}
 
-        {followingUsersComments.map((post: any, index: number) => {
-          return (
-            <CommentCard
-              post={post}
-              followingUsersComments={followingUsersComments}
-              setFollowingUsersComments={setFollowingUsersComments}
-              currentUserId={user.userId}
-              key={index}
-            />
-          )
-        })}
+        <FadeInOnce
+          direction="right"
+          delay="0.25"
+          fullWidth={false}
+          padding={false}
+        >
+          {followingUsersComments.map((post: any, index: number) => {
+            return (
+              <CommentCard
+                post={post}
+                followingUsersComments={followingUsersComments}
+                setFollowingUsersComments={setFollowingUsersComments}
+                currentUserId={user.userId}
+                key={index}
+              />
+            )
+          })}
+        </FadeInOnce>
       </section>
 
       <section className="popular-reviewers w-1/5">
-        <PopularReviewers />
+        <FadeInOnce
+          direction="left"
+          delay="0.25"
+          fullWidth={false}
+          padding={false}
+        >
+          <PopularReviewers />
+        </FadeInOnce>
       </section>
     </div>
   )
