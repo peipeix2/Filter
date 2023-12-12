@@ -83,8 +83,8 @@ const Movies = () => {
                       key={index}
                       className={`mr-2 font-['DM_Serif_Display'] text-sm tracking-wide ${
                         location.pathname?.includes(tab.toLowerCase())
-                          ? 'bg-slate-50 text-[#222222]'
-                          : 'bg-transparent text-slate-300'
+                          ? 'bg-[#485665] text-white'
+                          : 'bg-transparent text-[#485665]'
                       }  rounded p-2 `}
                     >
                       {tab}
