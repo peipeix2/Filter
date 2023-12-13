@@ -45,7 +45,7 @@ const Favorites = (Props: FavoritesState) => {
   return (
     <div
       className={`${
-        Props.isFavorites ? 'text-red-600' : 'text-[#94a3ab]'
+        Props.isFavorites ? 'text-[#f46854]' : 'text-[#94a3ab]'
       } flex cursor-pointer flex-col items-center
         hover:text-[#475565]`}
       onClick={() => handleClickFavorite(Props.isFavorites)}
