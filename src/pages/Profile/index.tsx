@@ -185,10 +185,17 @@ const Profile = () => {
             {userId !== user.userId && isLogin && (
               <Button
                 size="sm"
-                className="ml-5"
-                color={
-                  isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'
-                }
+                variant="shadow"
+                className={`ml-5 ${
+                  isFollowing
+                    ? isHoverBtn
+                      ? 'bg-[#bf2e5c] tracking-wider text-white'
+                      : 'bg-[#89a9a6] tracking-wider text-white'
+                    : 'bg-[#f46854] tracking-wider text-white'
+                }`}
+                // color={
+                //   isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'
+                // }
                 onClick={() => handleFollowUser(userId, user.userId)}
                 onMouseEnter={() => setIsHoverBtn(true)}
                 onMouseLeave={() => setIsHoverBtn(false)}
@@ -198,27 +205,27 @@ const Profile = () => {
             )}
           </div>
 
-          <div className="follows-data flex gap-2">
+          <div className="follows-data flex gap-8">
             <div className="comments-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">評論數</span>
+              <span className="text-sm text-slate-300">評論</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {userMoviesComments && userMoviesComments.length}
               </span>
             </div>
             <div className="reviews-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">影評數</span>
+              <span className="text-sm text-slate-300">影評</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {userMoviesReviews && userMoviesReviews.length}
               </span>
             </div>
             <div className="followers-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">追蹤人數</span>
+              <span className="text-sm text-slate-300">追蹤</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {followingCount}
               </span>
             </div>
             <div className="following-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">粉絲人數</span>
+              <span className="text-sm text-slate-300">粉絲</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {followersCount}
               </span>
