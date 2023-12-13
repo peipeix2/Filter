@@ -64,7 +64,7 @@ const Gallery = () => {
         </div>
       )}
 
-      <div className="mx-auto mt-20 flex flex-wrap justify-evenly gap-2">
+      <div className="mx-auto mt-20 flex flex-wrap justify-start gap-2">
         {isLoading &&
           Array(20)
             .fill(undefined)
@@ -77,7 +77,7 @@ const Gallery = () => {
               <Link
                 to={`/movies/${movie.id || movie.movie_id}`}
                 key={index}
-                className="w-[19%]"
+                className="group relative block w-[19%]"
               >
                 <Image
                   alt="film-poster"
@@ -86,6 +86,16 @@ const Gallery = () => {
                   }`}
                   className="w-full"
                 />
+                <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
+                  <div className="flex h-full flex-col items-center justify-center gap-3 text-[#475565] opacity-0 group-hover:opacity-100">
+                    <p className="text-center text-lg font-bold">
+                      {movie.title}
+                    </p>
+                    <small className="text-center text-xs">
+                      {movie.original_title}
+                    </small>
+                  </div>
+                </div>
               </Link>
             )
           })
