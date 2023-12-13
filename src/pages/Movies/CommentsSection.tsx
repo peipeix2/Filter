@@ -56,7 +56,7 @@ const CommentsSection = () => {
               <div className="avatar-wrapper mx-10 mt-5 flex">
                 <Link to={`/profile/${comment.userId}/activity`}>
                   <div
-                    className="avatar mx-auto h-10 w-10 rounded-full bg-contain"
+                    className="avatar mx-auto h-10 w-10 rounded-full bg-cover bg-no-repeat"
                     style={{
                       backgroundImage: `url(${comment.avatar})`,
                     }}

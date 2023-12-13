@@ -52,7 +52,7 @@ const ReviewSection = () => {
             <div className="comment-card my-5 flex items-start" key={index}>
               <div className="avatar-wrapper mt-5 flex">
                 <div
-                  className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
+                  className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
                   style={{
                     backgroundImage: `url(${review.avatar})`,
                   }}
@@ -82,7 +82,7 @@ const ReviewSection = () => {
                 </div>
 
                 <div className="comment-content my-5">
-                  <p className="comment line-clamp-3 leading-10">
+                  <p className="comment line-clamp-3 text-sm leading-10">
                     {parser(review.review)}
                   </p>
                 </div>
