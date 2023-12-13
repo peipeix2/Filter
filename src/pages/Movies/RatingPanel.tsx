@@ -213,7 +213,7 @@ const RatingPanel = () => {
       <div className="watched-status flex justify-around pb-3">
         <div
           className={`flex cursor-pointer flex-col items-center hover:text-[#475565] ${
-            hasCommented ? 'text-red-600' : 'text-[#94a3ab]'
+            hasCommented ? 'text-[#f46854]' : 'text-[#94a3ab]'
           }`}
           onClick={hasCommented ? undefined : onOpen}
         >
