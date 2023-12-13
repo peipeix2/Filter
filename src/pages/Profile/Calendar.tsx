@@ -7,12 +7,14 @@ import ExternalEvent from './ExternalEvent'
 import CalendarModal from '../../components/Modal/CalendarModal'
 import { ScrollShadow } from '@nextui-org/react'
 import { db } from '../../../firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
+import useUserStore from '../../store/userStore'
 
 const Calendar = () => {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
   const [activeSchedule, setActiveSchedule] = useState<string>('')
+  const { user } = useUserStore()
   const [calendarState, setCalendarState] = useState({
     weekendsVisible: true,
     // externalEvents: [
@@ -28,13 +30,21 @@ const Calendar = () => {
         title: 'Event1',
         color: '#0097a7',
         id: '123',
-        start: '2023-12-07',
+        start: '2023-12-13T16:00:00.000Z',
       },
       {
         title: 'Event2',
         color: '$90a4ae',
         id: '1234',
         start: '2023-12-08T12:30:00',
+      },
+      {
+        title: '旺卡',
+        color: '#89a9a6',
+        start: '2023-12-13T16:00:00.000Z',
+        id: '787699',
+        end: '2023-12-13T16:00:00.000Z',
+        allDay: true,
       },
     ],
   })
@@ -49,10 +59,25 @@ const Calendar = () => {
         querySnapshot.forEach((doc) => {
           favoritesList.push(doc.data())
         })
+
         setCalendarState((calendarState) => {
           return {
             ...calendarState,
-            externalEvents: favoritesList,
+            calendarEvents: favoritesList
+              .filter((item: any) => item.schedule_time !== 'unscheduled')
+              .map((item: any) => {
+                return {
+                  title: item.movie_title,
+                  color: '#89a9a6',
+                  start: item.schedule_time,
+                  id: item.movie_id,
+                  end: item.schedule_time,
+                  allDay: true,
+                }
+              }),
+            externalEvents: favoritesList.filter(
+              (item: any) => item.schedule_time === 'unscheduled'
+            ),
           }
         })
       }
@@ -62,6 +87,12 @@ const Calendar = () => {
   }, [])
 
   const handleEventReceive = (eventInfo: any) => {
+    const currentUser = user.userId
+    if (currentUser !== userId) {
+      eventInfo.revert()
+      return
+    }
+
     let date = eventInfo.event.start
     const endDate = new Date(date)
     const releaseDate = new Date(
@@ -85,12 +116,34 @@ const Calendar = () => {
       // custom: eventInfo.draggedEl.getAttribute('data-custom'),
     }
 
+    console.log(newEvent)
+    updateScheduledTime(newEvent.id, userId, newEvent.start)
+
     setCalendarState((calendarState) => {
       return {
         ...calendarState,
         calendarEvents: calendarState.calendarEvents.concat(newEvent),
       }
     })
+  }
+
+  const updateScheduledTime = async (
+    movieId: string,
+    userId: string,
+    scheduledTime: string
+  ) => {
+    const favoritesRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)
+    try {
+      await setDoc(
+        favoritesRef,
+        {
+          schedule_time: scheduledTime,
+        },
+        { merge: true }
+      )
+    } catch (err) {
+      console.error('Error', err)
+    }
   }
 
   function myDropEvent(info: any) {
@@ -101,6 +154,11 @@ const Calendar = () => {
     // if (oldScheduleDate < today) {
     //   return info.revert()
     // }
+    const currentUser = user.userId
+    if (currentUser !== userId) {
+      info.revert()
+      return
+    }
 
     alert(
       info.event.title + ' was dropped on ' + info.event.start.toISOString()
@@ -116,6 +174,8 @@ const Calendar = () => {
     setActiveSchedule(info.event._def.publicId)
     // eventClick.event.remove()
   }
+
+  if (!userId) return
 
   return (
     <>
@@ -155,6 +215,8 @@ const Calendar = () => {
         }
         calendarState={calendarState}
         setCalendarState={setCalendarState}
+        currentUserId={user.userId}
+        userId={userId}
       />
     </>
   )

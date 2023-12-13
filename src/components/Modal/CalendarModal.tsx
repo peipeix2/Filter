@@ -7,6 +7,8 @@ import {
   Button,
   useDisclosure,
 } from '@nextui-org/react'
+import { db } from '../../../firebase'
+import { setDoc, doc } from 'firebase/firestore'
 
 interface ModalState {
   isOpen: boolean
@@ -19,6 +21,8 @@ interface ModalState {
   }
   calendarState: any
   setCalendarState: any
+  currentUserId: string
+  userId: string
 }
 
 const CalendarModal = (Props: ModalState) => {
@@ -30,6 +34,7 @@ const CalendarModal = (Props: ModalState) => {
 
   const handleRemoveSchedule = (id: string) => {
     Props.setModalIsOpen(!Props.isOpen)
+    updateScheduledTime(Props.event.id, Props.userId)
     Props.setCalendarState((calendarState: any) => {
       return {
         ...calendarState,
@@ -38,6 +43,21 @@ const CalendarModal = (Props: ModalState) => {
         ),
       }
     })
+  }
+
+  const updateScheduledTime = async (movieId: string, userId: string) => {
+    const favoritesRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)
+    try {
+      await setDoc(
+        favoritesRef,
+        {
+          schedule_time: 'unscheduled',
+        },
+        { merge: true }
+      )
+    } catch (err) {
+      console.error('Error', err)
+    }
   }
 
   return (
@@ -51,16 +71,19 @@ const CalendarModal = (Props: ModalState) => {
             <p>{Props.event?.title || 'not shown yet'}</p>
             <p>{Props.event?.start || 'not shown yet'}</p>
           </ModalBody>
+
           <ModalFooter>
             <Button color="default" variant="light" onClick={handleOnClick}>
-              取消
+              {Props.currentUserId === Props.userId ? '取消' : '關閉'}
             </Button>
-            <Button
-              color="danger"
-              onClick={() => handleRemoveSchedule(Props.event.id)}
-            >
-              刪除行程
-            </Button>
+            {Props.currentUserId === Props.userId && (
+              <Button
+                color="danger"
+                onClick={() => handleRemoveSchedule(Props.event.id)}
+              >
+                刪除行程
+              </Button>
+            )}
           </ModalFooter>
         </>
       </ModalContent>
