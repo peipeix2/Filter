@@ -15,6 +15,7 @@ import { doc, setDoc } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import useUserStore from '../../store/userStore'
 import toast from 'react-hot-toast'
+import SignIn from '../SignIn'
 
 const SignUp = () => {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
@@ -119,6 +120,10 @@ const SignUp = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+                <div>
+                  <span className="mr-2">已經註冊？點擊登入</span>
+                  <SignIn />
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="default" variant="flat" onPress={onClose}>
