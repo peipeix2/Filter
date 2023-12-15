@@ -15,6 +15,7 @@ const SubNavbar = () => {
       if (selectedValue === 'tag') {
         navigate(`/tag?keyword=${searchInput}`)
       }
+      setSearchInput('')
     }
   }
 
