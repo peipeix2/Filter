@@ -211,7 +211,7 @@ const Comment = () => {
               </div>
 
               <div className="comment-content my-5">
-                <p className="leading-10">{comment.comment}</p>
+                <p className="break-words leading-10">{comment.comment}</p>
               </div>
 
               <div className="like">

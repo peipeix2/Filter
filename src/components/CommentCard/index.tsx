@@ -95,7 +95,7 @@ const CommentCard = (Props: CommentCardState) => {
           </Link>
 
           <div className="comment-content my-5">
-            <p className="comment text-sm">{Props.post.comment}</p>
+            <p className="comment break-words text-sm">{Props.post.comment}</p>
           </div>
 
           <div className="tags mb-3">

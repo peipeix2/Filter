@@ -63,7 +63,7 @@ const CommentsSection = () => {
                   />
                 </Link>
               </div>
-              <div className="comment-rating w-3/4">
+              <div className="comment-rating w-2/3">
                 <Link to={`/comment/${comment.userId}/${comment.id}`}>
                   <div className="comment-header flex">
                     <div className="comment-user mr-2 flex">
@@ -85,7 +85,7 @@ const CommentsSection = () => {
                 </Link>
 
                 <div className="comment-content my-5 text-sm">
-                  <p className="comment">{comment.comment}</p>
+                  <p className="comment break-words">{comment.comment}</p>
                 </div>
 
                 <div className="tags mb-3">

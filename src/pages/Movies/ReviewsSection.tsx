@@ -58,7 +58,7 @@ const ReviewSection = () => {
                   }}
                 />
               </div>
-              <div className="comment-rating flex-grow">
+              <div className="comment-rating w-2/3">
                 <Link to={`/read/${review.userId}/${review.id}`}>
                   <h1 className="mb-5 font-bold">{review.title}</h1>
                 </Link>
@@ -82,7 +82,7 @@ const ReviewSection = () => {
                 </div>
 
                 <div className="comment-content my-5">
-                  <p className="comment line-clamp-3 text-sm leading-10">
+                  <p className="comment line-clamp-3 break-words text-sm leading-10">
                     {parser(review.review)}
                   </p>
                 </div>

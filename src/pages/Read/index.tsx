@@ -124,7 +124,7 @@ const Read = () => {
             />
           </div>
           <div className="comment-content-btn-container mx-auto flex w-full flex-col items-start">
-            <div className="comment-rating">
+            <div className="comment-rating w-2/3">
               <h1 className="mb-5 font-bold">{review.title}</h1>
 
               <div className="comment-header flex">
@@ -142,7 +142,7 @@ const Read = () => {
               </div>
 
               <div className="comment-content my-5">
-                <p className="leading-10">
+                <p className="break-words leading-10">
                   {review.review ? parser(review.review) : null}
                 </p>
               </div>
@@ -160,7 +160,7 @@ const Read = () => {
             </div>
 
             {review.userId === user.userId && (
-              <div className="mt-2 flex w-full justify-end gap-2">
+              <div className="mt-2 flex w-2/3 justify-end gap-2">
                 <Link to={`/review/revision/${id}`}>
                   <Button size="sm" className="bg-[#94a3ab] text-white">
                     修改

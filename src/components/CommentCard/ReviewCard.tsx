@@ -88,7 +88,7 @@ const ReviewCard = (Props: ReviewCardState) => {
           </Link>
 
           <div className="comment-content my-5">
-            <p className="comment line-clamp-3 text-sm leading-10">
+            <p className="comment line-clamp-3 break-words text-sm leading-10">
               {parser(Props.post.review)}
             </p>
           </div>

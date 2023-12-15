@@ -60,7 +60,7 @@ const Gallery = () => {
       {searchValue && (
         <div className="mx-auto mb-2 mt-20 text-right font-extrabold">
           <p className="text-sm">關鍵字</p>
-          <p className="text-2xl">{searchValue}</p>
+          <p className="break-words text-2xl">{searchValue}</p>
         </div>
       )}
 
