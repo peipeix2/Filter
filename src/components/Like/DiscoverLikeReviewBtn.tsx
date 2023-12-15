@@ -8,6 +8,7 @@ import {
   arrayRemove,
 } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
+import toast from 'react-hot-toast'
 
 interface LikeState {
   postId: string
@@ -55,7 +56,7 @@ const DiscoverLikeReviewBtn = (Props: LikeState) => {
 
   const handleLikeClick = async () => {
     if (!isLogin) {
-      return alert('請先登入或註冊！')
+      return toast.error('請先登入或註冊！')
     }
 
     const userRef = doc(db, 'USERS', user.userId)

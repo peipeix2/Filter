@@ -12,6 +12,7 @@ import {
   Input,
 } from '@nextui-org/react'
 import SignUp from '../SignUp'
+import toast from 'react-hot-toast'
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>('')
@@ -21,8 +22,11 @@ const SignIn = () => {
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password)
+      toast.success('登入成功')
     } catch (error) {
-      console.log(error)
+      toast.error('登入失敗，帳號密碼錯誤')
+      setEmail('')
+      setPassword('')
     }
   }
 
@@ -62,7 +66,7 @@ const SignIn = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <div>
-                  <span>沒有帳號？點擊註冊</span>
+                  <span className="mr-2">沒有帳號？點擊註冊</span>
                   <SignUp />
                 </div>
               </ModalBody>
