@@ -21,36 +21,36 @@ const Activity = () => {
 
   if (!userId) return
 
-  useEffect(() => {
-    // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
-    const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
-    const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
+  // useEffect(() => {
+  //   // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+  //   const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
+  //   const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
 
-    const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
-      const comments: any = []
-      querySnapshot.forEach((doc) => {
-        const commentsData = doc.data()
-        const commentsWithId = { ...commentsData, id: doc.id }
-        comments.push(commentsWithId)
-      })
-      setUserMoviesComments(comments)
-    })
+  //   const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
+  //     const comments: any = []
+  //     querySnapshot.forEach((doc) => {
+  //       const commentsData = doc.data()
+  //       const commentsWithId = { ...commentsData, id: doc.id }
+  //       comments.push(commentsWithId)
+  //     })
+  //     setUserMoviesComments(comments)
+  //   })
 
-    const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
-      const reviews: any = []
-      querySnapshot.forEach((doc) => {
-        const reviewsData = doc.data()
-        const reviewsWithId = { ...reviewsData, id: doc.id }
-        reviews.push(reviewsWithId)
-      })
-      setUserMoviesReviews(reviews)
-    })
+  //   const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
+  //     const reviews: any = []
+  //     querySnapshot.forEach((doc) => {
+  //       const reviewsData = doc.data()
+  //       const reviewsWithId = { ...reviewsData, id: doc.id }
+  //       reviews.push(reviewsWithId)
+  //     })
+  //     setUserMoviesReviews(reviews)
+  //   })
 
-    return () => {
-      unsubscribeComments()
-      unsubscribeReviews()
-    }
-  }, [])
+  //   return () => {
+  //     unsubscribeComments()
+  //     unsubscribeReviews()
+  //   }
+  // }, [])
 
   userMoviesComments.sort((a: any, b: any) => {
     return b.created_at - a.created_at

@@ -34,11 +34,15 @@ const Profile = () => {
     setUserFollowings,
     setUserFollowers,
     isLogin,
+    setUserMoviesComments,
+    setUserMoviesReviews,
   } = useUserStore()
   const { userId } = useParams()
   let profileUserFollowerRef: any
   let profileUserFollowingRef: any
   let docRef: any
+
+  if (!userId) return
 
   useEffect(() => {
     if (userId) {
@@ -97,6 +101,37 @@ const Profile = () => {
       unsubsFollowing()
     }
   }, [user.userId])
+
+  useEffect(() => {
+    // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+    const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
+    const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
+
+    const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
+      const comments: any = []
+      querySnapshot.forEach((doc) => {
+        const commentsData = doc.data()
+        const commentsWithId = { ...commentsData, id: doc.id }
+        comments.push(commentsWithId)
+      })
+      setUserMoviesComments(comments)
+    })
+
+    const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
+      const reviews: any = []
+      querySnapshot.forEach((doc) => {
+        const reviewsData = doc.data()
+        const reviewsWithId = { ...reviewsData, id: doc.id }
+        reviews.push(reviewsWithId)
+      })
+      setUserMoviesReviews(reviews)
+    })
+
+    return () => {
+      unsubscribeComments()
+      unsubscribeReviews()
+    }
+  }, [userId])
 
   const location = useLocation()
 
