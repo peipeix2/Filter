@@ -17,7 +17,7 @@ import useUserStore from '../../store/userStore'
 import toast from 'react-hot-toast'
 
 const SignUp = () => {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const [userName, setUserName] = useState<string>('')
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -52,6 +52,7 @@ const SignUp = () => {
         postUserInfo(currentUser?.uid, currentUser.email)
       }
       toast.success('註冊成功！')
+      onClose()
     } catch (error) {
       console.log(error)
       toast.error('註冊失敗！')
@@ -125,7 +126,6 @@ const SignUp = () => {
                 </Button>
                 <Button
                   color="default"
-                  onPress={onClose}
                   className="bg-slate-600 text-white"
                   onClick={handleSignUp}
                 >

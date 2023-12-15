@@ -17,15 +17,15 @@ import toast from 'react-hot-toast'
 const SignIn = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       toast.success('登入成功')
+      onClose()
     } catch (error) {
       toast.error('登入失敗，帳號密碼錯誤')
-      setEmail('')
       setPassword('')
     }
   }
@@ -77,7 +77,6 @@ const SignIn = () => {
                 </Button>
                 <Button
                   color="default"
-                  onPress={onClose}
                   className="bg-slate-600 text-white"
                   onClick={handleSignIn}
                 >
