@@ -21,12 +21,10 @@ const Discover = () => {
 
   const isCurrentUser = user.userId === userId
 
-  if (!isCurrentUser) {
-    return <div>You can only view your own Discover page.</div>
-  }
-
   useEffect(() => {
-    fetchFollowingUserIds(userId)
+    if (userId) {
+      fetchFollowingUserIds(userId)
+    }
   }, [])
 
   useEffect(() => {
@@ -70,6 +68,10 @@ const Discover = () => {
       (a: any, b: any) => b.updated_at - a.updated_at
     )
     return sortedPosts
+  }
+
+  if (!isCurrentUser) {
+    return <div>You can only view your own Discover page.</div>
   }
 
   return (
