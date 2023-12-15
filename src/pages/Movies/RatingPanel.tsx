@@ -320,7 +320,7 @@ const RatingPanel = () => {
                               size={30}
                               color={
                                 ratingValue <= (hover || moviesComment.rating)
-                                  ? '#94a3ab'
+                                  ? '#f46854'
                                   : '#e4e5e9'
                               }
                               onMouseEnter={() => setHover(ratingValue)}

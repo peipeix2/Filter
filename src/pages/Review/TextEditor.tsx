@@ -256,7 +256,7 @@ const TextEditor = () => {
                 size={30}
                 color={
                   ratingValue <= (hover || moviesReview.rating)
-                    ? '#89a9a6'
+                    ? '#f46854'
                     : '#e4e5e9'
                 }
                 onMouseEnter={() => setHover(ratingValue)}
