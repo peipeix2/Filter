@@ -11,11 +11,14 @@ import {
 import { db } from '../../../firebase'
 import CommentCard from '../../components/CommentCard'
 import ReviewCard from '../../components/CommentCard/ReviewCard'
+import { Skeleton } from '@nextui-org/react'
+import DiscoverPage from '../../components/EmptyStates/DiscoverPage'
 
 const Discover = () => {
   const [followingUserIds, setFollowingUserIds] = useState<any>([])
-  const [followingUsersComments, setFollowingUsersComments] = useState<any>([])
-  const [followingUsersReviews, setFollowingUsersReviews] = useState<any>([])
+  const [followingUsersComments, setFollowingUsersComments] =
+    useState<any>(null)
+  const [followingUsersReviews, setFollowingUsersReviews] = useState<any>(null)
   const { user } = useUserStore()
   const { userId } = useParams()
 
@@ -74,9 +77,23 @@ const Discover = () => {
     return <div>You can only view your own Discover page.</div>
   }
 
+  if (followingUserIds.length === 0) {
+    return <DiscoverPage />
+  }
+
+  if (!followingUsersComments) {
+    return <Skeleton className="my-5 h-40 w-full"></Skeleton>
+  }
+
+  if (!followingUsersReviews) {
+    return <Skeleton className="my-5 h-40 w-full"></Skeleton>
+  }
+
   return (
     <div>
       <h1 className="text-base font-semibold text-[#475565]">他們的評論</h1>
+      {followingUsersComments.length === 0 &&
+        followingUsersReviews.length === 0 && <DiscoverPage />}
       {followingUsersComments.map((post: any, index: number) => {
         return (
           <CommentCard
