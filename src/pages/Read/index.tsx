@@ -115,7 +115,7 @@ const Read = () => {
         </div>
 
         <div className="comment-card mx-auto my-5 flex items-start">
-          <div className="avatar-wrapper mt-5 flex">
+          <div className="avatar-wrapper mt-5 flex w-1/4">
             <div
               className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
               style={{
@@ -123,8 +123,8 @@ const Read = () => {
               }}
             />
           </div>
-          <div className="comment-content-btn-container mx-auto flex w-full flex-col items-start">
-            <div className="comment-rating w-2/3">
+          <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
+            <div className="comment-rating w-full">
               <h1 className="mb-5 font-bold">{review.title}</h1>
 
               <div className="comment-header flex">

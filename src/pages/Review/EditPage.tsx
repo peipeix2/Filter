@@ -70,6 +70,8 @@ const EditPage = () => {
         setTags(doc.data().tags)
         setRevisedMoviesReview('title', doc.data().title)
         setRevisedMoviesReview('review', doc.data().review)
+        setRevisedMoviesReview('rating', doc.data().rating || 0)
+        setHover(doc.data().rating || 0)
       }
     })
   }
@@ -82,9 +84,6 @@ const EditPage = () => {
       setMoviesData(movieInfo)
     }
   }
-
-  if (!revisedMoviesReview) return
-  const content = revisedMoviesReview.review
 
   const editor = useEditor({
     editorProps: {
@@ -104,7 +103,7 @@ const EditPage = () => {
         .extend({
           levels: [1, 2, 3],
           renderHTML({ node, HTMLAttributes }) {
-            const level = this.options.levels.includes(node.attrs.level)
+            const level: any = this.options.levels.includes(node.attrs.level)
               ? node.attrs.level
               : this.options.levels[0]
             const classes: { [index: number]: string } = {
@@ -139,13 +138,17 @@ const EditPage = () => {
         },
       }),
     ],
-    content,
+    content: '',
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       setRevisedMoviesReview('review', html)
       console.log(html)
     },
   })
+
+  useEffect(() => {
+    editor?.commands.setContent(revisedMoviesReview.review)
+  }, [editor])
 
   if (!editor) {
     return null

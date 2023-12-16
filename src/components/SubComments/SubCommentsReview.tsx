@@ -51,6 +51,10 @@ const SubCommentsReview = (Props: SubCommentsState) => {
   }, [])
 
   const handlePostComment = async () => {
+    if (!user.userId) {
+      return toast.error('請先登入後才能留言')
+    }
+
     if (!text || text?.trim().length === 0) {
       toast.error('評論不得為空')
       return

@@ -48,6 +48,9 @@ const Comment = () => {
 
   const navigate = useNavigate()
 
+  const { id } = useParams()
+  const { userId } = useParams()
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collectionGroup(db, 'COMMENTS'),
@@ -57,6 +60,8 @@ const Comment = () => {
             setComment(doc.data())
             setTags(doc.data().tags)
             setRevisedMoviesComment('comment', doc.data().comment)
+            setRevisedMoviesComment('rating', doc.data().rating || 0)
+            setHover(doc.data().rating || 0)
           }
         })
       }
@@ -71,9 +76,6 @@ const Comment = () => {
       getMoviesDetail(comment.movie_id)
     }
   }, [comment])
-
-  const { id } = useParams()
-  const { userId } = useParams()
 
   if (!id) return
   if (!userId) return
@@ -184,7 +186,7 @@ const Comment = () => {
         </div>
 
         <div className="comment-card mx-auto my-5 flex items-start">
-          <div className="avatar-wrapper mt-5 flex">
+          <div className="avatar-wrapper mt-5 flex w-1/4">
             <div
               className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
               style={{
@@ -192,8 +194,8 @@ const Comment = () => {
               }}
             />
           </div>
-          <div className="comment-content-btn-container mx-auto flex w-full flex-col items-start">
-            <div className="comment-rating w-2/3">
+          <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
+            <div className="comment-rating w-full">
               <h1 className="mb-5 font-bold">{comment.title}</h1>
 
               <div className="comment-header flex">
@@ -316,7 +318,7 @@ const Comment = () => {
                               color={
                                 ratingValue <=
                                 (hover || revisedMoviesComment.rating)
-                                  ? 'orange'
+                                  ? '#f46854'
                                   : '#e4e5e9'
                               }
                               onMouseEnter={() => setHover(ratingValue)}
@@ -345,11 +347,15 @@ const Comment = () => {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
+                <Button
+                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+                  variant="flat"
+                  onPress={onClose}
+                >
+                  取消
                 </Button>
                 <Button
-                  color="primary"
+                  className="bg-[#94a3ab] text-white"
                   onPress={onClose}
                   onClick={handleSubmitComment}
                 >
