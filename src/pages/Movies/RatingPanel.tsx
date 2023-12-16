@@ -59,7 +59,7 @@ const RatingPanel = () => {
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
   const [isCardVisible, setIsCardVisible] = useState<boolean>(false)
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
     moviesComment,
@@ -139,6 +139,7 @@ const RatingPanel = () => {
       await addDoc(collection(userRef, user.userId, 'COMMENTS'), commentData)
       await resetMoviesComment()
       await updateMovieRatings()
+      onClose()
     } catch (e) {
       console.error('Error adding document: ', e)
     }
@@ -358,7 +359,7 @@ const RatingPanel = () => {
                 <Button
                   // color="default"
                   className="bg-[#94a3ab] text-white"
-                  onPress={onClose}
+                  // onPress={onClose}
                   onClick={handleSubmitComment}
                 >
                   送出
