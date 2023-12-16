@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { db } from '../../../firebase'
-import { Image, Divider } from '@nextui-org/react'
+import { Image, Divider, User } from '@nextui-org/react'
 import { collection, onSnapshot } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
@@ -8,6 +8,7 @@ import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 import Tag from '../../components/Tag'
+import ActivityEmptyState from '../../components/EmptyStates/ActivityEmptyState'
 
 const Activity = () => {
   const {
@@ -73,6 +74,10 @@ const Activity = () => {
   } else {
     displayComments = userMoviesComments
     displayReviews = userMoviesReviews
+  }
+
+  if (userMoviesComments.length === 0 && userMoviesReviews.length === 0) {
+    return <ActivityEmptyState />
   }
 
   return (
