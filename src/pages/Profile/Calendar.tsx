@@ -10,11 +10,11 @@ import { db } from '../../../firebase'
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
-import { Link } from 'react-router-dom'
 import { Tabs, Tab } from '@nextui-org/react'
 import CalendarEvent from './CalendarEvent'
 import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmptyState'
 import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
+import CalendarSkeleton from '../../components/Skeletons/CalendarSkeleton'
 
 interface CalendarEventState {
   id: string
@@ -43,8 +43,8 @@ interface ExternalEventState {
 
 interface CalendarState {
   weekendsVisible: boolean
-  externalEvents: ExternalEventState[]
-  calendarEvents: CalendarEventState[]
+  externalEvents: ExternalEventState[] | null
+  calendarEvents: CalendarEventState[] | null
 }
 
 const Calendar = () => {
@@ -53,8 +53,8 @@ const Calendar = () => {
   const { user } = useUserStore()
   const [calendarState, setCalendarState] = useState<CalendarState>({
     weekendsVisible: true,
-    externalEvents: [],
-    calendarEvents: [],
+    externalEvents: null,
+    calendarEvents: null,
   })
   const { userId } = useParams()
 
@@ -110,6 +110,7 @@ const Calendar = () => {
     const releaseDate = new Date(
       eventInfo.draggedEl.getAttribute('data-release').replace('-', ',')
     )
+
     if (releaseDate > endDate) {
       alert('該影片尚未上映！')
       eventInfo.revert()
@@ -128,20 +129,26 @@ const Calendar = () => {
       backdrop: eventInfo.draggedEl.getAttribute('data-backdrop'),
       originalTitle: eventInfo.draggedEl.getAttribute('data-originalTitle'),
       releaseDate: eventInfo.draggedEl.getAttribute('data-release'),
-      // end: eventInfo.event.start.toISOString(),
-      // custom: eventInfo.draggedEl.getAttribute('data-custom'),
     }
 
     console.log(newEvent)
     updateScheduledTime(newEvent.id, userId, newEvent.start)
 
     setCalendarState((calendarState) => {
-      return {
-        ...calendarState,
-        externalEvents: calendarState.externalEvents.filter(
-          (movie) => movie.movie_id !== newEvent.id
-        ),
-        calendarEvents: calendarState.calendarEvents.concat(newEvent),
+      if (
+        calendarState &&
+        calendarState.externalEvents &&
+        calendarState.calendarEvents
+      ) {
+        return {
+          ...calendarState,
+          externalEvents: calendarState.externalEvents.filter(
+            (movie) => movie.movie_id !== newEvent.id
+          ),
+          calendarEvents: calendarState.calendarEvents.concat(newEvent),
+        }
+      } else {
+        return calendarState
       }
     })
   }
@@ -166,13 +173,6 @@ const Calendar = () => {
   }
 
   function myDropEvent(info: any) {
-    // console.log(info.oldEvent)
-    // const today = Date.now()
-    // const oldScheduleDate = info.oldEvent._instance.range.start
-    // console.log(oldScheduleDate)
-    // if (oldScheduleDate < today) {
-    //   return info.revert()
-    // }
     const currentUser = user.userId
     if (currentUser !== userId) {
       info.revert()
@@ -184,29 +184,28 @@ const Calendar = () => {
     console.log(newScheduledTime)
 
     updateScheduledTime(movieId, userId, newScheduledTime)
-    const changedEventIndex = calendarState.calendarEvents.findIndex(
-      (element) => element.id === movieId
-    )
-    setCalendarState((calendarState) => {
-      const updatedEvents = [...calendarState.calendarEvents]
-      updatedEvents[changedEventIndex] = {
-        ...updatedEvents[changedEventIndex],
-        start: newScheduledTime,
-        end: newScheduledTime,
-      }
-      return {
-        ...calendarState,
-        calendarEvents: updatedEvents,
-      }
-    })
+    if (calendarState.calendarEvents) {
+      const changedEventIndex = calendarState.calendarEvents.findIndex(
+        (element) => element.id === movieId
+      )
 
-    // alert(
-    //   info.event.title + ' was dropped on ' + info.event.start.toISOString()
-    // )
-
-    // if (!confirm('Are you sure about this change?')) {
-    //   info.revert()
-    // }
+      setCalendarState((calendarState) => {
+        if (calendarState && calendarState.calendarEvents) {
+          const updatedEvents = [...calendarState.calendarEvents]
+          updatedEvents[changedEventIndex] = {
+            ...updatedEvents[changedEventIndex],
+            start: newScheduledTime,
+            end: newScheduledTime,
+          }
+          return {
+            ...calendarState,
+            calendarEvents: updatedEvents,
+          }
+        } else {
+          return calendarState
+        }
+      })
+    }
   }
 
   const handleEventClick = (info: any) => {
@@ -216,6 +215,8 @@ const Calendar = () => {
   }
 
   if (!userId) return
+  if (!calendarState.externalEvents) return <CalendarSkeleton />
+  if (!calendarState.calendarEvents) return <CalendarSkeleton />
 
   return (
     <>
