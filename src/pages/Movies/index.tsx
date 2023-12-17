@@ -7,7 +7,7 @@ import CommentsSection from './CommentsSection'
 import ReviewSection from './ReviewsSection'
 import TagsSection from './TagsSection'
 
-const tabLinks = ['CAST', 'CREW', 'DETAILS', 'RELEASES']
+const tabLinks = ['CAST', 'CREW', 'DETAILS']
 
 const Movies = () => {
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)

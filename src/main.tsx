@@ -40,7 +40,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="cast" element={<Cast />} />
                 <Route path="crew" element={<Crew />} />
                 <Route path="details" element={<Details />} />
-                <Route path="releases" element={<Releases />} />
               </Route>
               <Route path="/review/:id" element={<Review />} />
               <Route path="/review/revision/:reviewId" element={<EditPage />} />
