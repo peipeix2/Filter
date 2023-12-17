@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import useUserStore from '../../store/userStore'
-import { Avatar, Button } from '@nextui-org/react'
+import { Avatar, Button, Tooltip } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { db } from '../../../firebase'
 import {
@@ -192,12 +192,42 @@ const Profile = () => {
   }
 
   const profileTabLinks = [
-    { name: '動態', link: './discover', linkName: 'discover' },
-    { name: '筆記', link: './activity', linkName: 'activity' },
-    { name: '追蹤列表', link: './network', linkName: 'network' },
-    { name: '點讚', link: './likes', linkName: 'likes' },
-    { name: '日曆', link: './calendar', linkName: 'calendar' },
-    { name: '設定', link: './setting', linkName: 'setting' },
+    {
+      name: '動態',
+      link: './discover',
+      linkName: 'discover',
+      description: '查看追蹤用戶的所有評論',
+    },
+    {
+      name: '筆記',
+      link: './activity',
+      linkName: 'activity',
+      description: '你的觀影紀錄、影評',
+    },
+    {
+      name: '追蹤列表',
+      link: './network',
+      linkName: 'network',
+      description: '訂閱及粉絲追蹤狀態',
+    },
+    {
+      name: '點讚',
+      link: './likes',
+      linkName: 'likes',
+      description: '過往曾經的按讚',
+    },
+    {
+      name: '收藏',
+      link: './calendar',
+      linkName: 'calendar',
+      description: '收藏影片與觀影計畫',
+    },
+    {
+      name: '設定',
+      link: './setting',
+      linkName: 'setting',
+      description: '更改頭像及封面圖片',
+    },
   ]
 
   return (
@@ -271,17 +301,25 @@ const Profile = () => {
         <div className="tab mx-auto mb-5 mt-20 flex w-1/2 justify-evenly">
           {profileTabLinks.map((tab, index) => {
             return (
-              <Link
-                to={tab.link}
-                key={index}
-                className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
-                  location.pathname?.includes(tab.linkName)
-                    ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
-                    : 'font-extrabold text-slate-300'
-                }`}
+              <Tooltip
+                content={tab.description}
+                placement="bottom"
+                classNames={{
+                  content: ['bg-[#89a9a6] text-xs text-white'],
+                }}
               >
-                {tab.name}
-              </Link>
+                <Link
+                  to={tab.link}
+                  key={index}
+                  className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
+                    location.pathname?.includes(tab.linkName)
+                      ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
+                      : 'font-extrabold text-slate-300'
+                  }`}
+                >
+                  {tab.name}
+                </Link>
+              </Tooltip>
             )
           })}
         </div>
