@@ -1,6 +1,11 @@
 import { memo, useEffect, useRef } from 'react'
 import { Draggable } from '@fullcalendar/interaction'
 import { Card, CardBody, Image } from '@nextui-org/react'
+import { TiDelete } from 'react-icons/ti'
+import { Link } from 'react-router-dom'
+import useUserStore from '../../store/userStore'
+import { db } from '../../../firebase'
+import { deleteDoc, doc } from 'firebase/firestore'
 
 interface EventState {
   event: {
@@ -16,10 +21,14 @@ interface EventState {
     created_at: Date
     release_date: string
   }
+  calendarState: any
+  setCalendarState: any
 }
 
 const ExternalEvent = memo((Props: EventState) => {
   let elRef = useRef<HTMLDivElement>(null)
+  const user = useUserStore((state) => state.user)
+  const currentUserId = user.userId
 
   useEffect(() => {
     let draggable: any
@@ -34,33 +43,59 @@ const ExternalEvent = memo((Props: EventState) => {
     return () => draggable.destroy()
   })
 
+  const handleDeleteFavorite = async (movieId: string, userId: string) => {
+    Props.setCalendarState((calendarState: any) => {
+      return {
+        ...calendarState,
+        externalEvents: calendarState.externalEvents.filter(
+          (item: any) => item.movie_id !== movieId
+        ),
+      }
+    })
+    const favoriteRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)
+    await deleteDoc(favoriteRef)
+  }
+
   return (
     <Card
       ref={elRef}
-      className="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event mb-1 p-2"
+      className="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event relative z-0 mb-1 min-h-[230px] w-auto min-w-[144px] p-1"
       title={Props.event.movie_title}
       data-id={Props.event.movie_id}
-      data-color="#89a9a6"
+      data-color="#f46854"
       data-release={Props.event.movie_release}
+      data-poster={Props.event.movie_poster}
+      data-originalTitle={Props.event.movie_original_title}
+      data-backdrop={Props.event.movie_backdrop_path}
       style={{
         backgroundColor: '#89a9a6',
         borderColor: '#89a9a6',
         cursor: 'pointer',
       }}
     >
+      {currentUserId === Props.event.user && (
+        <TiDelete
+          className="absolute right-0 top-0 z-10 text-xl"
+          onClick={() =>
+            handleDeleteFavorite(Props.event.movie_id, Props.event.user)
+          }
+        />
+      )}
       <CardBody>
-        <div className="fc-event-main">
-          <div className="flex flex-col items-center">
-            <span className="mb-2 text-xs">
+        <Link to={`/movies/${Props.event.movie_id}`}>
+          <div className="fc-event-main">
+            <div className="flex flex-col items-center">
+              {/* <span className="mb-2 text-xs">
               上映日期：{Props.event.movie_release}
-            </span>
-            <Image
-              src={`https://image.tmdb.org/t/p/w500/${Props.event.movie_poster}`}
-              className="h-auto max-h-[200px] w-auto max-w-[150px]"
-            />
-            <strong>{Props.event.movie_title}</strong>
+            </span> */}
+              <Image
+                src={`https://image.tmdb.org/t/p/w500/${Props.event.movie_poster}`}
+                className="mb-2 h-auto max-h-[150px] w-auto max-w-[100px]"
+              />
+              <strong className="break-words">{Props.event.movie_title}</strong>
+            </div>
           </div>
-        </div>
+        </Link>
       </CardBody>
     </Card>
   )

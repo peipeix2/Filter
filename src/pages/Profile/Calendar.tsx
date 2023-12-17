@@ -10,43 +10,51 @@ import { db } from '../../../firebase'
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
+import { Link } from 'react-router-dom'
+import { Tabs, Tab } from '@nextui-org/react'
+import CalendarEvent from './CalendarEvent'
+import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmptyState'
+import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
+
+interface CalendarEventState {
+  id: string
+  title: string
+  color: string
+  start: string
+  end: string
+  allDay: boolean
+  poster: string
+  backdrop: string
+  originalTitle: string
+  releaseDate: string
+}
+
+interface ExternalEventState {
+  movie_id: string
+  movie_title: string
+  movie_poster: string
+  movie_backdrop_path: string
+  movie_original_title: string
+  created_at: any
+  schedule_time: string
+  movie_release: string
+  user: string
+}
+
+interface CalendarState {
+  weekendsVisible: boolean
+  externalEvents: ExternalEventState[]
+  calendarEvents: CalendarEventState[]
+}
 
 const Calendar = () => {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
   const [activeSchedule, setActiveSchedule] = useState<string>('')
   const { user } = useUserStore()
-  const [calendarState, setCalendarState] = useState({
+  const [calendarState, setCalendarState] = useState<CalendarState>({
     weekendsVisible: true,
-    // externalEvents: [
-    //   { title: 'Art 1', color: '#0097a7', id: 34432, duration: '03:00' },
-    //   { title: 'Art 2', color: '#f44336', id: 323232, duration: '03:00' },
-    //   { title: 'Art 3', color: '#f57f17', id: 1111, duration: '03:00' },
-    //   { title: 'Art 4', color: '#90a4ae', id: 432432, duration: '03:00' },
-    // ],
-    // externalEvents: DUMMY_DATA,
     externalEvents: [],
-    calendarEvents: [
-      {
-        title: 'Event1',
-        color: '#0097a7',
-        id: '123',
-        start: '2023-12-13T16:00:00.000Z',
-      },
-      {
-        title: 'Event2',
-        color: '$90a4ae',
-        id: '1234',
-        start: '2023-12-08T12:30:00',
-      },
-      {
-        title: '旺卡',
-        color: '#89a9a6',
-        start: '2023-12-13T16:00:00.000Z',
-        id: '787699',
-        end: '2023-12-13T16:00:00.000Z',
-        allDay: true,
-      },
-    ],
+    calendarEvents: [],
   })
   const { userId } = useParams()
 
@@ -68,11 +76,15 @@ const Calendar = () => {
               .map((item: any) => {
                 return {
                   title: item.movie_title,
-                  color: '#89a9a6',
+                  color: '#f46854',
                   start: item.schedule_time,
                   id: item.movie_id,
                   end: item.schedule_time,
                   allDay: true,
+                  poster: item.movie_poster,
+                  backdrop: item.movie_backdrop_path,
+                  originalTitle: item.movie_original_title,
+                  releaseDate: item.movie_release,
                 }
               }),
             externalEvents: favoritesList.filter(
@@ -112,6 +124,10 @@ const Calendar = () => {
       start: date.toISOString(),
       end: endDate.toISOString(),
       allDay: true,
+      poster: eventInfo.draggedEl.getAttribute('data-poster'),
+      backdrop: eventInfo.draggedEl.getAttribute('data-backdrop'),
+      originalTitle: eventInfo.draggedEl.getAttribute('data-originalTitle'),
+      releaseDate: eventInfo.draggedEl.getAttribute('data-release'),
       // end: eventInfo.event.start.toISOString(),
       // custom: eventInfo.draggedEl.getAttribute('data-custom'),
     }
@@ -122,6 +138,9 @@ const Calendar = () => {
     setCalendarState((calendarState) => {
       return {
         ...calendarState,
+        externalEvents: calendarState.externalEvents.filter(
+          (movie) => movie.movie_id !== newEvent.id
+        ),
         calendarEvents: calendarState.calendarEvents.concat(newEvent),
       }
     })
@@ -160,13 +179,34 @@ const Calendar = () => {
       return
     }
 
-    alert(
-      info.event.title + ' was dropped on ' + info.event.start.toISOString()
-    )
+    const movieId = info.oldEvent._def.publicId
+    const newScheduledTime = info.event.start.toISOString()
+    console.log(newScheduledTime)
 
-    if (!confirm('Are you sure about this change?')) {
-      info.revert()
-    }
+    updateScheduledTime(movieId, userId, newScheduledTime)
+    const changedEventIndex = calendarState.calendarEvents.findIndex(
+      (element) => element.id === movieId
+    )
+    setCalendarState((calendarState) => {
+      const updatedEvents = [...calendarState.calendarEvents]
+      updatedEvents[changedEventIndex] = {
+        ...updatedEvents[changedEventIndex],
+        start: newScheduledTime,
+        end: newScheduledTime,
+      }
+      return {
+        ...calendarState,
+        calendarEvents: updatedEvents,
+      }
+    })
+
+    // alert(
+    //   info.event.title + ' was dropped on ' + info.event.start.toISOString()
+    // )
+
+    // if (!confirm('Are you sure about this change?')) {
+    //   info.revert()
+    // }
   }
 
   const handleEventClick = (info: any) => {
@@ -179,13 +219,58 @@ const Calendar = () => {
 
   return (
     <>
-      <ScrollShadow orientation="horizontal" className="mb-20" hideScrollBar>
-        <div id="external-events" className="flex gap-2">
-          {calendarState.externalEvents.map((event: any) => (
-            <ExternalEvent key={event.movie_id} event={event} />
-          ))}
-        </div>
-      </ScrollShadow>
+      <Tabs
+        aria-label="Options"
+        radius="full"
+        variant="underlined"
+        fullWidth={true}
+      >
+        <Tab key="unscheduled" title="未排期收藏">
+          <ScrollShadow
+            orientation="horizontal"
+            className="mb-20"
+            hideScrollBar
+          >
+            <div id="external-events" className="flex gap-2">
+              {calendarState.externalEvents.length === 0 ? (
+                <UnshceduledEmptyState />
+              ) : (
+                calendarState.externalEvents.map((event: any) => (
+                  <ExternalEvent
+                    key={event.movie_id}
+                    event={event}
+                    calendarState={calendarState}
+                    setCalendarState={setCalendarState}
+                  />
+                ))
+              )}
+            </div>
+          </ScrollShadow>
+        </Tab>
+        <Tab key="scheduled" title="已排期收藏">
+          <ScrollShadow
+            orientation="horizontal"
+            className="mb-20"
+            hideScrollBar
+          >
+            <div id="calendar-events" className="flex gap-2">
+              {calendarState.calendarEvents.length === 0 ? (
+                <ScheduledEmptyState />
+              ) : (
+                calendarState.calendarEvents.map((event: any) => (
+                  <CalendarEvent
+                    key={event.id}
+                    event={event}
+                    userId={userId}
+                    calendarState={calendarState}
+                    setCalendarState={setCalendarState}
+                  />
+                ))
+              )}
+            </div>
+          </ScrollShadow>
+        </Tab>
+      </Tabs>
       <FullCalendar
         plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
         headerToolbar={{
