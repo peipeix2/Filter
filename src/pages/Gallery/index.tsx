@@ -13,6 +13,7 @@ type QueryKey = [string, number, string, string | null | undefined]
 const Gallery = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [searchParams] = useSearchParams()
+  const [totalPages, setTotalPages] = useState<number>(1)
   const { category } = useParams()
   const searchValue = searchParams.get('keyword')
 
@@ -24,6 +25,8 @@ const Gallery = () => {
         queryKey[1]
       )
       firestore.createMoviesDoc(data.results)
+      const pages = data.total_pages > 5 ? 5 : data.total_pages
+      setTotalPages(pages)
       return data.results
     }
 
@@ -33,6 +36,8 @@ const Gallery = () => {
 
     const data = await api.getMoviesWithCategories(category, queryKey[1])
     firestore.createMoviesDoc(data.results)
+    const pages = data.total_pages > 5 ? 5 : data.total_pages
+    setTotalPages(pages)
     return data.results
   }
 
@@ -44,6 +49,8 @@ const Gallery = () => {
     querySnapshot.forEach((doc) => {
       data.push(doc.data())
     })
+    const pages = Math.ceil(data.length / 20)
+    setTotalPages(pages)
     return data
   }
 
@@ -107,7 +114,7 @@ const Gallery = () => {
         <Pagination
           isCompact
           showControls
-          total={data ? Math.ceil(data.length / 20) : 5}
+          total={totalPages}
           initialPage={1}
           page={currentPage}
           className="mt-20"
