@@ -54,7 +54,7 @@ const CommentsSection = () => {
           <>
             <div className="comment-card my-5 flex items-start" key={index}>
               <div className="avatar-wrapper mx-10 mt-5 flex">
-                <Link to={`/profile/${comment.userId}/activity`}>
+                <Link to={`/profile/${comment.userId}`}>
                   <div
                     className="avatar mx-auto h-10 w-10 rounded-full bg-cover bg-no-repeat"
                     style={{

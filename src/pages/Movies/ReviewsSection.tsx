@@ -51,12 +51,14 @@ const ReviewSection = () => {
           <>
             <div className="comment-card my-5 flex items-start" key={index}>
               <div className="avatar-wrapper mt-5 flex">
-                <div
-                  className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
-                  style={{
-                    backgroundImage: `url(${review.avatar})`,
-                  }}
-                />
+                <Link to={`/profile/${review.userId}`}>
+                  <div
+                    className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
+                    style={{
+                      backgroundImage: `url(${review.avatar})`,
+                    }}
+                  />
+                </Link>
               </div>
               <div className="comment-rating w-2/3">
                 <Link to={`/read/${review.userId}/${review.id}`}>
