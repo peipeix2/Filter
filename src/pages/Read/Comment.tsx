@@ -33,6 +33,8 @@ import { useNavigate } from 'react-router-dom'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 import SubComments from '../../components/SubComments'
 import toast from 'react-hot-toast'
+import { Link } from 'react-router-dom'
+import Tag from '../../components/Tag'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
@@ -178,22 +180,30 @@ const Comment = () => {
 
       <div className="container mx-auto mb-20 w-2/5">
         <div className="title-container my-20 text-center">
-          <h1 className="mr-2 text-2xl font-bold">{comment.movie_title}</h1>
-          <span className="font-['DM_Serif_Display'] text-xl">
-            {comment.movie_original_title}
-          </span>
+          <Link
+            to={`/movies/${comment.movie_id}`}
+            className="hover:text-[#89a9a6]"
+          >
+            <h1 className="mr-2 text-2xl font-bold">{comment.movie_title}</h1>
+            <span className="font-['DM_Serif_Display'] text-xl">
+              {comment.movie_original_title}
+            </span>
+          </Link>
           <Divider />
         </div>
 
         <div className="comment-card mx-auto my-5 flex items-start">
-          <div className="avatar-wrapper mt-5 flex w-1/4">
+          <Link
+            to={`/profile/${comment.userId}`}
+            className="avatar-wrapper mt-5 flex w-1/4"
+          >
             <div
-              className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
+              className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
               style={{
                 backgroundImage: `url(${comment.avatar})`,
               }}
             />
-          </div>
+          </Link>
           <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
             <div className="comment-rating w-full">
               <h1 className="mb-5 font-bold">{comment.title}</h1>
@@ -214,6 +224,14 @@ const Comment = () => {
 
               <div className="comment-content my-5">
                 <p className="break-words leading-10">{comment.comment}</p>
+              </div>
+
+              <div className="tags mb-3">
+                <ul className="flex gap-1">
+                  {comment.tags?.map((tag: string, index: number) => {
+                    return <Tag tag={tag} index={index} />
+                  })}
+                </ul>
               </div>
 
               <div className="like">
