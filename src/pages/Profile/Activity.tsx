@@ -99,7 +99,8 @@ const Activity = () => {
                   src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
                   alt={comment.movie_original_title}
                   isBlurred
-                  className="mb-2"
+                  className="mb-2 min-h-full min-w-full object-cover"
+                  style={{ aspectRatio: '2/3' }}
                 />
                 <CommentStar rating={comment.rating} />
               </Link>
@@ -117,7 +118,7 @@ const Activity = () => {
         {displayReviews.map((review) => {
           return (
             <div
-              className="movie-card flex w-[18%] flex-col gap-3"
+              className="movie-card flex h-full w-[18%] flex-col gap-3"
               key={review.id}
             >
               <Link to={`/read/${review.userId}/${review.id}`}>
@@ -125,7 +126,8 @@ const Activity = () => {
                   src={`https://image.tmdb.org/t/p/w500${review.movie_poster}`}
                   alt={review.movie_original_title}
                   isBlurred
-                  className="mb-2"
+                  className="mb-2 min-h-full min-w-full object-cover"
+                  style={{ aspectRatio: '2/3' }}
                 />
                 <CommentStar rating={review.rating} />
               </Link>

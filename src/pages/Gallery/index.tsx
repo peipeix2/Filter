@@ -84,14 +84,15 @@ const Gallery = () => {
               <Link
                 to={`/movies/${movie.id || movie.movie_id}`}
                 key={index}
-                className="group relative block w-[19%]"
+                className="group relative block h-full w-[19%]"
               >
                 <Image
                   alt="film-poster"
                   src={`https://image.tmdb.org/t/p/w500/${
                     movie.poster_path || movie.movie_poster
                   }`}
-                  className="w-full"
+                  className="min-h-full min-w-full object-cover"
+                  style={{ aspectRatio: '2/3' }}
                 />
                 <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
                   <div className="flex h-full flex-col items-center justify-center gap-3 text-[#475565] opacity-0 group-hover:opacity-100">
