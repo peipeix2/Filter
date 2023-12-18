@@ -6,7 +6,6 @@ import Movies from './pages/Movies/index.tsx'
 import Cast from './pages/Movies/nestedRoutes/Cast.tsx'
 import Crew from './pages/Movies/nestedRoutes/Crew.tsx'
 import Details from './pages/Movies/nestedRoutes/Details.tsx'
-import Releases from './pages/Movies/nestedRoutes/Releases.tsx'
 import Review from './pages/Review/index.jsx'
 import Read from './pages/Read/index.tsx'
 import Comment from './pages/Read/Comment.tsx'
@@ -19,6 +18,7 @@ import Likes from './pages/Profile/Likes.tsx'
 import Setting from './pages/Profile/Setting.tsx'
 import Gallery from './pages/Gallery/index.tsx'
 import Calendar from './pages/Profile/Calendar.tsx'
+import ErrorPage from './pages/ErrorPage/index.tsx'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { NextUIProvider } from '@nextui-org/react'
 import { QueryClientProvider, QueryClient } from 'react-query'
@@ -34,7 +34,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<App />}>
               <Route index element={<Home />} />
-              <Route path="/:category" element={<Gallery />} />
+              <Route path="*" element={<ErrorPage />} />
+              <Route path="/browse/:category" element={<Gallery />} />
               <Route path="/movies/:id" element={<Movies />}>
                 <Route index element={<Cast />} />
                 <Route path="cast" element={<Cast />} />

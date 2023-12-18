@@ -157,7 +157,7 @@ const Home = () => {
         <div className="popular-container mt-20">
           <div className="title-wrapper flex items-center justify-between">
             <p className="text-base font-semibold text-[#475565]">熱門電影</p>
-            <Link to={`/popular`} className="text-sm text-[#475565]">
+            <Link to={`browse/popular`} className="text-sm text-[#475565]">
               More
             </Link>
           </div>
@@ -213,7 +213,7 @@ const Home = () => {
         <div className="now-playing-container mt-20">
           <div className="title-wrapper flex items-center justify-between">
             <p className="text-base font-semibold text-[#475565]">上映電影</p>
-            <Link to={`/now_playing`} className="text-sm text-[#475565]">
+            <Link to={`browse/now_playing`} className="text-sm text-[#475565]">
               More
             </Link>
           </div>
@@ -223,7 +223,7 @@ const Home = () => {
             {nowPlaying.map((movie, index) => {
               return (
                 <Link
-                  to={`/movies/${movie.id}`}
+                  to={`/browse/${movie.id}`}
                   key={index}
                   className="w-23% group relative block h-full"
                 >
