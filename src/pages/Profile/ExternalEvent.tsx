@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
+import toast from 'react-hot-toast'
 
 interface EventState {
   event: {
@@ -43,7 +44,12 @@ const ExternalEvent = memo((Props: EventState) => {
     return () => draggable.destroy()
   })
 
-  const handleDeleteFavorite = async (movieId: string, userId: string) => {
+  const handleDeleteFavorite = async (
+    movieId: string,
+    userId: string,
+    movieTitle: string
+  ) => {
+    toast.success(`已將《${movieTitle}》從收藏中移除`)
     Props.setCalendarState((calendarState: any) => {
       return {
         ...calendarState,
@@ -77,7 +83,11 @@ const ExternalEvent = memo((Props: EventState) => {
         <TiDelete
           className="absolute right-0 top-0 z-10 text-xl"
           onClick={() =>
-            handleDeleteFavorite(Props.event.movie_id, Props.event.user)
+            handleDeleteFavorite(
+              Props.event.movie_id,
+              Props.event.user,
+              Props.event.movie_title
+            )
           }
         />
       )}

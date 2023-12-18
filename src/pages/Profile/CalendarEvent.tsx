@@ -1,5 +1,3 @@
-import { memo, useEffect, useRef } from 'react'
-import { Draggable } from '@fullcalendar/interaction'
 import { Card, CardBody, Image } from '@nextui-org/react'
 import { MdOutlineSchedule } from 'react-icons/md'
 import { TiDelete } from 'react-icons/ti'
@@ -7,6 +5,7 @@ import { Link } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
+import toast from 'react-hot-toast'
 
 interface CalendarEventState {
   userId: string
@@ -35,7 +34,12 @@ const CalendarEvent = (Props: CalendarEventState) => {
     return date.toLocaleDateString('zh-TW')
   }
 
-  const handleDeleteFavorite = async (movieId: string, userId: string) => {
+  const handleDeleteFavorite = async (
+    movieId: string,
+    userId: string,
+    movieTitle: string
+  ) => {
+    toast.success(`已將《${movieTitle}》從收藏中移除`)
     Props.setCalendarState((calendarState: any) => {
       return {
         ...calendarState,
@@ -60,7 +64,13 @@ const CalendarEvent = (Props: CalendarEventState) => {
       {currentUserId === Props.userId && (
         <TiDelete
           className="absolute right-0 top-0 z-10 text-xl"
-          onClick={() => handleDeleteFavorite(Props.event.id, Props.userId)}
+          onClick={() =>
+            handleDeleteFavorite(
+              Props.event.id,
+              Props.userId,
+              Props.event.title
+            )
+          }
         />
       )}
       <CardBody>
