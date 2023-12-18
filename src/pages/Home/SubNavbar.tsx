@@ -1,18 +1,16 @@
 import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { useNavigate } from 'react-router-dom'
-import { Kbd } from '@nextui-org/react'
+import { Select, SelectItem } from '@nextui-org/react'
 
 const SubNavbar = () => {
   const [searchInput, setSearchInput] = useState('')
   const [selectedValue, setSelectedValue] = useState('title')
   const navigate = useNavigate()
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const isEnterKey = e.key === 'Enter'
-    console.log(e.metaKey)
-    if (searchInput.length !== 0 && (e.metaKey || e.ctrlKey) && isEnterKey) {
-      console.log('get')
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (searchInput.length !== 0) {
       if (selectedValue === 'title') {
         navigate(`/search?keyword=${searchInput}`)
       }
@@ -26,8 +24,11 @@ const SubNavbar = () => {
   return (
     <div className="header-search h-12 w-2/3">
       <div className="search-form flex h-12 items-center rounded-lg bg-[#d2d2d2] p-5">
-        <div className="search-form-field flex flex-grow items-center">
-          <button className="search-form-btn">
+        <form
+          onSubmit={(e) => handleSearchSubmit(e)}
+          className="search-form-field flex flex-grow items-center"
+        >
+          <button type="submit" className="search-form-btn">
             <CiSearch size={18} color="#718096" />
           </button>
           <input
@@ -36,27 +37,39 @@ const SubNavbar = () => {
             placeholder="搜尋電影"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            onKeyDown={(e) => handleSearch(e)}
           />
-          <Kbd
-            className="mr-2"
-            keys={['command', 'enter']}
-            classNames={{
-              base: 'bg-[#d2d2d2] text-gray-500 shadow-none border-0',
-            }}
-          ></Kbd>
-        </div>
+        </form>
         <div className="search-form-in-category flex items-center">
           <div className="search-form-separator text-[#9da3ae]">|</div>
           <div className="search-form-dropdown">
-            <select
+            <Select
+              size="sm"
+              className="min-w-[100px]"
+              classNames={{
+                innerWrapper: 'bg-[#d2d2d2]',
+                trigger: [
+                  'data-[hover=true]:bg-[#d2d2d2]',
+                  'bg-[$d2d2d2] border-none shadow-none',
+                ],
+              }}
+              selectedKeys={[selectedValue]}
+              onChange={(e) => setSelectedValue(e.target.value)}
+            >
+              <SelectItem key="title" value="title">
+                片名
+              </SelectItem>
+              <SelectItem key="tag" value="tag">
+                標籤
+              </SelectItem>
+            </Select>
+            {/* <select
               className="focus: border-none bg-[#d2d2d2] px-3 text-sm text-[#222222] outline-none"
               onChange={(e) => setSelectedValue(e.target.value)}
               defaultValue={[selectedValue]}
             >
               <option value="title">片名</option>
               <option value="tag">標籤</option>
-            </select>
+            </select> */}
           </div>
         </div>
       </div>
