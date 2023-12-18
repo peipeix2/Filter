@@ -41,7 +41,9 @@ const SubNavbar = () => {
           <Kbd
             className="mr-2"
             keys={['command', 'enter']}
-            classNames={{ base: 'bg-[#e6e6e6]' }}
+            classNames={{
+              base: 'bg-[#d2d2d2] text-gray-500 shadow-none border-0',
+            }}
           ></Kbd>
         </div>
         <div className="search-form-in-category flex items-center">
