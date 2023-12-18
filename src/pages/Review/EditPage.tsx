@@ -42,6 +42,7 @@ import toast from 'react-hot-toast'
 const EditPage = () => {
   const [moviesData, setMoviesData] = useState<any>([])
   const [review, setReview] = useState<any>([])
+  const [revisedReview, setRevisedReview] = useState<string>('')
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
@@ -141,14 +142,14 @@ const EditPage = () => {
     content: '',
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
-      setRevisedMoviesReview('review', html)
+      setRevisedReview(html)
       console.log(html)
     },
   })
 
   useEffect(() => {
     editor?.commands.setContent(revisedMoviesReview.review)
-  }, [editor])
+  }, [editor, revisedMoviesReview.review])
 
   if (!editor) {
     return null
@@ -218,6 +219,8 @@ const EditPage = () => {
       updated_at: serverTimestamp(),
       tags: tags,
     }
+
+    reviewData.review = revisedReview
 
     try {
       const userRef = collection(db, 'USERS')
