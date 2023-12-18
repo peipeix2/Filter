@@ -81,7 +81,15 @@ const RatingPanel = () => {
       setMoviesData(movies)
     })
 
-    if (!user?.userId) return
+    // if (!user?.userId) return
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return
 
     const unsubsComments = onSnapshot(
       collection(db, 'USERS', userId, 'COMMENTS'),
@@ -106,11 +114,10 @@ const RatingPanel = () => {
     )
 
     return () => {
-      unsubscribe()
       unsubsComments()
       unsubsFavorites()
     }
-  }, [])
+  }, [userId, isLogin])
 
   const handleSubmitComment = async () => {
     if (formInvalid) {
