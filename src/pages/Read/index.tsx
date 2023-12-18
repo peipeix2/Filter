@@ -168,7 +168,7 @@ const Read = () => {
             </div>
 
             {review.userId === user.userId && (
-              <div className="mt-2 flex w-2/3 justify-end gap-2">
+              <div className="mt-2 flex w-full justify-end gap-2">
                 <Link to={`/review/revision/${id}`}>
                   <Button size="sm" className="bg-[#94a3ab] text-white">
                     修改
