@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CiSearch } from 'react-icons/ci'
 import { useNavigate } from 'react-router-dom'
+import { Kbd } from '@nextui-org/react'
 
 const SubNavbar = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -8,7 +9,10 @@ const SubNavbar = () => {
   const navigate = useNavigate()
 
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (searchInput.length !== 0 && e.key === 'Enter') {
+    const isEnterKey = e.key === 'Enter'
+    console.log(e.metaKey)
+    if (searchInput.length !== 0 && (e.metaKey || e.ctrlKey) && isEnterKey) {
+      console.log('get')
       if (selectedValue === 'title') {
         navigate(`/search?keyword=${searchInput}`)
       }
@@ -32,8 +36,13 @@ const SubNavbar = () => {
             placeholder="搜尋電影"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            onKeyUp={(e) => handleSearch(e)}
+            onKeyDown={(e) => handleSearch(e)}
           />
+          <Kbd
+            className="mr-2"
+            keys={['command', 'enter']}
+            classNames={{ base: 'bg-[#e6e6e6]' }}
+          ></Kbd>
         </div>
         <div className="search-form-in-category flex items-center">
           <div className="search-form-separator text-[#9da3ae]">|</div>
