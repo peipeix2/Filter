@@ -223,7 +223,7 @@ const Home = () => {
             {nowPlaying.map((movie, index) => {
               return (
                 <Link
-                  to={`/browse/${movie.id}`}
+                  to={`/movies/${movie.id}`}
                   key={index}
                   className="w-23% group relative block h-full"
                 >
