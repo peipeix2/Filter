@@ -35,6 +35,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<App />}>
               <Route index element={<Home />} />
               <Route path="*" element={<ErrorPage />} />
+              <Route path="/search/" element={<Gallery />} />
+              <Route path="/tag/" element={<Gallery />} />
               <Route path="/browse/:category" element={<Gallery />} />
               <Route path="/movies/:id" element={<Movies />}>
                 <Route index element={<Cast />} />

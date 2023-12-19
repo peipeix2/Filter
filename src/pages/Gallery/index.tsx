@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import api from '../../utils/api'
 import firestore from '../../utils/firestore'
@@ -16,10 +16,11 @@ const Gallery = () => {
   const [totalPages, setTotalPages] = useState<number>(1)
   const { category } = useParams()
   const searchValue = searchParams.get('keyword')
+  const { pathname } = useLocation()
 
-  if (!category) return
+  if (!pathname) return
   const getMoviesFromCategory = async ({ queryKey }: any) => {
-    if (category === 'search' && searchValue) {
+    if (pathname.includes('search') && searchValue) {
       const data = await api.queryMovies(
         encodeURIComponent(searchValue),
         queryKey[1]
@@ -30,9 +31,11 @@ const Gallery = () => {
       return data.results
     }
 
-    if (category === 'tag' && searchValue) {
+    if (pathname.includes('tag') && searchValue) {
       return queryMoviesTag(searchValue)
     }
+
+    if (!category) return
 
     const data = await api.getMoviesWithCategories(category, queryKey[1])
     firestore.createMoviesDoc(data.results)
