@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import useUserStore from '../../store/userStore'
-import { Avatar, Button, Tooltip } from '@nextui-org/react'
+import { Avatar, Button } from '@nextui-org/react'
 import { Link, Outlet, useParams } from 'react-router-dom'
 import { db } from '../../../firebase'
 import {
@@ -193,13 +193,13 @@ const Profile = () => {
 
   const profileTabLinks = [
     {
-      name: '動態',
+      name: '用戶動態',
       link: './discover',
       linkName: 'discover',
       description: '查看追蹤用戶的所有評論',
     },
     {
-      name: '筆記',
+      name: '我的影評',
       link: './activity',
       linkName: 'activity',
       description: '你的觀影紀錄、影評',
@@ -301,25 +301,26 @@ const Profile = () => {
         <div className="tab mx-auto mb-5 mt-20 flex w-1/2 justify-evenly">
           {profileTabLinks.map((tab, index) => {
             return (
-              <Tooltip
-                content={tab.description}
-                placement="bottom"
-                classNames={{
-                  content: ['bg-[#89a9a6] text-xs text-white'],
-                }}
+              // <Tooltip
+              //   delay={1000}
+              //   content={tab.description}
+              //   placement="bottom"
+              //   classNames={{
+              //     content: ['bg-[#89a9a6] text-xs text-white'],
+              //   }}
+              // >
+              <Link
+                to={tab.link}
+                key={index}
+                className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
+                  location.pathname?.includes(tab.linkName)
+                    ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
+                    : 'font-extrabold text-slate-300'
+                }`}
               >
-                <Link
-                  to={tab.link}
-                  key={index}
-                  className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
-                    location.pathname?.includes(tab.linkName)
-                      ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
-                      : 'font-extrabold text-slate-300'
-                  }`}
-                >
-                  {tab.name}
-                </Link>
-              </Tooltip>
+                {tab.name}
+              </Link>
+              // </Tooltip>
             )
           })}
         </div>

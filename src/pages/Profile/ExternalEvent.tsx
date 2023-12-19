@@ -81,7 +81,7 @@ const ExternalEvent = memo((Props: EventState) => {
     >
       {currentUserId === Props.event.user && (
         <TiDelete
-          className="absolute right-0 top-0 z-10 text-xl"
+          className="absolute right-1 top-1 z-10 text-xl"
           onClick={() =>
             handleDeleteFavorite(
               Props.event.movie_id,
@@ -91,10 +91,10 @@ const ExternalEvent = memo((Props: EventState) => {
           }
         />
       )}
-      <CardBody>
+      <CardBody className="h-full">
         <Link to={`/movies/${Props.event.movie_id}`}>
-          <div className="fc-event-main">
-            <div className="flex flex-col items-center">
+          <div className="fc-event-main h-full">
+            <div className="flex h-full flex-col items-center justify-between">
               {/* <span className="mb-2 text-xs">
               上映日期：{Props.event.movie_release}
             </span> */}
@@ -102,7 +102,10 @@ const ExternalEvent = memo((Props: EventState) => {
                 src={`https://image.tmdb.org/t/p/w500/${Props.event.movie_poster}`}
                 className="mb-2 h-auto max-h-[150px] w-auto max-w-[100px]"
               />
-              <strong className="break-words">{Props.event.movie_title}</strong>
+
+              <strong className="mt-3 break-words">
+                {Props.event.movie_title}
+              </strong>
             </div>
           </div>
         </Link>

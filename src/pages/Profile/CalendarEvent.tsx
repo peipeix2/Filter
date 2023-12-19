@@ -63,7 +63,7 @@ const CalendarEvent = (Props: CalendarEventState) => {
     >
       {currentUserId === Props.userId && (
         <TiDelete
-          className="absolute right-0 top-0 z-10 text-xl"
+          className="absolute right-1 top-1 z-10 text-xl"
           onClick={() =>
             handleDeleteFavorite(
               Props.event.id,

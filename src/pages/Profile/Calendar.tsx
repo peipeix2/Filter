@@ -10,11 +10,12 @@ import { db } from '../../../firebase'
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
-import { Tabs, Tab } from '@nextui-org/react'
+import { Tabs, Tab, Chip } from '@nextui-org/react'
 import CalendarEvent from './CalendarEvent'
 import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmptyState'
 import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
 import CalendarSkeleton from '../../components/Skeletons/CalendarSkeleton'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface CalendarEventState {
   id: string
@@ -225,8 +226,31 @@ const Calendar = () => {
         radius="full"
         variant="underlined"
         fullWidth={true}
+        classNames={{
+          tabList: 'gap-6 w-full relative rounded-none p-0 border-divider',
+          cursor: 'w-full bg-[#8acfc8]',
+          tab: 'max-w-fit px-3 h-12',
+          tabContent: 'group-data-[selected=true]:text-[#8acfc8]',
+        }}
       >
-        <Tab key="unscheduled" title="未排期收藏">
+        <Tab
+          key="unscheduled"
+          title={
+            <div className="mb-2 flex items-center gap-2">
+              <span className="font-semibold">未排期收藏</span>
+              <Chip
+                size="sm"
+                variant="faded"
+                classNames={{
+                  base: 'bg-[#89a9a6]/50 border-none',
+                  content: 'drop-shadow shadow-black text-white',
+                }}
+              >
+                {calendarState.externalEvents.length}
+              </Chip>
+            </div>
+          }
+        >
           <ScrollShadow
             orientation="horizontal"
             className="mb-20"
@@ -236,19 +260,44 @@ const Calendar = () => {
               {calendarState.externalEvents.length === 0 ? (
                 <UnshceduledEmptyState />
               ) : (
-                calendarState.externalEvents.map((event: any) => (
-                  <ExternalEvent
-                    key={event.movie_id}
-                    event={event}
-                    calendarState={calendarState}
-                    setCalendarState={setCalendarState}
-                  />
-                ))
+                <AnimatePresence mode="popLayout">
+                  {calendarState.externalEvents.map((event: any) => (
+                    <motion.div
+                      key={event.movie_id}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring' }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                    >
+                      <ExternalEvent
+                        event={event}
+                        calendarState={calendarState}
+                        setCalendarState={setCalendarState}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               )}
             </div>
           </ScrollShadow>
         </Tab>
-        <Tab key="scheduled" title="已排期收藏">
+        <Tab
+          key="scheduled"
+          title={
+            <div className="mb-2 flex items-center gap-2">
+              <span className="font-semibold">已排期收藏</span>
+              <Chip
+                size="sm"
+                variant="faded"
+                classNames={{
+                  base: 'bg-[#89a9a6]/50 border-none',
+                  content: 'drop-shadow shadow-black text-white',
+                }}
+              >
+                {calendarState.calendarEvents.length}
+              </Chip>
+            </div>
+          }
+        >
           <ScrollShadow
             orientation="horizontal"
             className="mb-20"
@@ -258,15 +307,24 @@ const Calendar = () => {
               {calendarState.calendarEvents.length === 0 ? (
                 <ScheduledEmptyState />
               ) : (
-                calendarState.calendarEvents.map((event: any) => (
-                  <CalendarEvent
-                    key={event.id}
-                    event={event}
-                    userId={userId}
-                    calendarState={calendarState}
-                    setCalendarState={setCalendarState}
-                  />
-                ))
+                <AnimatePresence mode="popLayout">
+                  {calendarState.calendarEvents.map((event: any) => (
+                    <motion.div
+                      key={event.id}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring' }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                    >
+                      <CalendarEvent
+                        key={event.id}
+                        event={event}
+                        userId={userId}
+                        calendarState={calendarState}
+                        setCalendarState={setCalendarState}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               )}
             </div>
           </ScrollShadow>
@@ -275,7 +333,7 @@ const Calendar = () => {
       <FullCalendar
         plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
         headerToolbar={{
-          left: 'prev,next',
+          left: 'prev,next,today',
           center: 'title',
           right: 'dayGridMonth,listYear',
         }}
