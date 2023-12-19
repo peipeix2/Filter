@@ -105,7 +105,7 @@ const Network = () => {
         </h1>
         <div className="user-data-panel min-h-[100px]">
           {userFollowings.length === 0 ? (
-            <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
+            <div className="mt-5 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
               <img
                 src="/undraw_conversation_re_c26v.svg"
                 className="h-[150px] w-[150px]"
@@ -188,7 +188,7 @@ const Network = () => {
         </h1>
         <div className="user-data-panel min-h-[100px]">
           {userFollowers.length === 0 ? (
-            <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
+            <div className="mt-5 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
               <img
                 src="/undraw_social_friends_re_7uaa.svg"
                 className="h-[150px] w-[150px]"
