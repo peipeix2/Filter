@@ -1,7 +1,4 @@
-import { useEffect } from 'react'
-import { db } from '../../../firebase'
-import { Image, Divider, User } from '@nextui-org/react'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { Image, Divider } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
@@ -14,9 +11,8 @@ const Activity = () => {
   const {
     user,
     userMoviesComments,
-    setUserMoviesComments,
+
     userMoviesReviews,
-    setUserMoviesReviews,
   } = useUserStore()
   const { userId } = useParams()
 
