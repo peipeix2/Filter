@@ -43,28 +43,28 @@ const PopularComments = () => {
   return (
     <div className="popular-comments-container mt-20 flex justify-between">
       <section className="popular-comments w-2/3">
-        <div className="title-wrapper flex items-center justify-between">
-          <p className="text-base font-semibold text-[#475565]">熱門評論</p>
-        </div>
-        <Divider className="mt-1" />
-
-        {isLoading &&
-          Array(5)
-            .fill('')
-            .map((_, index) => {
-              return (
-                <Skeleton className="w-full max-w-[165px]" key={index}>
-                  <div className="w-full max-w-[165px]"></div>
-                </Skeleton>
-              )
-            })}
-
         <FadeInOnce
           direction="right"
           delay={0.25}
           fullWidth={false}
           padding={false}
         >
+          <div className="title-wrapper flex items-center justify-between">
+            <p className="text-base font-semibold text-[#475565]">熱門評論</p>
+          </div>
+          <Divider className="mt-1" />
+
+          {isLoading &&
+            Array(5)
+              .fill('')
+              .map((_, index) => {
+                return (
+                  <Skeleton className="w-full max-w-[165px]" key={index}>
+                    <div className="w-full max-w-[165px]"></div>
+                  </Skeleton>
+                )
+              })}
+
           {followingUsersComments.map((post: any, index: number) => {
             return (
               <CommentCard
