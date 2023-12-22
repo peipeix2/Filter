@@ -88,7 +88,6 @@ const Read = () => {
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }

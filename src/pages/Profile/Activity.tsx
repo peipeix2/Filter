@@ -18,37 +18,6 @@ const Activity = () => {
 
   if (!userId) return
 
-  // useEffect(() => {
-  //   // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
-  //   const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
-  //   const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
-
-  //   const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
-  //     const comments: any = []
-  //     querySnapshot.forEach((doc) => {
-  //       const commentsData = doc.data()
-  //       const commentsWithId = { ...commentsData, id: doc.id }
-  //       comments.push(commentsWithId)
-  //     })
-  //     setUserMoviesComments(comments)
-  //   })
-
-  //   const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
-  //     const reviews: any = []
-  //     querySnapshot.forEach((doc) => {
-  //       const reviewsData = doc.data()
-  //       const reviewsWithId = { ...reviewsData, id: doc.id }
-  //       reviews.push(reviewsWithId)
-  //     })
-  //     setUserMoviesReviews(reviews)
-  //   })
-
-  //   return () => {
-  //     unsubscribeComments()
-  //     unsubscribeReviews()
-  //   }
-  // }, [])
-
   userMoviesComments.sort((a: any, b: any) => {
     return b.created_at - a.created_at
   })
@@ -80,7 +49,6 @@ const Activity = () => {
     <div>
       <div className="mb-5 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">評論的電影</p>
-        {/* {displayComments.length > 5 && <span>More</span>} */}
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -107,7 +75,6 @@ const Activity = () => {
 
       <div className="mb-5 mt-20 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">撰寫的影評</p>
-        {/* {displayReviews.length > 5 && <span>More</span>} */}
       </div>
 
       <div className="flex gap-2">
@@ -174,9 +141,6 @@ const Activity = () => {
                       </div>
                     ) : (
                       <div className="comment-user mr-2 flex">
-                        {/* <span className="mr-1 text-sm text-slate-400">
-                            評論日期
-                          </span> */}
                         <span className="text-sm font-thin text-slate-800">
                           {comment.created_at.toDate().toDateString()}
                         </span>

@@ -143,7 +143,6 @@ const EditPage = () => {
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       setRevisedReview(html)
-      console.log(html)
     },
   })
 
@@ -202,7 +201,6 @@ const EditPage = () => {
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }

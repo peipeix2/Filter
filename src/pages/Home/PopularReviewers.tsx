@@ -28,9 +28,6 @@ const PopularReviewers = () => {
     <>
       <div className="title-wrapper flex items-center justify-between">
         <p className="text-base font-semibold text-[#475565]">活躍用戶</p>
-        {/* <Link to={`/popular`} className="text-sm text-[#475565]">
-          More
-        </Link> */}
       </div>
       <Divider className="mt-1" />
       {popularUsers.map((user: any, index: number) => {

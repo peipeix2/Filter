@@ -116,7 +116,6 @@ const TextEditor = () => {
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       setMoviesReview('review', html)
-      console.log(html)
     },
   })
 
@@ -204,7 +203,6 @@ const TextEditor = () => {
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }

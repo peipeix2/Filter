@@ -62,14 +62,6 @@ const SubNavbar = () => {
                 標籤
               </SelectItem>
             </Select>
-            {/* <select
-              className="focus: border-none bg-[#d2d2d2] px-3 text-sm text-[#222222] outline-none"
-              onChange={(e) => setSelectedValue(e.target.value)}
-              defaultValue={[selectedValue]}
-            >
-              <option value="title">片名</option>
-              <option value="tag">標籤</option>
-            </select> */}
           </div>
         </div>
       </div>

@@ -123,7 +123,6 @@ const Setting = () => {
     await updateAvatarInCollection('REVIEWS', 'userId', userId, imageURL)
     await updateAvatarInCollection('FOLLOWER', 'userId', userId, imageURL)
     await updateAvatarInCollection('FOLLOWING', 'userId', userId, imageURL)
-    console.log('updated complete')
     toast.success('頭像更新完成！')
   }
 

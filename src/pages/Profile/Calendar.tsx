@@ -132,7 +132,6 @@ const Calendar = () => {
       releaseDate: eventInfo.draggedEl.getAttribute('data-release'),
     }
 
-    console.log(newEvent)
     updateScheduledTime(newEvent.id, userId, newEvent.start)
 
     setCalendarState((calendarState) => {
@@ -182,7 +181,6 @@ const Calendar = () => {
 
     const movieId = info.oldEvent._def.publicId
     const newScheduledTime = info.event.start.toISOString()
-    console.log(newScheduledTime)
 
     updateScheduledTime(movieId, userId, newScheduledTime)
     if (calendarState.calendarEvents) {

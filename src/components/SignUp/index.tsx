@@ -55,7 +55,7 @@ const SignUp = () => {
       toast.success('註冊成功！')
       onClose()
     } catch (error) {
-      console.log(error)
+      console.error(error)
       toast.error('註冊失敗！')
     }
   }
@@ -72,7 +72,7 @@ const SignUp = () => {
         backdrop: DEFAULT_BACKDROP,
       })
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 

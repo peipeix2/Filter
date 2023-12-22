@@ -5,7 +5,6 @@ import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import { query, where, collectionGroup, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
-// import useMoviesDetailStore from '../../store/moviesDetailStore'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useUserStore from '../../store/userStore'
 import parser from 'html-react-parser'
@@ -15,7 +14,6 @@ import { renderComments } from '../../utils/render'
 import Tag from '../../components/Tag'
 
 const ReviewSection = () => {
-  // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const { moviesReviewsForId, setMoviesReviewsForId } = useMoviesReviewStore()
   const user = useUserStore((state) => state.user)
 

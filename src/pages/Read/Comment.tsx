@@ -126,7 +126,6 @@ const Comment = () => {
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }
@@ -161,7 +160,6 @@ const Comment = () => {
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }

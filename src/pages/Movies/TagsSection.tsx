@@ -46,7 +46,6 @@ const TagsSection = () => {
       const commentData = doc.data()
       const commentWithId = { ...commentData, id: doc.id }
       commentsArray.push(commentWithId)
-      console.log('get')
     })
     setMoviesComments(commentsArray)
   }

@@ -22,7 +22,6 @@ const Network = () => {
 
   useEffect(() => {
     if (user.userId) {
-      console.log(!user.userId)
       userFollowingRef = collection(db, 'USERS', user.userId, 'FOLLOWING')
     } else {
       userFollowingRef = collection(db, 'USERS', 'guest', 'FOLLOWING')

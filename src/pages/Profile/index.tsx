@@ -299,14 +299,6 @@ const Profile = () => {
         <div className="tab mx-auto mb-5 mt-20 flex w-1/2 justify-evenly">
           {profileTabLinks.map((tab, index) => {
             return (
-              // <Tooltip
-              //   delay={1000}
-              //   content={tab.description}
-              //   placement="bottom"
-              //   classNames={{
-              //     content: ['bg-[#89a9a6] text-xs text-white'],
-              //   }}
-              // >
               <Link
                 to={tab.link}
                 key={index}
@@ -318,12 +310,9 @@ const Profile = () => {
               >
                 {tab.name}
               </Link>
-              // </Tooltip>
             )
           })}
         </div>
-
-        {/* <Divider className="mx-auto w-1/2" /> */}
 
         <div className="mx-auto mt-20 w-3/5">
           <Outlet />

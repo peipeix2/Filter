@@ -11,7 +11,6 @@ import toast from 'react-hot-toast'
 interface EventState {
   event: {
     movie_title: string
-    // color: string
     movie_id: string
     movie_original_title: string
     schedule_time: string
@@ -95,9 +94,6 @@ const ExternalEvent = memo((Props: EventState) => {
         <Link to={`/movies/${Props.event.movie_id}`}>
           <div className="fc-event-main h-full">
             <div className="flex h-full flex-col items-center justify-between">
-              {/* <span className="mb-2 text-xs">
-              上映日期：{Props.event.movie_release}
-            </span> */}
               <Image
                 src={`https://image.tmdb.org/t/p/w500/${Props.event.movie_poster}`}
                 className="mb-2 h-auto max-h-[150px] w-auto max-w-[100px]"

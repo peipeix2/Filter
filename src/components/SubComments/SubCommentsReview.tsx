@@ -92,10 +92,9 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         { comments_count: subComments.length + 1 },
         { merge: true }
       )
-      console.log('Add subComment successfully.')
       setText('')
     } catch (err) {
-      console.log('Error', err)
+      console.error('Error', err)
     }
   }
 
@@ -137,7 +136,7 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         prev.filter((id: string) => id !== subCommentId)
       )
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -167,7 +166,7 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         { merge: true }
       )
     } catch (err) {
-      console.log('Error', err)
+      console.error('Error', err)
     }
   }
 
