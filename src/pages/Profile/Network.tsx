@@ -130,7 +130,6 @@ const Network = () => {
                       {user.userId !== profileUser.userId && isLogin && (
                         <Button
                           size="sm"
-                          // className="ml-5"
                           variant="shadow"
                           className={`ml-5 ${
                             isUserFollowed(profileUser.userId)
@@ -139,13 +138,6 @@ const Network = () => {
                                 : 'bg-[#89a9a6] tracking-wider text-white'
                               : 'bg-[#f46854] tracking-wider text-white'
                           }`}
-                          // color={
-                          //   isUserFollowed(profileUser.userId)
-                          //     ? userHoverStates[profileUser.userId]
-                          //       ? 'danger'
-                          //       : 'success'
-                          //     : 'primary'
-                          // }
                           onClick={() =>
                             handleFollowUser(
                               profileUser.userId,
@@ -214,7 +206,6 @@ const Network = () => {
                       {user.userId !== profileUser.userId && isLogin && (
                         <Button
                           size="sm"
-                          // className="ml-5"
                           variant="shadow"
                           className={`ml-5 ${
                             isUserFollowed(profileUser.userId)
@@ -223,13 +214,6 @@ const Network = () => {
                                 : 'bg-[#89a9a6] tracking-wider text-white'
                               : 'bg-[#f46854] tracking-wider text-white'
                           }`}
-                          // color={
-                          //   isUserFollowed(profileUser.userId)
-                          //     ? userHoverStates[profileUser.userId]
-                          //       ? 'danger'
-                          //       : 'success'
-                          //     : 'primary'
-                          // }
                           onClick={() =>
                             handleFollowUser(
                               profileUser.userId,

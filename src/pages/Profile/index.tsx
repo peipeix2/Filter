@@ -134,6 +134,7 @@ const Profile = () => {
   }, [userId])
 
   const location = useLocation()
+  const isCurrentUser = userId === user.userId
 
   if (!profileUser) {
     return (
@@ -247,7 +248,7 @@ const Profile = () => {
                 {profileUser.username}
               </p>
             </div>
-            {userId !== user.userId && isLogin && (
+            {!isCurrentUser && isLogin && (
               <Button
                 size="sm"
                 variant="shadow"
@@ -258,9 +259,6 @@ const Profile = () => {
                       : 'bg-[#89a9a6] tracking-wider text-white'
                     : 'bg-[#f46854] tracking-wider text-white'
                 }`}
-                // color={
-                //   isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'
-                // }
                 onClick={() => handleFollowUser(userId, user.userId)}
                 onMouseEnter={() => setIsHoverBtn(true)}
                 onMouseLeave={() => setIsHoverBtn(false)}
