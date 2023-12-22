@@ -1,10 +1,7 @@
-import { Image, Divider } from '@nextui-org/react'
+import { Image } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt } from 'react-icons/fa'
-import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
-import Tag from '../../components/Tag'
 import ActivityEmptyState from '../../components/EmptyStates/ActivityEmptyState'
 
 const Activity = () => {
@@ -99,7 +96,7 @@ const Activity = () => {
         })}
       </div>
 
-      <div className="mb-5 mt-20 flex w-full justify-between">
+      {/* <div className="mb-5 mt-20 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">最新評論</p>
       </div>
 
@@ -183,7 +180,7 @@ const Activity = () => {
             <Divider />
           </div>
         )
-      })}
+      })} */}
     </div>
   )
 }
