@@ -37,10 +37,12 @@ import { useNavigate, useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
+import toast from 'react-hot-toast'
 
 const EditPage = () => {
   const [moviesData, setMoviesData] = useState<any>([])
   const [review, setReview] = useState<any>([])
+  const [revisedReview, setRevisedReview] = useState<string>('')
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
@@ -69,6 +71,8 @@ const EditPage = () => {
         setTags(doc.data().tags)
         setRevisedMoviesReview('title', doc.data().title)
         setRevisedMoviesReview('review', doc.data().review)
+        setRevisedMoviesReview('rating', doc.data().rating || 0)
+        setHover(doc.data().rating || 0)
       }
     })
   }
@@ -81,9 +85,6 @@ const EditPage = () => {
       setMoviesData(movieInfo)
     }
   }
-
-  if (!revisedMoviesReview) return
-  const content = revisedMoviesReview.review
 
   const editor = useEditor({
     editorProps: {
@@ -103,7 +104,7 @@ const EditPage = () => {
         .extend({
           levels: [1, 2, 3],
           renderHTML({ node, HTMLAttributes }) {
-            const level = this.options.levels.includes(node.attrs.level)
+            const level: any = this.options.levels.includes(node.attrs.level)
               ? node.attrs.level
               : this.options.levels[0]
             const classes: { [index: number]: string } = {
@@ -138,13 +139,17 @@ const EditPage = () => {
         },
       }),
     ],
-    content,
+    content: '',
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
-      setRevisedMoviesReview('review', html)
+      setRevisedReview(html)
       console.log(html)
     },
   })
+
+  useEffect(() => {
+    editor?.commands.setContent(revisedMoviesReview.review)
+  }, [editor, revisedMoviesReview.review])
 
   if (!editor) {
     return null
@@ -205,7 +210,7 @@ const EditPage = () => {
 
   const handleSubmitReview = async () => {
     if (formInvalid) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -215,12 +220,14 @@ const EditPage = () => {
       tags: tags,
     }
 
+    reviewData.review = revisedReview
+
     try {
       const userRef = collection(db, 'USERS')
       await setDoc(doc(userRef, user.userId, 'REVIEWS', reviewId), reviewData, {
         merge: true,
       }),
-        window.alert('修改已送出！')
+        toast.success('修改已送出！')
       await updateMovieRatings()
       navigate(`/movies/${review.movie_id}`)
     } catch (e) {
@@ -259,7 +266,7 @@ const EditPage = () => {
                 size={30}
                 color={
                   ratingValue <= (hover || revisedMoviesReview.rating)
-                    ? '#89a9a6'
+                    ? '#f46854'
                     : '#e4e5e9'
                 }
                 onMouseEnter={() => setHover(ratingValue)}
@@ -273,7 +280,7 @@ const EditPage = () => {
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={
-            editor.isActive('bold') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('bold') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaBold />
@@ -281,7 +288,7 @@ const EditPage = () => {
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={
-            editor.isActive('italic') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('italic') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaItalic />
@@ -289,7 +296,7 @@ const EditPage = () => {
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={
-            editor.isActive('underline') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('underline') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaUnderline />
@@ -300,7 +307,7 @@ const EditPage = () => {
           }
           className={
             editor.isActive('heading', { level: 1 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -312,7 +319,7 @@ const EditPage = () => {
           }
           className={
             editor.isActive('heading', { level: 2 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -324,7 +331,7 @@ const EditPage = () => {
           }
           className={
             editor.isActive('heading', { level: 3 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -333,20 +340,24 @@ const EditPage = () => {
         <button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={
-            editor.isActive('blockquote') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('blockquote') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaQuoteLeft />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive('orderedList') ? 'is-active' : ''}
+          className={
+            editor.isActive('orderedList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
+          }
         >
           <AiOutlineOrderedList className="text-xl font-bold" />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive('bulletList') ? 'is-active' : ''}
+          className={
+            editor.isActive('bulletList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
+          }
         >
           <AiOutlineUnorderedList className="text-xl font-bold" />
         </button>
@@ -402,7 +413,11 @@ const EditPage = () => {
       </div>
 
       <div className="submit-btn mt-5 flex justify-end">
-        <Button size="lg" className="w-[200px]" onClick={handleSubmitReview}>
+        <Button
+          size="lg"
+          className="w-[100px] bg-[#89a9a6] text-white"
+          onClick={handleSubmitReview}
+        >
           送出
         </Button>
       </div>

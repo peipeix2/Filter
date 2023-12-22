@@ -7,7 +7,7 @@ import CommentsSection from './CommentsSection'
 import ReviewSection from './ReviewsSection'
 import TagsSection from './TagsSection'
 
-const tabLinks = ['CAST', 'CREW', 'DETAILS', 'RELEASES']
+const tabLinks = ['CAST', 'CREW', 'DETAILS']
 
 const Movies = () => {
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
@@ -38,7 +38,7 @@ const Movies = () => {
         className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
       />
       <section className="film-introduction mx-auto mt-10 flex w-4/5">
-        <div className="film-poster w-1/4">
+        <div className="film-poster sticky top-32 h-[500px] w-1/4">
           <Image
             src={`https://image.tmdb.org/t/p/w500${moviesDetail.poster_path}`}
             alt={moviesDetail.original_title}
@@ -83,9 +83,9 @@ const Movies = () => {
                       key={index}
                       className={`mr-2 font-['DM_Serif_Display'] text-sm tracking-wide ${
                         location.pathname?.includes(tab.toLowerCase())
-                          ? 'bg-slate-50 text-[#222222]'
-                          : 'bg-transparent text-slate-300'
-                      }  rounded p-2 `}
+                          ? 'border-b-2 border-gray-500 text-gray-500'
+                          : 'text-gray-500'
+                      }  p-2 `}
                     >
                       {tab}
                     </Link>

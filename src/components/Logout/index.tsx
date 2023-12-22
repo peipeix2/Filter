@@ -1,7 +1,7 @@
 import { auth } from '../../../firebase'
 import { signOut } from 'firebase/auth'
 import useUserStore from '../../store/userStore'
-import { IoLogOutSharp } from 'react-icons/io5'
+import toast from 'react-hot-toast'
 
 const Logout = () => {
   const resetUser = useUserStore((state) => state.resetUser)
@@ -9,11 +9,15 @@ const Logout = () => {
   const handleLogout = async () => {
     await signOut(auth)
     resetUser()
-    localStorage.removeItem("user")
-    alert('You has been logged out.')
+    localStorage.removeItem('user')
+    toast.success('You has been logged out.')
   }
 
-  return <IoLogOutSharp className='text-3xl text-zinc-400' onClick={handleLogout} />
+  return (
+    <div className="w-full" onClick={handleLogout}>
+      <span>登出</span>
+    </div>
+  )
 }
 
 export default Logout

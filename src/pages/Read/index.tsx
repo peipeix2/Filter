@@ -16,11 +16,14 @@ import useUserStore from '../../store/userStore'
 import Like from '../../components/Like'
 import SubCommentsReview from '../../components/SubComments/SubCommentsReview'
 import { Divider, Button } from '@nextui-org/react'
+import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
   const [moviesData, setMoviesData] = useState<any>([])
   const [review, setReview] = useState<any>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -59,10 +62,12 @@ const Read = () => {
 
   const handleDeleteReview = async () => {
     try {
+      setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'REVIEWS', id)
       await deleteDoc(userRef)
       await updateDeleteMovieRatings()
-      alert('評論已刪除！')
+      setIsLoading(false)
+      toast.success('評論已刪除！')
       navigate(`/movies/${review.movie_id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
@@ -75,8 +80,10 @@ const Read = () => {
         doc(db, 'MOVIES', `${review.movie_id}`),
         {
           rating:
-            (moviesData.rating * moviesData.ratings_count - review.rating) /
-            (moviesData.ratings_count - 1),
+            moviesData.ratings_count - 1 === 0
+              ? 0
+              : (moviesData.rating * moviesData.ratings_count - review.rating) /
+                (moviesData.ratings_count - 1),
           ratings_count: moviesData.ratings_count - 1,
         },
         { merge: true }
@@ -100,24 +107,32 @@ const Read = () => {
 
       <div className="container mx-auto mb-20 w-2/5">
         <div className="title-container my-20 text-center">
-          <h1 className="mr-2 text-2xl font-bold">{review.movie_title}</h1>
-          <span className="font-['DM_Serif_Display'] text-xl">
-            {review.movie_original_title}
-          </span>
+          <Link
+            to={`/movies/${review.movie_id}`}
+            className="hover:text-[#89a9a6]"
+          >
+            <h1 className="mr-2 text-2xl font-bold">{review.movie_title}</h1>
+            <span className="font-['DM_Serif_Display'] text-xl">
+              {review.movie_original_title}
+            </span>
+          </Link>
           <Divider />
         </div>
 
         <div className="comment-card mx-auto my-5 flex items-start">
-          <div className="avatar-wrapper mt-5 flex">
+          <Link
+            to={`/profile/${review.userId}`}
+            className="avatar-wrapper mt-5 flex w-1/4"
+          >
             <div
-              className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
+              className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
               style={{
                 backgroundImage: `url(${review.avatar})`,
               }}
             />
-          </div>
-          <div className="comment-content-btn-container mx-auto flex w-full items-center justify-between">
-            <div className="comment-rating">
+          </Link>
+          <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
+            <div className="comment-rating w-full">
               <h1 className="mb-5 font-bold">{review.title}</h1>
 
               <div className="comment-header flex">
@@ -128,14 +143,14 @@ const Read = () => {
                   </span>
                 </div>
                 <CommentStar rating={review.rating} />
-                <div className="comment-count ml-2 flex items-center">
+                <div className="comment-count ml-2 flex items-center text-slate-400">
                   <FaCommentAlt className="text-xs" />
                   <span className="ml-1 text-sm">{review.comments_count}</span>
                 </div>
               </div>
 
               <div className="comment-content my-5">
-                <p className="leading-10">
+                <p className="break-words leading-10">
                   {review.review ? parser(review.review) : null}
                 </p>
               </div>
@@ -153,11 +168,18 @@ const Read = () => {
             </div>
 
             {review.userId === user.userId && (
-              <div className="flex gap-2">
-                <Button size="sm">
-                  <a href={`/review/revision/${id}`}>修改</a>
-                </Button>
-                <Button size="sm" color="danger" onClick={handleDeleteReview}>
+              <div className="mt-2 flex w-full justify-end gap-2">
+                <Link to={`/review/revision/${id}`}>
+                  <Button size="sm" className="bg-[#94a3ab] text-white">
+                    修改
+                  </Button>
+                </Link>
+                <Button
+                  size="sm"
+                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+                  onClick={handleDeleteReview}
+                  isLoading={isLoading}
+                >
                   刪除
                 </Button>
               </div>

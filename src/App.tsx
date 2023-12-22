@@ -3,7 +3,8 @@ import { Outlet } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import useUserStore from './store/userStore'
-// import ScrollToTop from './components/ScrollToTop/index.tsx'
+import ScrollToTop from './components/ScrollToTop/index.tsx'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
   const { isLogin, checkIfLogin, getUserProfile } = useUserStore()
@@ -17,7 +18,8 @@ function App() {
 
   return (
     <>
-      {/* <ScrollToTop /> */}
+      <Toaster />
+      <ScrollToTop />
       <Header />
       <Outlet />
       <Footer />

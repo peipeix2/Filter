@@ -1,6 +1,6 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../../firebase';
-import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../../../firebase'
+import { useState } from 'react'
 import {
   Modal,
   ModalContent,
@@ -11,24 +11,32 @@ import {
   useDisclosure,
   Input,
 } from '@nextui-org/react'
-import SignUp from '../SignUp';
+import SignUp from '../SignUp'
+import toast from 'react-hot-toast'
 
 const SignIn = () => {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
   const handleSignIn = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password)
+      toast.success('登入成功')
+      onClose()
     } catch (error) {
-      console.log(error)
+      toast.error('登入失敗，帳號密碼錯誤')
+      setPassword('')
     }
   }
 
   return (
     <>
-      <span onClick={onOpen} color="primary">
+      <span
+        onClick={onOpen}
+        color="primary"
+        className="cursor-pointer hover:text-gray-500"
+      >
         Sign In
       </span>
       <Modal
@@ -58,7 +66,7 @@ const SignIn = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <div>
-                  <span>沒有帳號？點擊註冊</span>
+                  <span className="mr-2">沒有帳號？點擊註冊</span>
                   <SignUp />
                 </div>
               </ModalBody>
@@ -69,7 +77,6 @@ const SignIn = () => {
                 </Button>
                 <Button
                   color="default"
-                  onPress={onClose}
                   className="bg-slate-600 text-white"
                   onClick={handleSignIn}
                 >

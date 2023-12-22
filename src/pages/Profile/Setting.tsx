@@ -25,6 +25,7 @@ import {
 import { auth } from '../../../firebase'
 import { updateProfile } from 'firebase/auth'
 import { useParams } from 'react-router-dom'
+import toast from 'react-hot-toast'
 
 const Setting = () => {
   const { user } = useUserStore()
@@ -123,7 +124,7 @@ const Setting = () => {
     await updateAvatarInCollection('FOLLOWER', 'userId', userId, imageURL)
     await updateAvatarInCollection('FOLLOWING', 'userId', userId, imageURL)
     console.log('updated complete')
-    alert('頭像更新完成！')
+    toast.success('頭像更新完成！')
   }
 
   const handleBackdropUpload = async (image: any, userId: string) => {
@@ -131,7 +132,7 @@ const Setting = () => {
 
     const userRef = doc(db, 'USERS', userId)
     await setDoc(userRef, { backdrop: imageURL }, { merge: true })
-    alert('Cover Photo更新完成！')
+    toast.success('Cover Photo更新完成！')
   }
 
   const handleBackdropChange = (event: any) => {

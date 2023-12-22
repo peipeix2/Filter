@@ -13,6 +13,7 @@ import SignIn from '../SignIn'
 import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
 import SubNavbar from '../../pages/Home/SubNavbar'
+import { Link } from 'react-router-dom'
 
 function Header() {
   const { user, isLogin } = useUserStore()
@@ -21,19 +22,20 @@ function Header() {
 
   return (
     <Navbar
-      className="items-center bg-white px-32"
+      className="items-center bg-white px-32 shadow-lg"
       maxWidth="full"
       height="90px"
-      position="static"
+      position="sticky"
+      isBordered
     >
       <NavbarBrand>
-        <a href="/">
+        <Link to="/">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/filter-14ea1.appspot.com/o/Filter-logos_transparent_cut.png?alt=media&token=d3119f34-30f8-4afe-8e1c-6e74367acf7c"
             alt="site-logo"
             className="h-auto w-[300px]"
           />
-        </a>
+        </Link>
       </NavbarBrand>
 
       <NavbarContent className="flex w-2/3 items-center gap-5" justify="end">
@@ -60,7 +62,7 @@ function Header() {
               </DropdownTrigger>
               <DropdownMenu aria-label="Profile Actions" variant="flat">
                 <DropdownItem key="profile" className="h-14 gap-2">
-                  <p className="font-semibold">Signed in as {user.username}</p>
+                  <p className="font-semibold">歡迎你 {user.username}</p>
                   <p className="font-semibold">{user.email}</p>
                 </DropdownItem>
                 <DropdownItem
@@ -69,9 +71,11 @@ function Header() {
                 >
                   個人頁面
                 </DropdownItem>
+                <DropdownItem key="logout" color="danger">
+                  <Logout />
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
-            <Logout />
           </>
         )}
       </NavbarContent>

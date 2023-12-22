@@ -12,6 +12,7 @@ import {
   QuerySnapshot,
 } from 'firebase/firestore'
 import { useLocation } from 'react-router-dom'
+import { Skeleton } from '@nextui-org/react'
 
 interface UserState {
   userId: string
@@ -33,11 +34,15 @@ const Profile = () => {
     setUserFollowings,
     setUserFollowers,
     isLogin,
+    setUserMoviesComments,
+    setUserMoviesReviews,
   } = useUserStore()
   const { userId } = useParams()
   let profileUserFollowerRef: any
   let profileUserFollowingRef: any
   let docRef: any
+
+  if (!userId) return
 
   useEffect(() => {
     if (userId) {
@@ -97,18 +102,56 @@ const Profile = () => {
     }
   }, [user.userId])
 
+  useEffect(() => {
+    // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+    const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
+    const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
+
+    const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
+      const comments: any = []
+      querySnapshot.forEach((doc) => {
+        const commentsData = doc.data()
+        const commentsWithId = { ...commentsData, id: doc.id }
+        comments.push(commentsWithId)
+      })
+      setUserMoviesComments(comments)
+    })
+
+    const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
+      const reviews: any = []
+      querySnapshot.forEach((doc) => {
+        const reviewsData = doc.data()
+        const reviewsWithId = { ...reviewsData, id: doc.id }
+        reviews.push(reviewsWithId)
+      })
+      setUserMoviesReviews(reviews)
+    })
+
+    return () => {
+      unsubscribeComments()
+      unsubscribeReviews()
+    }
+  }, [userId])
+
   const location = useLocation()
+  const isCurrentUser = userId === user.userId
 
-  // const fetchUser = async (userId: string) => {
-  //   const docRef = doc(db, 'USERS', userId)
-  //   const docSnap = await getDoc(docRef)
-  //   if (docSnap.exists()) {
-  //     setProfileUser(docSnap.data())
-  //   }
-  // }
+  if (!profileUser) {
+    return (
+      <div>
+        <Skeleton className="w-100% h-[500px]"></Skeleton>
+        <Skeleton className="profile mx-auto mt-10 flex w-4/5 flex-col">
+          <Skeleton className="header flex w-full items-center justify-between">
+            <Skeleton className="profile flex items-center">
+              <Avatar size="lg" />
+              <Skeleton className="ml-3 h-4 w-1/5"></Skeleton>
+            </Skeleton>
+          </Skeleton>
+        </Skeleton>
+      </div>
+    )
+  }
 
-  if (!profileUser) return
-  // if (!user.userId) return
   if (!userId) return
 
   const handleFollowUser = async (
@@ -150,12 +193,42 @@ const Profile = () => {
   }
 
   const profileTabLinks = [
-    { name: '動態', link: './discover', linkName: 'discover' },
-    { name: '筆記', link: './activity', linkName: 'activity' },
-    { name: '追蹤列表', link: './network', linkName: 'network' },
-    { name: '點讚', link: './likes', linkName: 'likes' },
-    { name: '日曆', link: './calender', linkName: 'calender' },
-    { name: '設定', link: './setting', linkName: 'setting' },
+    {
+      name: '用戶動態',
+      link: './discover',
+      linkName: 'discover',
+      description: '查看追蹤用戶的所有評論',
+    },
+    {
+      name: '我的影評',
+      link: './activity',
+      linkName: 'activity',
+      description: '你的觀影紀錄、影評',
+    },
+    {
+      name: '追蹤列表',
+      link: './network',
+      linkName: 'network',
+      description: '訂閱及粉絲追蹤狀態',
+    },
+    {
+      name: '點讚',
+      link: './likes',
+      linkName: 'likes',
+      description: '過往曾經的按讚',
+    },
+    {
+      name: '收藏',
+      link: './calendar',
+      linkName: 'calendar',
+      description: '收藏影片與觀影計畫',
+    },
+    {
+      name: '設定',
+      link: './setting',
+      linkName: 'setting',
+      description: '更改頭像及封面圖片',
+    },
   ]
 
   return (
@@ -175,13 +248,17 @@ const Profile = () => {
                 {profileUser.username}
               </p>
             </div>
-            {userId !== user.userId && isLogin && (
+            {!isCurrentUser && isLogin && (
               <Button
                 size="sm"
-                className="ml-5"
-                color={
-                  isFollowing ? (isHoverBtn ? 'danger' : 'success') : 'primary'
-                }
+                variant="shadow"
+                className={`ml-5 ${
+                  isFollowing
+                    ? isHoverBtn
+                      ? 'bg-[#bf2e5c] tracking-wider text-white'
+                      : 'bg-[#89a9a6] tracking-wider text-white'
+                    : 'bg-[#f46854] tracking-wider text-white'
+                }`}
                 onClick={() => handleFollowUser(userId, user.userId)}
                 onMouseEnter={() => setIsHoverBtn(true)}
                 onMouseLeave={() => setIsHoverBtn(false)}
@@ -191,27 +268,27 @@ const Profile = () => {
             )}
           </div>
 
-          <div className="follows-data flex gap-2">
+          <div className="follows-data flex gap-8">
             <div className="comments-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">評論數</span>
+              <span className="text-sm text-slate-300">評論</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {userMoviesComments && userMoviesComments.length}
               </span>
             </div>
             <div className="reviews-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">影評數</span>
+              <span className="text-sm text-slate-300">影評</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {userMoviesReviews && userMoviesReviews.length}
               </span>
             </div>
             <div className="followers-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">追蹤人數</span>
+              <span className="text-sm text-slate-300">追蹤</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {followingCount}
               </span>
             </div>
             <div className="following-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">粉絲人數</span>
+              <span className="text-sm text-slate-300">粉絲</span>
               <span className="text-2xl font-extrabold text-[#89a9a6]">
                 {followersCount}
               </span>
@@ -222,6 +299,14 @@ const Profile = () => {
         <div className="tab mx-auto mb-5 mt-20 flex w-1/2 justify-evenly">
           {profileTabLinks.map((tab, index) => {
             return (
+              // <Tooltip
+              //   delay={1000}
+              //   content={tab.description}
+              //   placement="bottom"
+              //   classNames={{
+              //     content: ['bg-[#89a9a6] text-xs text-white'],
+              //   }}
+              // >
               <Link
                 to={tab.link}
                 key={index}
@@ -233,6 +318,7 @@ const Profile = () => {
               >
                 {tab.name}
               </Link>
+              // </Tooltip>
             )
           })}
         </div>

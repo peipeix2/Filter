@@ -107,11 +107,14 @@ const DiscoverLikeBtn = (Props: LikeState) => {
   return (
     <div className="like-btn flex items-center">
       <FaHeart
-        className={
-          Props.isLiked
-            ? 'mr-1 text-xs text-red-500'
-            : 'mr-1 text-xs text-slate-800'
-        }
+        className={`
+          hover:cursor-pointer
+          ${
+            Props.isLiked
+              ? 'mr-1 text-xs text-red-500'
+              : 'mr-1 text-xs text-slate-800'
+          }
+        `}
         onClick={handleLikeClick}
       />
       <span className="mr-2 text-xs text-slate-800">

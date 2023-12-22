@@ -66,9 +66,9 @@ interface userStoreState {
   setUserMoviesComments: (userMoviesComments: userMoviesCommentsState) => void
   userMoviesReviews: userMoviesReviewsState[]
   setUserMoviesReviews: (userMoviesReviews: userMoviesReviewsState) => void
-  userFollowings: userState[]
+  userFollowings: userState[] | null
   setUserFollowings: (userFollowings: userState) => void
-  userFollowers: userState[]
+  userFollowers: userState[] | null
   setUserFollowers: (userFollowers: userState) => void
 }
 
@@ -120,10 +120,10 @@ const useUserStore = create<userStoreState>((set) => ({
   userMoviesReviews: [],
   setUserMoviesReviews: (userMoviesReviews: any) =>
     set(() => ({ userMoviesReviews: userMoviesReviews })),
-  userFollowings: [],
+  userFollowings: null,
   setUserFollowings: (userFollowings: any) =>
     set(() => ({ userFollowings: userFollowings })),
-  userFollowers: [],
+  userFollowers: null,
   setUserFollowers: (userFollowers: any) =>
     set(() => ({ userFollowers: userFollowers })),
 }))

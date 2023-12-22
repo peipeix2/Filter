@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams, useLocation } from 'react-router-dom'
 import { useQuery } from 'react-query'
 import api from '../../utils/api'
 import firestore from '../../utils/firestore'
@@ -13,26 +13,34 @@ type QueryKey = [string, number, string, string | null | undefined]
 const Gallery = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [searchParams] = useSearchParams()
+  const [totalPages, setTotalPages] = useState<number>(1)
   const { category } = useParams()
   const searchValue = searchParams.get('keyword')
+  const { pathname } = useLocation()
 
-  if (!category) return
+  if (!pathname) return
   const getMoviesFromCategory = async ({ queryKey }: any) => {
-    if (category === 'search' && searchValue) {
+    if (pathname.includes('search') && searchValue) {
       const data = await api.queryMovies(
         encodeURIComponent(searchValue),
         queryKey[1]
       )
       firestore.createMoviesDoc(data.results)
+      const pages = data.total_pages > 5 ? 5 : data.total_pages
+      setTotalPages(pages)
       return data.results
     }
 
-    if (category === 'tag' && searchValue) {
+    if (pathname.includes('tag') && searchValue) {
       return queryMoviesTag(searchValue)
     }
 
+    if (!category) return
+
     const data = await api.getMoviesWithCategories(category, queryKey[1])
     firestore.createMoviesDoc(data.results)
+    const pages = data.total_pages > 5 ? 5 : data.total_pages
+    setTotalPages(pages)
     return data.results
   }
 
@@ -44,6 +52,8 @@ const Gallery = () => {
     querySnapshot.forEach((doc) => {
       data.push(doc.data())
     })
+    const pages = Math.ceil(data.length / 20)
+    setTotalPages(pages)
     return data
   }
 
@@ -60,11 +70,11 @@ const Gallery = () => {
       {searchValue && (
         <div className="mx-auto mb-2 mt-20 text-right font-extrabold">
           <p className="text-sm">關鍵字</p>
-          <p className="text-2xl">{searchValue}</p>
+          <p className="break-words text-2xl">{searchValue}</p>
         </div>
       )}
 
-      <div className="mx-auto mt-20 flex flex-wrap justify-evenly gap-2">
+      <div className="mx-auto mt-20 flex flex-wrap justify-start gap-2">
         {isLoading &&
           Array(20)
             .fill(undefined)
@@ -77,15 +87,26 @@ const Gallery = () => {
               <Link
                 to={`/movies/${movie.id || movie.movie_id}`}
                 key={index}
-                className="w-[19%]"
+                className="group relative block h-full w-[19%]"
               >
                 <Image
                   alt="film-poster"
                   src={`https://image.tmdb.org/t/p/w500/${
                     movie.poster_path || movie.movie_poster
                   }`}
-                  className="w-full"
+                  className="min-h-full min-w-full object-cover"
+                  style={{ aspectRatio: '2/3' }}
                 />
+                <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
+                  <div className="flex h-full flex-col items-center justify-center gap-3 text-[#475565] opacity-0 group-hover:opacity-100">
+                    <p className="text-center text-lg font-bold">
+                      {movie.title}
+                    </p>
+                    <small className="text-center text-xs">
+                      {movie.original_title}
+                    </small>
+                  </div>
+                </div>
               </Link>
             )
           })
@@ -97,7 +118,7 @@ const Gallery = () => {
         <Pagination
           isCompact
           showControls
-          total={data ? Math.ceil(data.length / 20) : 5}
+          total={totalPages}
           initialPage={1}
           page={currentPage}
           className="mt-20"

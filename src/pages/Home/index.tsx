@@ -18,6 +18,7 @@ import { IoEyeSharp } from 'react-icons/io5'
 import PopularComments from './PopularComments.tsx'
 import MidHero from '../../components/HeroImg/MidHero.tsx'
 import useUserStore from '../../store/userStore.ts'
+import Carousel from '../../components/Carousel/index.tsx'
 
 interface Movie {
   id: number
@@ -65,10 +66,10 @@ const Home = () => {
   }, [])
 
   useEffect(() => {
-    if (isLogin && user.userId) {
+    if (user.userId) {
       getUserProfile(user.userId)
     }
-  }, [isLogin, user])
+  }, [])
 
   const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
     const allMovies = [...popularMovies, ...nowPlayingMovies]
@@ -122,7 +123,10 @@ const Home = () => {
 
   const handleOnClick = () => {
     if (featureIntroRef.current) {
-      window.scrollTo(0, featureIntroRef.current.offsetTop)
+      window.scrollTo({
+        top: featureIntroRef.current.offsetTop,
+        behavior: 'smooth',
+      })
     }
   }
 
@@ -133,14 +137,16 @@ const Home = () => {
     }
   }
 
-  if (isLogin && !userProfile) return
-
   return (
     <>
-      <HeroImg
-        backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg"
-        handleOnClick={handleOnClick}
-      />
+      {isLogin ? (
+        <Carousel />
+      ) : (
+        <HeroImg
+          backdrop="/vAsxVpXP53cMSsD9u4EekQKz4ur.jpg"
+          handleOnClick={handleOnClick}
+        />
+      )}
 
       <div className="movie-lists-container mx-auto my-40 w-3/5">
         <div className="mx-auto mb-2 text-right font-extrabold">
@@ -151,7 +157,7 @@ const Home = () => {
         <div className="popular-container mt-20">
           <div className="title-wrapper flex items-center justify-between">
             <p className="text-base font-semibold text-[#475565]">熱門電影</p>
-            <Link to={`/popular`} className="text-sm text-[#475565]">
+            <Link to={`browse/popular`} className="text-sm text-[#475565]">
               More
             </Link>
           </div>
@@ -163,13 +169,14 @@ const Home = () => {
                 <Link
                   to={`/movies/${movie.id}`}
                   key={index}
-                  className="group relative block"
+                  className="w-23% group relative block h-full"
                 >
                   <Image
                     radius="sm"
-                    className="w-23%"
+                    className="min-h-full min-w-full object-cover"
                     alt="film-poster"
                     src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    style={{ aspectRatio: '2/3' }}
                   />
                   <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
                     <div className="flex h-full flex-col items-center justify-center text-[#475565] opacity-0 group-hover:opacity-100">
@@ -185,7 +192,7 @@ const Home = () => {
                             <div className="mt-2">
                               <div className="flex items-center gap-4 text-[36px]">
                                 <FaStar color="#95aeac" />
-                                <span>{item.rating}</span>
+                                <span>{item.rating.toFixed(0)}</span>
                               </div>
                               <div className="flex items-center gap-4 text-[36px]">
                                 <IoEyeSharp color="#95aeac" />
@@ -206,7 +213,7 @@ const Home = () => {
         <div className="now-playing-container mt-20">
           <div className="title-wrapper flex items-center justify-between">
             <p className="text-base font-semibold text-[#475565]">上映電影</p>
-            <Link to={`/now_playing`} className="text-sm text-[#475565]">
+            <Link to={`browse/now_playing`} className="text-sm text-[#475565]">
               More
             </Link>
           </div>
@@ -218,13 +225,14 @@ const Home = () => {
                 <Link
                   to={`/movies/${movie.id}`}
                   key={index}
-                  className="group relative block"
+                  className="w-23% group relative block h-full"
                 >
                   <Image
                     radius="sm"
-                    className="w-23%"
+                    className="min-h-full min-w-full object-cover"
                     alt="film-poster"
                     src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+                    style={{ aspectRatio: '2/3' }}
                   />
                   <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
                     <div className="flex h-full flex-col items-center justify-center opacity-0 group-hover:opacity-100">
@@ -240,7 +248,7 @@ const Home = () => {
                             <div className="mt-2">
                               <div className="flex items-center gap-4 text-[36px]">
                                 <FaStar color="#95aeac" />
-                                <span>{item.rating}</span>
+                                <span>{item.rating.toFixed(0)}</span>
                               </div>
                               <div className="flex items-center gap-4 text-[36px]">
                                 <IoEyeSharp color="#95aeac" />

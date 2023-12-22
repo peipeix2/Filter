@@ -12,6 +12,7 @@ import parser from 'html-react-parser'
 import { useParams } from 'react-router-dom'
 import Like from '../../components/Like'
 import { renderComments } from '../../utils/render'
+import Tag from '../../components/Tag'
 
 const ReviewSection = () => {
   // const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
@@ -48,16 +49,18 @@ const ReviewSection = () => {
       {moviesReviewsForId.map((review, index) => {
         return (
           <>
-            <div className="comment-card my-5 flex items-center" key={index}>
-              <div className="avatar-wrapper flex">
-                <div
-                  className="avatar mx-10 h-10 w-10 rounded-full bg-contain"
-                  style={{
-                    backgroundImage: `url(${review.avatar})`,
-                  }}
-                />
+            <div className="comment-card my-5 flex items-start" key={index}>
+              <div className="avatar-wrapper mt-5 flex">
+                <Link to={`/profile/${review.userId}`}>
+                  <div
+                    className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
+                    style={{
+                      backgroundImage: `url(${review.avatar})`,
+                    }}
+                  />
+                </Link>
               </div>
-              <div className="comment-rating flex-grow">
+              <div className="comment-rating w-2/3">
                 <Link to={`/read/${review.userId}/${review.id}`}>
                   <h1 className="mb-5 font-bold">{review.title}</h1>
                 </Link>
@@ -72,7 +75,7 @@ const ReviewSection = () => {
                     </span>
                   </div>
                   <CommentStar rating={review.rating} />
-                  <div className="comment-count ml-2 flex items-center">
+                  <div className="comment-count ml-2 flex items-center text-slate-400">
                     <FaCommentAlt className="text-xs" />
                     <span className="ml-1 text-sm">
                       {review.comments_count}
@@ -81,19 +84,15 @@ const ReviewSection = () => {
                 </div>
 
                 <div className="comment-content my-5">
-                  <p className="comment line-clamp-3 leading-10">
+                  <p className="comment line-clamp-3 break-words text-sm leading-10">
                     {parser(review.review)}
                   </p>
                 </div>
 
-                <div className="tags">
+                <div className="tags mb-3">
                   <ul className="flex gap-1">
                     {review.tags.map((tag, index) => {
-                      return (
-                        <li className="p-1 text-sm text-slate-400" key={index}>
-                          #{tag}
-                        </li>
-                      )
+                      return <Tag tag={tag} index={index} />
                     })}
                   </ul>
                 </div>

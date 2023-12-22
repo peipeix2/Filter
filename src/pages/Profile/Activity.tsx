@@ -1,56 +1,53 @@
-import { useEffect } from 'react'
-import { db } from '../../../firebase'
-import { Image, Divider, Chip } from '@nextui-org/react'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { Image, Divider } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import { useParams, Link } from 'react-router-dom'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
-import { FaTag } from 'react-icons/fa6'
+import Tag from '../../components/Tag'
+import ActivityEmptyState from '../../components/EmptyStates/ActivityEmptyState'
 
 const Activity = () => {
   const {
     user,
     userMoviesComments,
-    setUserMoviesComments,
+
     userMoviesReviews,
-    setUserMoviesReviews,
   } = useUserStore()
   const { userId } = useParams()
 
   if (!userId) return
 
-  useEffect(() => {
-    // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
-    const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
-    const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
+  // useEffect(() => {
+  //   // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+  //   const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
+  //   const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
 
-    const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
-      const comments: any = []
-      querySnapshot.forEach((doc) => {
-        const commentsData = doc.data()
-        const commentsWithId = { ...commentsData, id: doc.id }
-        comments.push(commentsWithId)
-      })
-      setUserMoviesComments(comments)
-    })
+  //   const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
+  //     const comments: any = []
+  //     querySnapshot.forEach((doc) => {
+  //       const commentsData = doc.data()
+  //       const commentsWithId = { ...commentsData, id: doc.id }
+  //       comments.push(commentsWithId)
+  //     })
+  //     setUserMoviesComments(comments)
+  //   })
 
-    const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
-      const reviews: any = []
-      querySnapshot.forEach((doc) => {
-        const reviewsData = doc.data()
-        const reviewsWithId = { ...reviewsData, id: doc.id }
-        reviews.push(reviewsWithId)
-      })
-      setUserMoviesReviews(reviews)
-    })
+  //   const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
+  //     const reviews: any = []
+  //     querySnapshot.forEach((doc) => {
+  //       const reviewsData = doc.data()
+  //       const reviewsWithId = { ...reviewsData, id: doc.id }
+  //       reviews.push(reviewsWithId)
+  //     })
+  //     setUserMoviesReviews(reviews)
+  //   })
 
-    return () => {
-      unsubscribeComments()
-      unsubscribeReviews()
-    }
-  }, [])
+  //   return () => {
+  //     unsubscribeComments()
+  //     unsubscribeReviews()
+  //   }
+  // }, [])
 
   userMoviesComments.sort((a: any, b: any) => {
     return b.created_at - a.created_at
@@ -75,18 +72,22 @@ const Activity = () => {
     displayReviews = userMoviesReviews
   }
 
+  if (userMoviesComments.length === 0 && userMoviesReviews.length === 0) {
+    return <ActivityEmptyState />
+  }
+
   return (
     <div>
       <div className="mb-5 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">評論的電影</p>
-        {displayComments.length > 5 && <span>More</span>}
+        {/* {displayComments.length > 5 && <span>More</span>} */}
       </div>
 
-      <div className="flex gap-2">
-        {displayComments.slice(0, 5).map((comment) => {
+      <div className="flex flex-wrap gap-2">
+        {displayComments.map((comment) => {
           return (
             <div
-              className="movie-card flex w-1/5 flex-col gap-3"
+              className="movie-card flex w-[18%] flex-col gap-3"
               key={comment.id}
             >
               <Link to={`/comment/${comment.userId}/${comment.id}`}>
@@ -94,7 +95,8 @@ const Activity = () => {
                   src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
                   alt={comment.movie_original_title}
                   isBlurred
-                  className="mb-2"
+                  className="mb-2 min-h-full min-w-full object-cover"
+                  style={{ aspectRatio: '2/3' }}
                 />
                 <CommentStar rating={comment.rating} />
               </Link>
@@ -105,14 +107,14 @@ const Activity = () => {
 
       <div className="mb-5 mt-20 flex w-full justify-between">
         <p className="text-base font-semibold text-[#475565]">撰寫的影評</p>
-        {displayReviews.length > 5 && <span>More</span>}
+        {/* {displayReviews.length > 5 && <span>More</span>} */}
       </div>
 
       <div className="flex gap-2">
-        {displayReviews.slice(0, 5).map((review) => {
+        {displayReviews.map((review) => {
           return (
             <div
-              className="movie-card flex w-1/5 flex-col gap-3"
+              className="movie-card flex h-full w-[18%] flex-col gap-3"
               key={review.id}
             >
               <Link to={`/read/${review.userId}/${review.id}`}>
@@ -120,7 +122,8 @@ const Activity = () => {
                   src={`https://image.tmdb.org/t/p/w500${review.movie_poster}`}
                   alt={review.movie_original_title}
                   isBlurred
-                  className="mb-2"
+                  className="mb-2 min-h-full min-w-full object-cover"
+                  style={{ aspectRatio: '2/3' }}
                 />
                 <CommentStar rating={review.rating} />
               </Link>
@@ -150,7 +153,9 @@ const Activity = () => {
               <div className="comment-rating ml-10 w-2/3">
                 <Link to={`/movies/${comment.movie_id}`}>
                   <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
-                    <h1 className="mr-2 font-bold">{comment.movie_title}</h1>
+                    <h1 className="mr-2 font-semibold">
+                      {comment.movie_title}
+                    </h1>
                     <span className="text-sm">
                       {comment.movie_original_title}
                     </span>
@@ -178,7 +183,7 @@ const Activity = () => {
                       </div>
                     )}
                     <CommentStar rating={comment.rating} />
-                    <div className="comment-count ml-2 flex items-center">
+                    <div className="comment-count ml-2 flex items-center text-slate-400">
                       <FaCommentAlt className="text-xs" />
                       <span className="ml-1 text-sm">
                         {comment.comments_count}
@@ -188,24 +193,15 @@ const Activity = () => {
                 </Link>
 
                 <div className="comment-content my-5">
-                  <p className="comment text-sm">{comment.comment}</p>
+                  <p className="comment break-words text-sm">
+                    {comment.comment}
+                  </p>
                 </div>
 
                 <div className="tags mb-3">
                   <ul className="flex items-center gap-1">
                     {comment.tags.map((tag: string, index: number) => {
-                      return (
-                        <Link to={`/tag?keyword=${tag}`}>
-                          <Chip
-                            className="p-1 text-xs text-slate-100"
-                            key={index}
-                            size="sm"
-                            startContent={<FaTag size={12} color="#f1f5f9" />}
-                          >
-                            {tag}
-                          </Chip>
-                        </Link>
-                      )
+                      return <Tag tag={tag} index={index} />
                     })}
                   </ul>
                 </div>

@@ -37,6 +37,7 @@ import useMoviesCommentStore from '../../store/moviesCommentStore'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
+import toast from 'react-hot-toast'
 
 const content = '<p>Type something here!</p>'
 
@@ -158,7 +159,7 @@ const TextEditor = () => {
 
   const handleSubmitReview = async () => {
     if (formInvalid) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -183,7 +184,7 @@ const TextEditor = () => {
       addDoc(collection(userRef, user.userId, 'REVIEWS'), reviewData)
 
       resetMoviesReview()
-      window.alert('影評已送出！')
+      toast.success('影評已送出！')
       await updateMovieRatings()
       navigate(`/movies/${moviesDetail.id}`)
     } catch (e) {
@@ -255,7 +256,7 @@ const TextEditor = () => {
                 size={30}
                 color={
                   ratingValue <= (hover || moviesReview.rating)
-                    ? '#89a9a6'
+                    ? '#f46854'
                     : '#e4e5e9'
                 }
                 onMouseEnter={() => setHover(ratingValue)}
@@ -269,7 +270,7 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={
-            editor.isActive('bold') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('bold') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaBold />
@@ -277,7 +278,7 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={
-            editor.isActive('italic') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('italic') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaItalic />
@@ -285,7 +286,7 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={
-            editor.isActive('underline') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('underline') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaUnderline />
@@ -296,7 +297,7 @@ const TextEditor = () => {
           }
           className={
             editor.isActive('heading', { level: 1 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -308,7 +309,7 @@ const TextEditor = () => {
           }
           className={
             editor.isActive('heading', { level: 2 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -320,7 +321,7 @@ const TextEditor = () => {
           }
           className={
             editor.isActive('heading', { level: 3 })
-              ? 'rounded bg-gray-200 p-1'
+              ? 'rounded bg-[#89a9a6] p-1'
               : 'p-1'
           }
         >
@@ -329,20 +330,24 @@ const TextEditor = () => {
         <button
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={
-            editor.isActive('blockquote') ? 'rounded bg-gray-200 p-1' : 'p-1'
+            editor.isActive('blockquote') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
           }
         >
           <FaQuoteLeft />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={editor.isActive('orderedList') ? 'is-active' : ''}
+          className={
+            editor.isActive('orderedList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
+          }
         >
           <AiOutlineOrderedList className="text-xl font-bold" />
         </button>
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={editor.isActive('bulletList') ? 'is-active' : ''}
+          className={
+            editor.isActive('bulletList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
+          }
         >
           <AiOutlineUnorderedList className="text-xl font-bold" />
         </button>
@@ -395,7 +400,11 @@ const TextEditor = () => {
       </div>
 
       <div className="submit-btn mt-5 flex justify-end">
-        <Button size="lg" className="w-[200px]" onClick={handleSubmitReview}>
+        <Button
+          size="lg"
+          className="w-[100px] bg-[#89a9a6] text-white"
+          onClick={handleSubmitReview}
+        >
           送出
         </Button>
       </div>

@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore'
 import { Textarea, Button, Divider } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
+import toast from 'react-hot-toast'
 
 interface SubCommentsState {
   commentId: string
@@ -50,8 +51,12 @@ const SubCommentsReview = (Props: SubCommentsState) => {
   }, [])
 
   const handlePostComment = async () => {
+    if (!user.userId) {
+      return toast.error('請先登入後才能留言')
+    }
+
     if (!text || text?.trim().length === 0) {
-      alert('評論不得為空')
+      toast.error('評論不得為空')
       return
     }
 

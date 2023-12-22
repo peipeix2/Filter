@@ -13,7 +13,6 @@ import {
   Textarea,
 } from '@nextui-org/react'
 import { IoEyeOutline } from 'react-icons/io5'
-import { MdOutlineFavoriteBorder } from 'react-icons/md'
 import SimplisticStar from '../../components/Star/SimplisticStar'
 import { FaStar } from 'react-icons/fa'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
@@ -33,6 +32,10 @@ import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
+import Favorites from '../../components/Favorites'
+import toast from 'react-hot-toast'
+import Test from './Test'
+import { toPng } from 'html-to-image'
 
 interface MoviesState {
   id: number
@@ -52,9 +55,11 @@ interface MoviesState {
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
   const [moviesData, setMoviesData] = useState<MoviesState | null>(null)
+  const [userFavorites, setUserFavorites] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const [isCardVisible, setIsCardVisible] = useState<boolean>(false)
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
     moviesComment,
@@ -76,7 +81,15 @@ const RatingPanel = () => {
       setMoviesData(movies)
     })
 
-    if (!user?.userId) return
+    // if (!user?.userId) return
+
+    return () => {
+      unsubscribe()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return
 
     const unsubsComments = onSnapshot(
       collection(db, 'USERS', userId, 'COMMENTS'),
@@ -89,15 +102,26 @@ const RatingPanel = () => {
       }
     )
 
+    const unsubsFavorites = onSnapshot(
+      collection(db, 'USERS', userId, 'FAVORITES'),
+      (querySnapshot) => {
+        const favoriteIds: any = []
+        querySnapshot.forEach((doc) => {
+          favoriteIds.push(doc.id)
+        })
+        setUserFavorites(favoriteIds)
+      }
+    )
+
     return () => {
-      unsubscribe()
       unsubsComments()
+      unsubsFavorites()
     }
-  }, [])
+  }, [userId, isLogin])
 
   const handleSubmitComment = async () => {
     if (formInvalid) {
-      window.alert('請填寫評分！')
+      toast.error('請填寫評分！')
       return
     }
 
@@ -122,6 +146,7 @@ const RatingPanel = () => {
       await addDoc(collection(userRef, user.userId, 'COMMENTS'), commentData)
       await resetMoviesComment()
       await updateMovieRatings()
+      onClose()
     } catch (e) {
       console.error('Error adding document: ', e)
     }
@@ -163,50 +188,54 @@ const RatingPanel = () => {
     return rating
   }
 
+  const generateImage = () => {
+    setIsCardVisible(true)
+    const element = document.querySelector('#generated-card')
+    toPng(element as HTMLElement, { cacheBust: false })
+      .then((dataURL) => {
+        const link = document.createElement('a')
+        link.download = 'image.png'
+        link.href = dataURL
+        link.click()
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    setIsCardVisible(false)
+  }
+
   const formInvalid = !moviesComment.rating
 
   if (!moviesData) return
+  if (!id) return
 
   return (
     <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
       {!isLogin && (
         <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
-          <div className=" text-center text-white">
-            <p>Sign in to enjoy more feature</p>
+          <div className="flex h-full w-full items-center justify-center text-center text-white">
+            <p>登入後享受更多功能！</p>
           </div>
         </div>
       )}
       <div className="watched-status flex justify-around pb-3">
         <div
-          className="flex cursor-pointer flex-col items-center"
+          className={`flex cursor-pointer flex-col items-center hover:text-[#475565] ${
+            hasCommented ? 'text-[#f46854]' : 'text-[#94a3ab]'
+          }`}
           onClick={hasCommented ? undefined : onOpen}
         >
-          <IoEyeOutline
-            className={`cursor-pointer text-4xl text-[#94a3ab] ${
-              hasCommented ? 'text-red-600' : 'text-[#94a3ab]'
-            }`}
-          />
-          <span
-            className={`cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565] ${
-              hasCommented ? 'text-red-600' : 'text-[#beccdc]'
-            }`}
-          >
-            看過
-          </span>
+          <IoEyeOutline className="text-4xl" />
+          <span className="text-xs">看過</span>
         </div>
-        <div className="flex cursor-pointer flex-col items-center hover:text-[#475565]">
-          <MdOutlineFavoriteBorder className="text-4xl text-[#94a3ab]" />
-          <span className="cursor-pointer text-[10px] text-[#beccdc] hover:text-[#475565]">
-            收藏
-          </span>
-        </div>
+        <Favorites isFavorites={userFavorites.includes(id)} movieId={id} />
       </div>
 
       <Divider />
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
-        <p className="mt-2 text-[10px] text-[#beccdc]">
+        <p className="mt-2 text-sm text-[#94a3ab]">
           {moviesData.rating?.toFixed(1)}
         </p>
       </div>
@@ -215,7 +244,7 @@ const RatingPanel = () => {
 
       <Link to={`/review/${moviesDetail.id}`}>
         <div className="py-3">
-          <p className="text-center text-[14px] text-[#beccdc] hover:text-[#475565]">
+          <p className="text-center text-sm text-[#94a3ab] hover:text-[#475565]">
             寫影評
           </p>
         </div>
@@ -224,7 +253,12 @@ const RatingPanel = () => {
       <Divider />
 
       <div className="pt-3">
-        <p className="text-center text-[14px] text-[#beccdc]">分享</p>
+        <p
+          className="text-center text-sm text-[#94a3ab]"
+          onClick={generateImage}
+        >
+          分享
+        </p>
       </div>
 
       {/* Modal Form */}
@@ -294,7 +328,7 @@ const RatingPanel = () => {
                               size={30}
                               color={
                                 ratingValue <= (hover || moviesComment.rating)
-                                  ? 'orange'
+                                  ? '#f46854'
                                   : '#e4e5e9'
                               }
                               onMouseEnter={() => setHover(ratingValue)}
@@ -322,12 +356,17 @@ const RatingPanel = () => {
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
+                <Button
+                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+                  variant="flat"
+                  onPress={onClose}
+                >
+                  取消
                 </Button>
                 <Button
-                  color="primary"
-                  onPress={onClose}
+                  // color="default"
+                  className="bg-[#94a3ab] text-white"
+                  // onPress={onClose}
                   onClick={handleSubmitComment}
                 >
                   送出
@@ -337,6 +376,10 @@ const RatingPanel = () => {
           )}
         </ModalContent>
       </Modal>
+
+      <div className={isCardVisible ? 'absolute bottom-0' : 'hidden'}>
+        <Test />
+      </div>
     </div>
   )
 }

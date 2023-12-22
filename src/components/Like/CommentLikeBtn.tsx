@@ -8,6 +8,7 @@ import {
   arrayRemove,
 } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
+import toast from 'react-hot-toast'
 
 interface LikeState {
   postId: string
@@ -21,9 +22,9 @@ const CommentLikeBtn = (Props: LikeState) => {
 
   const handleLikeClick = async () => {
     if (!isLogin) {
-      return alert('請先登入或註冊！')
+      return toast.error('請先登入或註冊！')
     }
-    
+
     const userRef = doc(db, 'USERS', user.userId)
     const docRef = collection(db, 'USERS')
 
@@ -65,11 +66,14 @@ const CommentLikeBtn = (Props: LikeState) => {
   return (
     <div className="like-btn flex items-center">
       <FaHeart
-        className={
-          Props.isLiked
-            ? 'mr-1 text-xs text-red-500'
-            : 'mr-1 text-xs text-slate-800'
-        }
+        className={`
+          hover:cursor-pointer
+          ${
+            Props.isLiked
+              ? 'mr-1 text-xs text-red-500'
+              : 'mr-1 text-xs text-slate-800'
+          }
+        `}
         onClick={handleLikeClick}
       />
       <span className="mr-2 text-xs text-slate-800">

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Divider, Chip } from '@nextui-org/react'
+import { Divider } from '@nextui-org/react'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import { onSnapshot, collectionGroup } from 'firebase/firestore'
@@ -10,7 +10,7 @@ import { useParams, Link } from 'react-router-dom'
 import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
-import { FaTag } from 'react-icons/fa6'
+import Tag from '../../components/Tag'
 
 const CommentsSection = () => {
   const moviesCommentsForId = useMoviesCommentStore(
@@ -54,16 +54,16 @@ const CommentsSection = () => {
           <>
             <div className="comment-card my-5 flex items-start" key={index}>
               <div className="avatar-wrapper mx-10 mt-5 flex">
-                <Link to={`/profile/${comment.userId}/activity`}>
+                <Link to={`/profile/${comment.userId}`}>
                   <div
-                    className="avatar mx-auto h-10 w-10 rounded-full bg-contain"
+                    className="avatar mx-auto h-10 w-10 rounded-full bg-cover bg-no-repeat"
                     style={{
                       backgroundImage: `url(${comment.avatar})`,
                     }}
                   />
                 </Link>
               </div>
-              <div className="comment-rating w-3/4">
+              <div className="comment-rating w-2/3">
                 <Link to={`/comment/${comment.userId}/${comment.id}`}>
                   <div className="comment-header flex">
                     <div className="comment-user mr-2 flex">
@@ -75,7 +75,7 @@ const CommentsSection = () => {
                       </span>
                     </div>
                     <CommentStar rating={comment.rating} />
-                    <div className="comment-count ml-2 flex items-center">
+                    <div className="comment-count ml-2 flex items-center text-slate-400">
                       <FaCommentAlt className="text-xs" />
                       <span className="ml-1 text-sm">
                         {comment.comments_count}
@@ -85,24 +85,13 @@ const CommentsSection = () => {
                 </Link>
 
                 <div className="comment-content my-5 text-sm">
-                  <p className="comment">{comment.comment}</p>
+                  <p className="comment break-words">{comment.comment}</p>
                 </div>
 
                 <div className="tags mb-3">
                   <ul className="flex gap-1">
                     {comment.tags.map((tag, index) => {
-                      return (
-                        <Link to={`/tag?keyword=${tag}`}>
-                          <Chip
-                            className="p-1 text-xs text-slate-100"
-                            key={index}
-                            size="sm"
-                            startContent={<FaTag size={12} color="#f1f5f9" />}
-                          >
-                            {tag}
-                          </Chip>
-                        </Link>
-                      )
+                      return <Tag tag={tag} index={index} />
                     })}
                   </ul>
                 </div>
