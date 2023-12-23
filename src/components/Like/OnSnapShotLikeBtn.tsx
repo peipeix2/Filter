@@ -12,49 +12,50 @@ import toast from 'react-hot-toast'
 
 interface LikeState {
   postId: string
+  postCategory: string
   count: number
   isLiked: boolean
   authorId: string
 }
 
-const CommentLikeBtn = (Props: LikeState) => {
+const OnSnapShotLikeBtn = (Props: LikeState) => {
   const { user, isLogin } = useUserStore()
+  const currentUserId = user.userId
 
-  const handleLikeClick = async () => {
+  const handleLikeClick = async (
+    isLiked: boolean,
+    postCategory: string,
+    currentUserId: string,
+    postId: string,
+    postAuthorId: string,
+    likesCount: number
+  ) => {
     if (!isLogin) {
       return toast.error('請先登入或註冊！')
     }
 
-    const userRef = doc(db, 'USERS', user.userId)
+    const userRef = doc(db, 'USERS', currentUserId)
     const docRef = collection(db, 'USERS')
 
-    if (Props.isLiked) {
+    if (isLiked) {
+      await setDoc(userRef, { likes: arrayRemove(postId) }, { merge: true })
       await setDoc(
-        userRef,
-        { likes: arrayRemove(Props.postId) },
-        { merge: true }
-      )
-      await setDoc(
-        doc(docRef, Props.authorId, 'COMMENTS', Props.postId),
+        doc(docRef, postAuthorId, postCategory, postId),
         {
-          likes_count: Props.count - 1,
-          likesUser: arrayRemove(user.userId),
+          likes_count: likesCount - 1,
+          likesUser: arrayRemove(currentUserId),
         },
         {
           merge: true,
         }
       )
     } else {
+      await setDoc(userRef, { likes: arrayUnion(postId) }, { merge: true })
       await setDoc(
-        userRef,
-        { likes: arrayUnion(Props.postId) },
-        { merge: true }
-      )
-      await setDoc(
-        doc(docRef, Props.authorId, 'COMMENTS', Props.postId),
+        doc(docRef, postAuthorId, postCategory, postId),
         {
-          likes_count: Props.count + 1,
-          likesUser: arrayUnion(user.userId),
+          likes_count: likesCount + 1,
+          likesUser: arrayUnion(currentUserId),
         },
         {
           merge: true,
@@ -74,7 +75,16 @@ const CommentLikeBtn = (Props: LikeState) => {
               : 'mr-1 text-xs text-slate-800'
           }
         `}
-        onClick={handleLikeClick}
+        onClick={() =>
+          handleLikeClick(
+            Props.isLiked,
+            Props.postCategory,
+            currentUserId,
+            Props.postId,
+            Props.authorId,
+            Props.count
+          )
+        }
       />
       <span className="mr-2 text-xs text-slate-800">
         {Props.isLiked ? '取消讚' : '點讚'}
@@ -84,4 +94,4 @@ const CommentLikeBtn = (Props: LikeState) => {
   )
 }
 
-export default CommentLikeBtn
+export default OnSnapShotLikeBtn

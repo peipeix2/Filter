@@ -6,7 +6,7 @@ import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useUserStore from '../../store/userStore'
 import { useParams } from 'react-router-dom'
 import { renderComments } from '../../utils/render'
-import ReviewCardWithUserProfilePic from '../../components/CommentCard/ReviewCardWithProfilePic'
+import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
 
 const ReviewSection = () => {
   const { moviesReviewsForId, setMoviesReviewsForId } = useMoviesReviewStore()
@@ -41,11 +41,14 @@ const ReviewSection = () => {
       <Divider className="my-4" />
       {moviesReviewsForId.map((review, index) => {
         return (
-          <ReviewCardWithUserProfilePic
-            post={review}
-            currentUserId={user.userId}
-            key={index}
-          />
+          <>
+            <CommentCardWithProfilePic
+              post={review}
+              currentUserId={user.userId}
+              key={index}
+            />
+            <Divider />
+          </>
         )
       })}
     </>

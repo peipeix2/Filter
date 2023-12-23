@@ -11,6 +11,7 @@ import useUserStore from '../../store/userStore'
 
 interface LikeState {
   postId: string
+  postCategory: string
   count: number
   isLiked: boolean
   authorId: string
@@ -37,7 +38,7 @@ const DiscoverLikeBtn = (Props: LikeState) => {
         updatedComments[commentIndex] = {
           ...updatedComments[commentIndex],
           likes_count: count - 1,
-          likesUser: updatedComments[commentIndex].likesUser.filter(
+          likesUser: updatedComments[commentIndex].likesUser?.filter(
             (userId: string) => userId !== user.userId
           ),
         }
@@ -45,7 +46,10 @@ const DiscoverLikeBtn = (Props: LikeState) => {
         updatedComments[commentIndex] = {
           ...updatedComments[commentIndex],
           likes_count: count + 1,
-          likesUser: [...updatedComments[commentIndex].likesUser, user.userId],
+          likesUser: [
+            ...(updatedComments[commentIndex].likesUser ?? []),
+            user.userId,
+          ],
         }
       }
     }
@@ -53,14 +57,19 @@ const DiscoverLikeBtn = (Props: LikeState) => {
     Props.setFollowingUsersComments(updatedComments)
   }
 
-  const handleLikeClick = async () => {
+  const handleLikeClick = async (
+    postCategory: string,
+    currentUserId: string,
+    postId: string,
+    authorId: string,
+    likesCount: number
+  ) => {
     if (!isLogin) {
       return alert('請先登入或註冊！')
     }
 
-    const userRef = doc(db, 'USERS', user.userId)
+    const userRef = doc(db, 'USERS', currentUserId)
     const docRef = collection(db, 'USERS')
-    console.log('run')
 
     updateLocalLikesUser(
       Props.followingUsersComments,
@@ -70,32 +79,24 @@ const DiscoverLikeBtn = (Props: LikeState) => {
     )
 
     if (Props.isLiked) {
+      await setDoc(userRef, { likes: arrayRemove(postId) }, { merge: true })
       await setDoc(
-        userRef,
-        { likes: arrayRemove(Props.postId) },
-        { merge: true }
-      )
-      await setDoc(
-        doc(docRef, Props.authorId, 'COMMENTS', Props.postId),
+        doc(docRef, authorId, postCategory, postId),
         {
-          likes_count: Props.count - 1,
-          likesUser: arrayRemove(user.userId),
+          likes_count: likesCount - 1,
+          likesUser: arrayRemove(currentUserId),
         },
         {
           merge: true,
         }
       )
     } else {
+      await setDoc(userRef, { likes: arrayUnion(postId) }, { merge: true })
       await setDoc(
-        userRef,
-        { likes: arrayUnion(Props.postId) },
-        { merge: true }
-      )
-      await setDoc(
-        doc(docRef, Props.authorId, 'COMMENTS', Props.postId),
+        doc(docRef, authorId, postCategory, postId),
         {
-          likes_count: Props.count + 1,
-          likesUser: arrayUnion(user.userId),
+          likes_count: likesCount + 1,
+          likesUser: arrayUnion(currentUserId),
         },
         {
           merge: true,
@@ -115,7 +116,15 @@ const DiscoverLikeBtn = (Props: LikeState) => {
               : 'mr-1 text-xs text-slate-800'
           }
         `}
-        onClick={handleLikeClick}
+        onClick={() =>
+          handleLikeClick(
+            Props.postCategory,
+            user.userId,
+            Props.postId,
+            Props.authorId,
+            Props.count
+          )
+        }
       />
       <span className="mr-2 text-xs text-slate-800">
         {Props.isLiked ? '取消讚' : '點讚'}

@@ -10,8 +10,6 @@ import {
   onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
 import {
   Modal,
@@ -30,11 +28,10 @@ import TagsInput from '../../components/TagsInput'
 import { FaStar } from 'react-icons/fa'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useNavigate } from 'react-router-dom'
-import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 import SubComments from '../../components/SubComments'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import Tag from '../../components/Tag'
+import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
 
 const Comment = () => {
   const [comment, setComment] = useState<any>([])
@@ -190,80 +187,26 @@ const Comment = () => {
           <Divider />
         </div>
 
-        <div className="comment-card mx-auto my-5 flex items-start">
-          <Link
-            to={`/profile/${comment.userId}`}
-            className="avatar-wrapper mt-5 flex w-1/4"
-          >
-            <div
-              className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
-              style={{
-                backgroundImage: `url(${comment.avatar})`,
-              }}
-            />
-          </Link>
-          <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
-            <div className="comment-rating w-full">
-              <h1 className="mb-5 font-bold">{comment.title}</h1>
-
-              <div className="comment-header flex">
-                <div className="comment-user mr-2 flex">
-                  <span className="mr-1 text-sm text-slate-400">評論作者</span>
-                  <span className="text-sm font-semibold text-slate-800">
-                    {comment.author}
-                  </span>
-                </div>
-                <CommentStar rating={comment.rating} />
-                <div className="comment-count ml-2 flex items-center text-slate-400">
-                  <FaCommentAlt className="text-xs" />
-                  <span className="ml-1 text-sm">{comment.comments_count}</span>
-                </div>
-              </div>
-
-              <div className="comment-content my-5">
-                <p className="break-words leading-10">{comment.comment}</p>
-              </div>
-
-              <div className="tags mb-3">
-                <ul className="flex gap-1">
-                  {comment.tags?.map((tag: string, index: number) => {
-                    return <Tag tag={tag} index={index} />
-                  })}
-                </ul>
-              </div>
-
-              <div className="like">
-                <CommentLikeBtn
-                  postId={id}
-                  authorId={comment.userId}
-                  count={comment.likes_count}
-                  isLiked={
-                    comment.likesUser && comment.likesUser.includes(user.userId)
-                  }
-                />
-              </div>
-            </div>
-            {comment.userId === user.userId && (
-              <div className="mt-2 flex w-full justify-end gap-2">
-                <Button
-                  size="sm"
-                  className="bg-[#94a3ab] text-white"
-                  onClick={onOpen}
-                >
-                  修改
-                </Button>
-                <Button
-                  size="sm"
-                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
-                  onClick={handleDeleteComment}
-                  isLoading={isLoading}
-                >
-                  刪除
-                </Button>
-              </div>
-            )}
+        <CommentCardWithProfilePic post={comment} currentUserId={user.userId} />
+        {comment.userId === user.userId && (
+          <div className="mt-2 flex w-full justify-end gap-2">
+            <Button
+              size="sm"
+              className="bg-[#94a3ab] text-white"
+              onClick={onOpen}
+            >
+              修改
+            </Button>
+            <Button
+              size="sm"
+              className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+              onClick={handleDeleteComment}
+              isLoading={isLoading}
+            >
+              刪除
+            </Button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Modal Form */}

@@ -10,7 +10,6 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import CommentCard from '../../components/CommentCard'
-import ReviewCard from '../../components/CommentCard/ReviewCard'
 import { Skeleton } from '@nextui-org/react'
 import DiscoverPage from '../../components/EmptyStates/DiscoverPage'
 
@@ -111,10 +110,10 @@ const Discover = () => {
       </h1>
       {followingUsersReviews.map((post: any, index: number) => {
         return (
-          <ReviewCard
+          <CommentCard
             post={post}
-            followingUsersReviews={followingUsersReviews}
-            setFollowingUsersReviews={setFollowingUsersReviews}
+            followingUsersComments={followingUsersReviews}
+            setFollowingUsersComments={setFollowingUsersReviews}
             currentUserId={user.userId}
             key={index}
           />

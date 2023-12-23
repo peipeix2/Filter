@@ -1,16 +1,18 @@
-import { Divider } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import CommentStar from '../Star/CommentStar'
 import Tag from '../../components/Tag'
 import { FaCommentAlt } from 'react-icons/fa'
-import CommentLikeBtn from '../Like/CommentLikeBtn'
+import OnSnapShotLikeBtn from '../Like/OnSnapShotLikeBtn'
+import parser from 'html-react-parser'
 
 interface PostState {
   id: string
+  title?: string
   author: string
   userId: string
   avatar: string
-  comment: string
+  review?: string
+  comment?: string
   comments_count: number
   created_at: any
   isPublic: boolean
@@ -48,6 +50,9 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
         </div>
         <div className="comment-rating w-2/3">
           <Link to={`/comment/${Props.post.userId}/${Props.post.id}`}>
+            {Props.post.review && (
+              <h1 className="mb-5 font-bold">{Props.post.title}</h1>
+            )}
             <div className="comment-header flex">
               <div className="comment-user mr-2 flex">
                 <span className="mr-1 text-sm text-slate-400">評論作者</span>
@@ -66,18 +71,25 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
           </Link>
 
           <div className="comment-content my-5 text-sm">
-            <p className="comment break-words">{Props.post.comment}</p>
+            {Props.post.comment ? (
+              <p className="comment break-words">{Props.post.comment}</p>
+            ) : (
+              <p className="comment line-clamp-3 break-words text-sm leading-10">
+                {Props.post.review && parser(Props.post.review)}
+              </p>
+            )}
           </div>
 
           <div className="tags mb-3">
             <ul className="flex gap-1">
-              {Props.post.tags.map((tag, index) => {
+              {Props.post.tags?.map((tag, index) => {
                 return <Tag tag={tag} index={index} />
               })}
             </ul>
           </div>
 
-          <CommentLikeBtn
+          <OnSnapShotLikeBtn
+            postCategory="COMMENTS"
             postId={Props.post.id}
             count={Props.post.likes_count}
             authorId={Props.post.userId}
@@ -88,7 +100,6 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
           />
         </div>
       </div>
-      <Divider />
     </>
   )
 }

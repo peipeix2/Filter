@@ -47,11 +47,14 @@ const CommentsSection = () => {
       <Divider className="my-4" />
       {moviesCommentsForId.map((comment, index) => {
         return (
-          <CommentCardWithProfilePic
-            post={comment}
-            currentUserId={user.userId}
-            key={index}
-          />
+          <>
+            <CommentCardWithProfilePic
+              post={comment}
+              currentUserId={user.userId}
+              key={index}
+            />
+            <Divider />
+          </>
         )
       })}
     </>

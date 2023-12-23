@@ -1,16 +1,19 @@
 import { Link } from 'react-router-dom'
 import { Image, Divider } from '@nextui-org/react'
-import DiscoverLikeBtn from '../Like/DiscoverLikeBtn'
+import ChangeLocalStateLikeBtn from '../Like/ChangeLocalStateLikeBtn'
 import Tag from '../Tag'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
+import parser from 'html-react-parser'
 
 interface PostState {
   id: string
+  title?: string
   author: string
   userId: string
   avatar: string
-  comment: string
+  review?: string
+  comment?: string
   comments_count: number
   created_at: any
   isPublic: boolean
@@ -95,7 +98,15 @@ const CommentCard = (Props: CommentCardState) => {
           </Link>
 
           <div className="comment-content my-5">
-            <p className="comment break-words text-sm">{Props.post.comment}</p>
+            {Props.post.comment ? (
+              <p className="comment break-words text-sm">
+                {Props.post.comment}
+              </p>
+            ) : (
+              <p className="comment line-clamp-3 break-words text-sm leading-10">
+                {Props.post.review && parser(Props.post.review)}
+              </p>
+            )}
           </div>
 
           <div className="tags mb-3">
@@ -106,8 +117,9 @@ const CommentCard = (Props: CommentCardState) => {
             </ul>
           </div>
 
-          <DiscoverLikeBtn
+          <ChangeLocalStateLikeBtn
             postId={Props.post.id}
+            postCategory={Props.post.title ? 'REVIEWS' : 'COMMENTS'}
             count={Props.post.likes_count}
             authorId={Props.post.userId}
             isLiked={Props.post.likesUser?.includes(Props.currentUserId)}

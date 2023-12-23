@@ -9,15 +9,12 @@ import {
   onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import parser from 'html-react-parser'
-import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
-import Like from '../../components/Like'
 import SubCommentsReview from '../../components/SubComments/SubCommentsReview'
 import { Divider, Button } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import ReviewCardforReading from '../../components/CommentCard/ReviewCardforReading'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
@@ -118,73 +115,25 @@ const Read = () => {
           <Divider />
         </div>
 
-        <div className="comment-card mx-auto my-5 flex items-start">
-          <Link
-            to={`/profile/${review.userId}`}
-            className="avatar-wrapper mt-5 flex w-1/4"
-          >
-            <div
-              className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
-              style={{
-                backgroundImage: `url(${review.avatar})`,
-              }}
-            />
-          </Link>
-          <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
-            <div className="comment-rating w-full">
-              <h1 className="mb-5 font-bold">{review.title}</h1>
+        <ReviewCardforReading post={review} currentUserId={user.userId} />
 
-              <div className="comment-header flex">
-                <div className="comment-user mr-2 flex">
-                  <span className="mr-1 text-sm text-slate-400">評論作者</span>
-                  <span className="text-sm font-semibold text-slate-800">
-                    {review.author}
-                  </span>
-                </div>
-                <CommentStar rating={review.rating} />
-                <div className="comment-count ml-2 flex items-center text-slate-400">
-                  <FaCommentAlt className="text-xs" />
-                  <span className="ml-1 text-sm">{review.comments_count}</span>
-                </div>
-              </div>
-
-              <div className="comment-content my-5">
-                <p className="break-words leading-10">
-                  {review.review ? parser(review.review) : null}
-                </p>
-              </div>
-
-              <div className="like">
-                <Like
-                  postId={id}
-                  isLiked={
-                    review.likesUser && review.likesUser.includes(user.userId)
-                  }
-                  count={review.likes_count}
-                  authorId={review.userId}
-                />
-              </div>
-            </div>
-
-            {review.userId === user.userId && (
-              <div className="mt-2 flex w-full justify-end gap-2">
-                <Link to={`/review/revision/${id}`}>
-                  <Button size="sm" className="bg-[#94a3ab] text-white">
-                    修改
-                  </Button>
-                </Link>
-                <Button
-                  size="sm"
-                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
-                  onClick={handleDeleteReview}
-                  isLoading={isLoading}
-                >
-                  刪除
-                </Button>
-              </div>
-            )}
+        {review.userId === user.userId && (
+          <div className="mt-2 flex w-full justify-end gap-2">
+            <Link to={`/review/revision/${id}`}>
+              <Button size="sm" className="bg-[#94a3ab] text-white">
+                修改
+              </Button>
+            </Link>
+            <Button
+              size="sm"
+              className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+              onClick={handleDeleteReview}
+              isLoading={isLoading}
+            >
+              刪除
+            </Button>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="mx-auto flex w-2/5 justify-end">

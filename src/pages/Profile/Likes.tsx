@@ -4,7 +4,6 @@ import { db } from '../../../firebase'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import CommentCard from '../../components/CommentCard'
-import ReviewCard from '../../components/CommentCard/ReviewCard'
 import { Skeleton } from '@nextui-org/react'
 
 interface userMoviesCommentsState {
@@ -143,10 +142,10 @@ const Likes = () => {
       ) : (
         likedReviews.map((review: any, index: number) => {
           return (
-            <ReviewCard
+            <CommentCard
               post={review}
-              followingUsersReviews={likedReviews}
-              setFollowingUsersReviews={setLikedReviews}
+              followingUsersComments={likedReviews}
+              setFollowingUsersComments={setLikedReviews}
               currentUserId={user.userId}
               key={index}
             />
