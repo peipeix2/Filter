@@ -19,7 +19,7 @@ interface LikeState {
   setFollowingUsersComments: any
 }
 
-const DiscoverLikeBtn = (Props: LikeState) => {
+const ChangeLocalStateLikeBtn = (Props: LikeState) => {
   const { user, isLogin } = useUserStore()
 
   const updateLocalLikesUser = (
@@ -134,4 +134,4 @@ const DiscoverLikeBtn = (Props: LikeState) => {
   )
 }
 
-export default DiscoverLikeBtn
+export default ChangeLocalStateLikeBtn

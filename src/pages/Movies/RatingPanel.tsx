@@ -78,8 +78,6 @@ const RatingPanel = () => {
       setMoviesData(movies)
     })
 
-    // if (!user?.userId) return
-
     return () => {
       unsubscribe()
     }
