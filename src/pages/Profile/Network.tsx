@@ -6,19 +6,25 @@ import {
   deleteDoc,
   doc,
   QuerySnapshot,
+  CollectionReference,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { Avatar, Divider, Button } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import { useParams } from 'react-router-dom'
 import { Skeleton } from '@nextui-org/react'
+import { FollowUserState } from '../../utils/type'
+
+interface HoverState {
+  [key: string]: boolean
+}
 
 const Network = () => {
-  const [followingUserIds, setFollowingUserIds] = useState<any>([])
-  const [userHoverStates, setUserHoverState] = useState<any>({})
+  const [followingUserIds, setFollowingUserIds] = useState<string[]>([])
+  const [userHoverStates, setUserHoverState] = useState<HoverState>({})
   const { user, userFollowers, userFollowings, isLogin } = useUserStore()
   const { userId } = useParams()
-  let userFollowingRef: any
+  let userFollowingRef: CollectionReference
 
   useEffect(() => {
     if (user.userId) {
@@ -30,7 +36,7 @@ const Network = () => {
     const unsub = onSnapshot(
       userFollowingRef,
       (querySnapshot: QuerySnapshot) => {
-        const followingIds: any = []
+        const followingIds: string[] = []
         querySnapshot.forEach((doc) => {
           followingIds.push(doc.id)
         })
@@ -50,7 +56,7 @@ const Network = () => {
   const handleFollowUser = async (
     profileUserId: string,
     currentUserId: string,
-    profileUser: any
+    profileUser: FollowUserState
   ) => {
     const currentUserRef = doc(
       db,
@@ -145,13 +151,13 @@ const Network = () => {
                             )
                           }
                           onMouseEnter={() =>
-                            setUserHoverState((prev: any) => ({
+                            setUserHoverState((prev) => ({
                               ...prev,
                               [profileUser.userId]: true,
                             }))
                           }
                           onMouseLeave={() =>
-                            setUserHoverState((prev: any) => ({
+                            setUserHoverState((prev) => ({
                               ...prev,
                               [profileUser.userId]: false,
                             }))
@@ -221,13 +227,13 @@ const Network = () => {
                             )
                           }
                           onMouseEnter={() =>
-                            setUserHoverState((prev: any) => ({
+                            setUserHoverState((prev) => ({
                               ...prev,
                               [profileUser.userId]: true,
                             }))
                           }
                           onMouseLeave={() =>
-                            setUserHoverState((prev: any) => ({
+                            setUserHoverState((prev) => ({
                               ...prev,
                               [profileUser.userId]: false,
                             }))

@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom'
 import { renderComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
+import { CommentState } from '../../utils/type'
 
 const CommentsSection = () => {
   const moviesCommentsForId = useMoviesCommentStore(
@@ -22,11 +23,11 @@ const CommentsSection = () => {
     const unsubscribe = onSnapshot(
       collectionGroup(db, 'COMMENTS'),
       (querySnapshot) => {
-        const comments: any = []
+        const comments: CommentState[] = []
         querySnapshot.forEach((doc) => {
           const commentsData = doc.data()
           const commentsWithId = { ...commentsData, id: doc.id }
-          comments.push(commentsWithId)
+          comments.push(commentsWithId as CommentState)
         })
         const publicComments = renderComments(comments, Number(id))
         setMoviesCommentsForId(publicComments)

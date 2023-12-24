@@ -3,6 +3,14 @@ import useMoviesDetailStore from '../../../store/moviesDetailStore'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
+interface CrewState {
+  id: number
+  name: string
+  profile_path: string
+  job: string
+  [key: string]: any
+}
+
 const Crew = () => {
   const moviesCrew = useMoviesDetailStore((state) => state.moviesCrew)
   const fetchMoviesCrew = useMoviesDetailStore((state) => state.fetchMoviesCrew)
@@ -19,7 +27,7 @@ const Crew = () => {
 
   return (
     <div className="mt-5 flex min-h-[150px] flex-wrap gap-2 py-5">
-      {moviesCrew.map((item: any) => {
+      {moviesCrew.map((item: CrewState) => {
         if (
           item.job === 'Director' ||
           item.job === 'Producer' ||

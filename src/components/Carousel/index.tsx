@@ -13,9 +13,12 @@ import {
 } from 'firebase/firestore'
 import { Link } from 'react-router-dom'
 import LoadingMode from './LoadingMode'
+import { ReviewState } from '../../utils/type'
 
 const Carousel = () => {
-  const [followingUsersReviews, setFollowingUsersReviews] = useState<any>([])
+  const [followingUsersReviews, setFollowingUsersReviews] = useState<
+    ReviewState[]
+  >([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   let isLoading
@@ -25,7 +28,7 @@ const Carousel = () => {
   }, [])
 
   useEffect(() => {
-    let intervalId: any
+    let intervalId: NodeJS.Timeout
 
     if (!isHovered) {
       intervalId = setInterval(handleCarouselAutoSlide, 8000)
@@ -40,9 +43,9 @@ const Carousel = () => {
     const commentRef = collectionGroup(db, 'REVIEWS')
     const q = query(commentRef, orderBy('likes_count', 'desc'), limit(3))
     const querySnapshot = await getDocs(q)
-    const data: any = []
+    const data: ReviewState[] = []
     querySnapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() })
+      data.push({ id: doc.id, ...doc.data() } as ReviewState)
     })
     return data
   }
@@ -163,7 +166,7 @@ const Carousel = () => {
         <BsChevronCompactRight onClick={nextSlide} size={30} />
       </div>
       <div className="top-4 flex justify-center py-2">
-        {followingUsersReviews.map((_: any, index: number) => {
+        {followingUsersReviews.map((_, index) => {
           return (
             <div
               className={

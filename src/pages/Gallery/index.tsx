@@ -7,6 +7,7 @@ import { Image, Skeleton, Pagination } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../../firebase'
+import { CommentState } from '../../utils/type'
 
 type QueryKey = [string, number, string, string | null | undefined]
 
@@ -19,7 +20,11 @@ const Gallery = () => {
   const { pathname } = useLocation()
 
   if (!pathname) return
-  const getMoviesFromCategory = async ({ queryKey }: any) => {
+  const getMoviesFromCategory = async ({
+    queryKey,
+  }: {
+    queryKey: QueryKey
+  }) => {
     if (pathname.includes('search') && searchValue) {
       const data = await api.queryMovies(
         encodeURIComponent(searchValue),
@@ -48,9 +53,9 @@ const Gallery = () => {
     const commentRef = collectionGroup(db, 'COMMENTS')
     const q = query(commentRef, where('tags', 'array-contains', tag))
     const querySnapshot = await getDocs(q)
-    const data: any = []
+    const data: CommentState[] = []
     querySnapshot.forEach((doc) => {
-      data.push(doc.data())
+      data.push(doc.data() as CommentState)
     })
     const pages = Math.ceil(data.length / 20)
     setTotalPages(pages)

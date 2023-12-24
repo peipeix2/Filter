@@ -19,10 +19,13 @@ import useUserStore from '../../store/userStore'
 import toast from 'react-hot-toast'
 import StyleBtns from './StyleBtns'
 import { extension } from './extension'
+import { ReviewState, MovieFromFirestoreState } from '../../utils/type'
 
 const EditPage = () => {
-  const [moviesData, setMoviesData] = useState<any>([])
-  const [review, setReview] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
+    null
+  )
+  const [review, setReview] = useState<ReviewState | null>(null)
   const [revisedReview, setRevisedReview] = useState<string>('')
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
@@ -47,7 +50,7 @@ const EditPage = () => {
     const querySnapshot = await getDocs(collectionGroup(db, 'REVIEWS'))
     querySnapshot.forEach((doc) => {
       if (doc.id === reviewId) {
-        setReview(doc.data())
+        setReview(doc.data() as ReviewState)
         setTags(doc.data().tags)
         setRevisedMoviesReview('title', doc.data().title)
         setRevisedMoviesReview('review', doc.data().review)
@@ -57,12 +60,12 @@ const EditPage = () => {
     })
   }
 
-  const getMoviesDetail = async (movieId: any) => {
+  const getMoviesDetail = async (movieId: number) => {
     const movieRef = doc(db, 'MOVIES', String(movieId))
     const docSnap = await getDoc(movieRef)
     if (docSnap.exists()) {
       const movieInfo = docSnap.data()
-      setMoviesData(movieInfo)
+      setMoviesData(movieInfo as MovieFromFirestoreState)
     }
   }
 
@@ -96,6 +99,8 @@ const EditPage = () => {
   if (!reviewId) return
 
   const updateMovieRatings = async () => {
+    if (!review) return
+    if (!moviesData) return
     try {
       await setDoc(
         doc(db, 'MOVIES', `${review.movie_id}`),
@@ -134,13 +139,16 @@ const EditPage = () => {
       }),
         toast.success('修改已送出！')
       await updateMovieRatings()
-      navigate(`/movies/${review.movie_id}`)
+      if (review) {
+        navigate(`/movies/${review.movie_id}`)
+      }
     } catch (e) {
       console.error('Error adding document: ', e)
     }
   }
 
   const formInvalid = !revisedMoviesReview.rating
+  if (!review) return
 
   return (
     <section className="text-editor-container mx-auto my-8 max-w-4xl">

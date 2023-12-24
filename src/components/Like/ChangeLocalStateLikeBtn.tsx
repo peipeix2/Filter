@@ -8,6 +8,7 @@ import {
   arrayRemove,
 } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
+import { CommentState, ReviewState } from '../../utils/type'
 
 interface LikeState {
   postId: string
@@ -15,15 +16,15 @@ interface LikeState {
   count: number
   isLiked: boolean
   authorId: string
-  followingUsersComments: any
-  setFollowingUsersComments: any
+  followingUsersComments: CommentState[] | ReviewState[]
+  setFollowingUsersComments: (value: CommentState[] | ReviewState[]) => void
 }
 
 const ChangeLocalStateLikeBtn = (Props: LikeState) => {
   const { user, isLogin } = useUserStore()
 
   const updateLocalLikesUser = (
-    followingUsersComments: any,
+    followingUsersComments: CommentState[] | ReviewState[],
     postId: string,
     isLiked: boolean,
     count: number
@@ -54,7 +55,9 @@ const ChangeLocalStateLikeBtn = (Props: LikeState) => {
       }
     }
 
-    Props.setFollowingUsersComments(updatedComments)
+    Props.setFollowingUsersComments(
+      updatedComments as CommentState[] | ReviewState[]
+    )
   }
 
   const handleLikeClick = async (

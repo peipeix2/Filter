@@ -32,12 +32,15 @@ import SubComments from '../../components/SubComments'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
+import { CommentState, MovieFromFirestoreState } from '../../utils/type'
 
 const Comment = () => {
-  const [comment, setComment] = useState<any>([])
+  const [comment, setComment] = useState<CommentState | null>(null)
   const { revisedMoviesComment, setRevisedMoviesComment } =
     useMoviesCommentStore()
-  const [moviesData, setMoviesData] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
+    null
+  )
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
@@ -56,7 +59,7 @@ const Comment = () => {
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.id === id) {
-            setComment(doc.data())
+            setComment(doc.data() as CommentState)
             setTags(doc.data().tags)
             setRevisedMoviesComment('comment', doc.data().comment)
             setRevisedMoviesComment('rating', doc.data().rating || 0)
@@ -79,12 +82,12 @@ const Comment = () => {
   if (!id) return
   if (!userId) return
 
-  const getMoviesDetail = async (movieId: any) => {
+  const getMoviesDetail = async (movieId: number) => {
     const movieRef = doc(db, 'MOVIES', String(movieId))
     const docSnap = await getDoc(movieRef)
     if (docSnap.exists()) {
       const movieInfo = docSnap.data()
-      setMoviesData(movieInfo)
+      setMoviesData(movieInfo as MovieFromFirestoreState)
     }
   }
 
@@ -104,13 +107,17 @@ const Comment = () => {
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
       setDoc(userRef, commentData, { merge: true })
       await updateMovieRatings()
-      navigate(`/movies/${comment.movie_id}`)
+      if (comment?.movie_id) {
+        navigate(`/movies/${comment.movie_id}`)
+      }
     } catch (e) {
       console.error('Error adding document: ', e)
     }
   }
 
   const updateMovieRatings = async () => {
+    if (!comment) return
+    if (!moviesData) return
     try {
       await setDoc(
         doc(db, 'MOVIES', `${comment.movie_id}`),
@@ -129,6 +136,7 @@ const Comment = () => {
   }
 
   const handleDeleteComment = async () => {
+    if (!comment) return
     try {
       setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
@@ -143,6 +151,8 @@ const Comment = () => {
   }
 
   const updateDeleteMovieRatings = async () => {
+    if (!comment) return
+    if (!moviesData) return
     try {
       await setDoc(
         doc(db, 'MOVIES', `${comment.movie_id}`),

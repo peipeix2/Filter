@@ -7,20 +7,10 @@ import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
 import toast from 'react-hot-toast'
+import { FavoriteState } from '../../utils/type'
 
 interface EventState {
-  event: {
-    movie_title: string
-    movie_id: string
-    movie_original_title: string
-    schedule_time: string
-    user: string
-    movie_poster: string
-    movie_backdrop_path: string
-    movie_release: string
-    created_at: Date
-    release_date: string
-  }
+  event: FavoriteState
   calendarState: any
   setCalendarState: any
 }

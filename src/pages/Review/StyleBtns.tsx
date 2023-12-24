@@ -16,13 +16,15 @@ import { v4 as uuidv4 } from 'uuid'
 const StyleBtns = ({ editor }: any) => {
   const imgRef = useRef<HTMLInputElement>(null)
 
-  const handleImageChange = (event: any) => {
-    const file = event.target.files[0]
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0]
 
-    addImage(file)
+      addImage(file)
+    }
   }
 
-  const uploadImage = async (image: any) => {
+  const uploadImage = async (image: File) => {
     const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
     await uploadBytes(imageRef, image)
 
@@ -30,7 +32,7 @@ const StyleBtns = ({ editor }: any) => {
     return downloadURL
   }
 
-  const addImage = async (image: any) => {
+  const addImage = async (image: File) => {
     let imageURL = null
     if (image) {
       imageURL = await uploadImage(image)

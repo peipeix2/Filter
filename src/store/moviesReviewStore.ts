@@ -1,12 +1,14 @@
+import { Timestamp } from 'firebase/firestore'
 import { create } from 'zustand'
+import { ReviewState } from '../utils/type'
 
 interface MoviesReviewState {
-    title: string
-    review: string
-    comments_count: number
-    isPublic: boolean
-    likes_count: number
-    rating: number
+  title: string
+  review: string
+  comments_count: number
+  isPublic: boolean
+  likes_count: number
+  rating: number
 }
 
 interface RevisedMoviesReviewState {
@@ -24,13 +26,13 @@ interface MoviesReviewsForIdState {
   avatar: string
   review: string
   comments_count: number
-  created_at: Date
+  created_at: Timestamp
   isPublic: boolean
   likes_count: number
   movie_id: number
   rating: number
   tags: string[]
-  updated_at: Date
+  updated_at: Timestamp
   movie_title: string
   movie_original_title: string
   movie_backdrop_path: string
@@ -41,12 +43,18 @@ interface MoviesReviewsForIdState {
 
 interface MoviesReviewsStoreState {
   moviesReview: MoviesReviewState
-  setMoviesReview: (fieldName: string, value: any) => void
+  setMoviesReview: (
+    fieldName: string,
+    value: string | boolean | number | File
+  ) => void
   resetMoviesReview: () => void
-  moviesReviewsForId: MoviesReviewsForIdState[]
-  setMoviesReviewsForId: (moviesCommentsForId: MoviesReviewsForIdState) => void
+  moviesReviewsForId: ReviewState[]
+  setMoviesReviewsForId: (moviesCommentsForId: ReviewState[]) => void
   revisedMoviesReview: RevisedMoviesReviewState
-  setRevisedMoviesReview: (fieldName: string, value: any) => void
+  setRevisedMoviesReview: (
+    fieldName: string,
+    value: string | boolean | number | File
+  ) => void
 }
 
 const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
@@ -76,7 +84,7 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
     }))
   },
   moviesReviewsForId: [],
-  setMoviesReviewsForId: (moviesReviewsForId: any) =>
+  setMoviesReviewsForId: (moviesReviewsForId) =>
     set(() => ({ moviesReviewsForId: moviesReviewsForId })),
   revisedMoviesReview: {
     title: '',
@@ -84,7 +92,10 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
     isPublic: true,
     rating: 0,
   },
-  setRevisedMoviesReview: (fieldName: any, value: any) => {
+  setRevisedMoviesReview: (
+    fieldName: string,
+    value: string | boolean | number | File
+  ) => {
     set((state) => ({
       revisedMoviesReview: {
         ...state.revisedMoviesReview,

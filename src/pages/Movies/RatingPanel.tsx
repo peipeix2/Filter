@@ -34,25 +34,13 @@ import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
 import Favorites from '../../components/Favorites'
 import toast from 'react-hot-toast'
-
-interface MoviesState {
-  id: number
-  title: string
-  original_title: string
-  overview: string
-  poster_path: string
-  rating: number
-  ratings_count: number
-  comments_count: number
-  reviews_count: number
-  wishes_count: number
-  tag: string[]
-  release_date: string
-}
+import { MovieFromFirestoreState, CommentState } from '../../utils/type'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
-  const [moviesData, setMoviesData] = useState<MoviesState | null>(null)
+  const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
+    null
+  )
   const [userFavorites, setUserFavorites] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
@@ -73,7 +61,8 @@ const RatingPanel = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
-      const movies: any = doc.data()
+      const movies: MovieFromFirestoreState =
+        doc.data() as MovieFromFirestoreState
       if (movies === undefined) return
       setMoviesData(movies)
     })
@@ -89,9 +78,9 @@ const RatingPanel = () => {
     const unsubsComments = onSnapshot(
       collection(db, 'USERS', userId, 'COMMENTS'),
       (querySnapshot) => {
-        const userComment: any = []
+        const userComment: CommentState[] = []
         querySnapshot.forEach((doc) => {
-          userComment.push(doc.data())
+          userComment.push(doc.data() as CommentState)
         })
         setHasCommented(isMovieCommented(userComment, Number(id)))
       }
@@ -100,7 +89,7 @@ const RatingPanel = () => {
     const unsubsFavorites = onSnapshot(
       collection(db, 'USERS', userId, 'FAVORITES'),
       (querySnapshot) => {
-        const favoriteIds: any = []
+        const favoriteIds: string[] = []
         querySnapshot.forEach((doc) => {
           favoriteIds.push(doc.id)
         })

@@ -19,25 +19,23 @@ import PopularComments from './PopularComments.tsx'
 import MidHero from '../../components/HeroImg/MidHero.tsx'
 import useUserStore from '../../store/userStore.ts'
 import Carousel from '../../components/Carousel/index.tsx'
+import { MovieFromFirestoreState, UserProfileState } from '../../utils/type.ts'
 
 interface Movie {
   id: number
   title: string
   original_title: string
   poster_path: string
-}
-
-interface MovieRating {
-  id: number
-  rating: number
-  ratings_count: number
+  [key: string]: any
 }
 
 const Home = () => {
-  const [moviesRating, setMoviesRating] = useState<Array<MovieRating>>([])
-  const [moviesFromAPI, setMoviesFromAPI] = useState<Array<Movie>>([])
-  const [nowPlaying, setNowPlaying] = useState<Array<Movie>>([])
-  const [userProfile, setUserProfile] = useState<any>(null)
+  const [moviesRating, setMoviesRating] = useState<MovieFromFirestoreState[]>(
+    []
+  )
+  const [moviesFromAPI, setMoviesFromAPI] = useState<Movie[]>([])
+  const [nowPlaying, setNowPlaying] = useState<Movie[]>([])
+  const [userProfile, setUserProfile] = useState<UserProfileState | null>(null)
   const featureIntroRef = useRef<HTMLDivElement>(null)
   const { isLogin, user } = useUserStore()
 
@@ -71,15 +69,18 @@ const Home = () => {
     }
   }, [])
 
-  const getMoviesRating = async (popularMovies: any, nowPlayingMovies: any) => {
+  const getMoviesRating = async (
+    popularMovies: Movie[],
+    nowPlayingMovies: Movie[]
+  ) => {
     const allMovies = [...popularMovies, ...nowPlayingMovies]
-    const moviesData: any = []
+    const moviesData: MovieFromFirestoreState[] = []
     const moviesIds: Number[] = []
     for (const movie of allMovies) {
       if (!moviesIds.includes(movie.id)) {
         const docSnap = await getDoc(doc(db, 'MOVIES', String(movie.id)))
         if (docSnap.exists()) {
-          moviesData.push(docSnap.data())
+          moviesData.push(docSnap.data() as MovieFromFirestoreState)
         }
         moviesIds.push(movie.id)
       }
@@ -96,13 +97,11 @@ const Home = () => {
     return true
   }
 
-  const createMoviesDoc = async (data: any) => {
+  const createMoviesDoc = async (data: Movie[]) => {
     for (const item of data) {
       const isSavedToFirestore = await checkIfSavedToFirestore(item.id)
       if (isSavedToFirestore) {
-        console.log('movie already in database.')
       } else {
-        console.log('movie not exists in database yet.')
         await setDoc(doc(db, 'MOVIES', `${item.id}`), {
           id: item.id,
           title: item.title,
@@ -133,7 +132,7 @@ const Home = () => {
   const getUserProfile = async (userId: string) => {
     const docSnap = await getDoc(doc(db, 'USERS', userId))
     if (docSnap.exists()) {
-      setUserProfile(docSnap.data())
+      setUserProfile(docSnap.data() as UserProfileState)
     }
   }
 

@@ -3,18 +3,19 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { db } from '../../../firebase'
 import { query, orderBy, collection, limit, getDocs } from 'firebase/firestore'
+import { UserProfileState } from '../../utils/type'
 
 const PopularReviewers = () => {
-  const [popularUsers, setPopularUsers] = useState<any>([])
+  const [popularUsers, setPopularUsers] = useState<UserProfileState[]>([])
 
   useEffect(() => {
     const queryPopularUsers = async () => {
       const userRef = collection(db, 'USERS')
       const q = query(userRef, orderBy('likes', 'desc'), limit(5))
       const querySnapshot = await getDocs(q)
-      const popularUsersData: any = []
+      const popularUsersData: UserProfileState[] = []
       querySnapshot.forEach((doc) => {
-        popularUsersData.push(doc.data())
+        popularUsersData.push(doc.data() as UserProfileState)
       })
       setPopularUsers(popularUsersData)
     }
@@ -30,7 +31,7 @@ const PopularReviewers = () => {
         <p className="text-base font-semibold text-[#475565]">活躍用戶</p>
       </div>
       <Divider className="mt-1" />
-      {popularUsers.map((user: any, index: number) => {
+      {popularUsers.map((user, index) => {
         return (
           <>
             <Link

@@ -5,53 +5,13 @@ import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import CommentCard from '../../components/CommentCard'
 import { Skeleton } from '@nextui-org/react'
-
-interface userMoviesCommentsState {
-  id: string
-  author: string
-  userId: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: any
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-}
-
-interface userMoviesReviewsState {
-  id: string
-  title: string
-  author: string
-  userId: string
-  avatar: string
-  review: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: any
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-}
+import { CommentState, ReviewState } from '../../utils/type'
 
 const Likes = () => {
-  const [likedComments, setLikedComments] = useState<any>(null)
-  const [likedReviews, setLikedReviews] = useState<any>(null)
+  const [likedComments, setLikedComments] = useState<CommentState[] | null>(
+    null
+  )
+  const [likedReviews, setLikedReviews] = useState<ReviewState[] | null>(null)
   const user = useUserStore((state) => state.user)
   const { userId } = useParams()
 
@@ -76,25 +36,25 @@ const Likes = () => {
       getDocs(reviewsQuery),
     ])
 
-    let likedComments: any = []
+    let likedComments: CommentState[] = []
     commentsSnapshot.forEach((doc) => {
-      likedComments.push({ id: doc.id, ...doc.data() })
+      likedComments.push({ id: doc.id, ...doc.data() } as CommentState)
     })
 
-    let likedReviews: any = []
+    let likedReviews: ReviewState[] = []
     reviewsSnapshot.forEach((doc) => {
-      likedReviews.push({ id: doc.id, ...doc.data() })
+      likedReviews.push({ id: doc.id, ...doc.data() } as ReviewState)
     })
 
     likedComments = likedComments.sort(
-      (a: userMoviesCommentsState, b: userMoviesCommentsState) =>
-        b.updated_at - a.updated_at
+      (a: CommentState, b: CommentState) =>
+        b.updated_at.toMillis() - a.updated_at.toMillis()
     )
     setLikedComments(likedComments)
 
     likedReviews = likedReviews.sort(
-      (a: userMoviesReviewsState, b: userMoviesReviewsState) =>
-        b.updated_at - a.updated_at
+      (a: ReviewState, b: ReviewState) =>
+        b.updated_at.toMillis() - a.updated_at.toMillis()
     )
     setLikedReviews(likedReviews)
   }
@@ -118,7 +78,7 @@ const Likes = () => {
           </p>
         </div>
       ) : (
-        likedComments.map((comment: any, index: number) => {
+        likedComments.map((comment, index) => {
           return (
             <CommentCard
               post={comment}
@@ -140,7 +100,7 @@ const Likes = () => {
           </p>
         </div>
       ) : (
-        likedReviews.map((review: any, index: number) => {
+        likedReviews.map((review, index) => {
           return (
             <CommentCard
               post={review}

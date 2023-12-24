@@ -13,16 +13,15 @@ import {
 } from 'firebase/firestore'
 import { useLocation } from 'react-router-dom'
 import { Skeleton } from '@nextui-org/react'
-
-interface UserState {
-  userId: string
-  username: string | undefined | null
-  email: string | undefined | null
-  avatar: string
-}
+import {
+  UserProfileState,
+  FollowUserState,
+  CommentState,
+  ReviewState,
+} from '../../utils/type'
 
 const Profile = () => {
-  const [profileUser, setProfileUser] = useState<any>(null)
+  const [profileUser, setProfileUser] = useState<UserProfileState | null>(null)
   const [isFollowing, setIsFollowing] = useState<boolean>(false)
   const [followersCount, setFollowersCount] = useState<number>(0)
   const [followingCount, setFollowingCount] = useState<number>(0)
@@ -38,20 +37,14 @@ const Profile = () => {
     setUserMoviesReviews,
   } = useUserStore()
   const { userId } = useParams()
-  let profileUserFollowerRef: any
-  let profileUserFollowingRef: any
-  let docRef: any
-
-  if (!userId) return
 
   useEffect(() => {
-    if (userId) {
-      docRef = doc(db, 'USERS', userId)
-    }
+    if (!userId) return
 
-    const unsubs = onSnapshot(docRef, (doc: any) => {
+    const docRef = doc(db, 'USERS', userId)
+    const unsubs = onSnapshot(docRef, (doc) => {
       const profileData = doc.data()
-      setProfileUser(profileData)
+      setProfileUser(profileData as UserProfileState)
     })
 
     return () => {
@@ -60,24 +53,21 @@ const Profile = () => {
   }, [userId])
 
   useEffect(() => {
-    if (userId) {
-      profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
-      profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
-    }
+    if (!userId) return
+
+    const profileUserFollowerRef = collection(db, 'USERS', userId, 'FOLLOWER')
+    const profileUserFollowingRef = collection(db, 'USERS', userId, 'FOLLOWING')
 
     const unsubs = onSnapshot(
       profileUserFollowerRef,
       (querySnapshot: QuerySnapshot) => {
         setFollowersCount(querySnapshot.size)
-        const currentFollowers: any = []
+        const currentFollowers: FollowUserState[] = []
         querySnapshot.forEach((doc) => {
-          const data = doc.data() as UserState
-          currentFollowers.push(data)
+          currentFollowers.push(doc.data() as FollowUserState)
         })
         setIsFollowing(
-          currentFollowers.some(
-            (follower: UserState) => follower.userId === user.userId
-          )
+          currentFollowers.some((follower) => follower.userId === user.userId)
         )
         setUserFollowers(currentFollowers)
       }
@@ -87,10 +77,10 @@ const Profile = () => {
       profileUserFollowingRef,
       (querySnapshot: QuerySnapshot) => {
         setFollowingCount(querySnapshot.size)
-        const currentFollowings: any = []
+        const currentFollowings: FollowUserState[] = []
         if (querySnapshot)
           querySnapshot.forEach((doc) => {
-            currentFollowings.push(doc.data())
+            currentFollowings.push(doc.data() as FollowUserState)
           })
         setUserFollowings(currentFollowings)
       }
@@ -103,26 +93,26 @@ const Profile = () => {
   }, [user.userId])
 
   useEffect(() => {
-    // Promise.all([fetchUserComments(userId), fetchUserReviews(userId)])
+    if (!userId) return
     const commentDocRef = collection(db, 'USERS', userId, 'COMMENTS')
     const reviewDocRef = collection(db, 'USERS', userId, 'REVIEWS')
 
     const unsubscribeComments = onSnapshot(commentDocRef, (querySnapshot) => {
-      const comments: any = []
+      const comments: CommentState[] = []
       querySnapshot.forEach((doc) => {
         const commentsData = doc.data()
         const commentsWithId = { ...commentsData, id: doc.id }
-        comments.push(commentsWithId)
+        comments.push(commentsWithId as CommentState)
       })
       setUserMoviesComments(comments)
     })
 
     const unsubscribeReviews = onSnapshot(reviewDocRef, (querySnapshot) => {
-      const reviews: any = []
+      const reviews: ReviewState[] = []
       querySnapshot.forEach((doc) => {
         const reviewsData = doc.data()
         const reviewsWithId = { ...reviewsData, id: doc.id }
-        reviews.push(reviewsWithId)
+        reviews.push(reviewsWithId as ReviewState)
       })
       setUserMoviesReviews(reviews)
     })

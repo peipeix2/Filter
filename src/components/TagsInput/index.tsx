@@ -12,7 +12,7 @@ interface TagsProps {
 
 const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
   const addTags = (e: any) => {
-    if (e.target.value.length !== '' && e.target.value.trim().length !== 0) {
+    if (e.target.value !== '' && e.target.value.trim().length !== 0) {
       setTags([...tags, e.target.value])
       setTagsInput('')
     }

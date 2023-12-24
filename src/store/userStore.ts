@@ -1,55 +1,13 @@
 import { create } from 'zustand'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 const auth = getAuth()
+import { CommentState, ReviewState, FollowUserState } from '../utils/type'
 
 interface userState {
   userId: string
   username: string | undefined | null
   email: string | undefined | null
   avatar: string
-}
-
-interface userMoviesCommentsState {
-  id: string
-  author: string
-  userId: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-}
-
-interface userMoviesReviewsState {
-  id: string
-  title: string
-  author: string
-  userId: string
-  avatar: string
-  review: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
 }
 
 interface userStoreState {
@@ -62,14 +20,14 @@ interface userStoreState {
   getUserProfile: () => void
   hasCommented: boolean
   setHasCommented: (value: boolean) => void
-  userMoviesComments: userMoviesCommentsState[]
-  setUserMoviesComments: (userMoviesComments: userMoviesCommentsState) => void
-  userMoviesReviews: userMoviesReviewsState[]
-  setUserMoviesReviews: (userMoviesReviews: userMoviesReviewsState) => void
-  userFollowings: userState[] | null
-  setUserFollowings: (userFollowings: userState) => void
-  userFollowers: userState[] | null
-  setUserFollowers: (userFollowers: userState) => void
+  userMoviesComments: CommentState[]
+  setUserMoviesComments: (userMoviesComments: CommentState[]) => void
+  userMoviesReviews: ReviewState[]
+  setUserMoviesReviews: (userMoviesReviews: ReviewState[]) => void
+  userFollowings: FollowUserState[] | null
+  setUserFollowings: (userFollowings: FollowUserState[]) => void
+  userFollowers: FollowUserState[] | null
+  setUserFollowers: (userFollowers: FollowUserState[]) => void
 }
 
 const useUserStore = create<userStoreState>((set) => ({
@@ -79,7 +37,7 @@ const useUserStore = create<userStoreState>((set) => ({
     email: '',
     avatar: '',
   },
-  setUser: (value: any) => set({ user: value }),
+  setUser: (value) => set({ user: value }),
   resetUser: () =>
     set({
       user: {
@@ -115,16 +73,17 @@ const useUserStore = create<userStoreState>((set) => ({
   hasCommented: false,
   setHasCommented: (value: boolean) => set({ hasCommented: value }),
   userMoviesComments: [],
-  setUserMoviesComments: (userMoviesComments: any) =>
+  setUserMoviesComments: (userMoviesComments) =>
     set(() => ({ userMoviesComments: userMoviesComments })),
   userMoviesReviews: [],
-  setUserMoviesReviews: (userMoviesReviews: any) =>
+  setUserMoviesReviews: (userMoviesReviews) =>
     set(() => ({ userMoviesReviews: userMoviesReviews })),
+
   userFollowings: null,
-  setUserFollowings: (userFollowings: any) =>
+  setUserFollowings: (userFollowings) =>
     set(() => ({ userFollowings: userFollowings })),
   userFollowers: null,
-  setUserFollowers: (userFollowers: any) =>
+  setUserFollowers: (userFollowers) =>
     set(() => ({ userFollowers: userFollowers })),
 }))
 

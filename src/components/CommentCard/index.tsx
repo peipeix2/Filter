@@ -5,35 +5,12 @@ import Tag from '../Tag'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
 import parser from 'html-react-parser'
-
-interface PostState {
-  id: string
-  title?: string
-  author: string
-  userId: string
-  avatar: string
-  review?: string
-  comment?: string
-  comments_count: number
-  created_at: any
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-  likesUser: string[]
-}
+import { PostState, CommentState, ReviewState } from '../../utils/type'
 
 interface CommentCardState {
   post: PostState
-  followingUsersComments: any
-  setFollowingUsersComments: any
+  followingUsersComments: CommentState[] | ReviewState[]
+  setFollowingUsersComments: (value: any) => void
   currentUserId: string
 }
 

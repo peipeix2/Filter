@@ -9,6 +9,11 @@ import TagsSection from './TagsSection'
 
 const tabLinks = ['CAST', 'CREW', 'DETAILS']
 
+interface GenreState {
+  id: number
+  name: string
+}
+
 const Movies = () => {
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const fetchMoviesDetail = useMoviesDetailStore(
@@ -62,7 +67,7 @@ const Movies = () => {
               </div>
               <div className="genres mt-10 flex gap-1 text-sm text-[#2a3037]">
                 <span className="mr-2 font-bold">類型 /</span>
-                {moviesDetail.genres.map((genre: any, index: number) => {
+                {moviesDetail.genres.map((genre: GenreState, index) => {
                   return <span key={index}>{genre.name}</span>
                 })}
               </div>

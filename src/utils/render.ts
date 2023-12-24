@@ -1,41 +1,22 @@
-interface MoviesCommentsForIdState {
-  userId: string
-  author: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-}
+import { CommentState, ReviewState } from './type'
 
 export const renderComments = (
-  comments: MoviesCommentsForIdState[],
+  comments: CommentState[] | ReviewState[],
   id: number
 ) => {
-  const publicComments: any = []
+  const publicComments: CommentState[] = []
   comments.forEach((comment) => {
     if (comment.movie_id === id && comment.isPublic === true) {
-      publicComments.push(comment)
+      publicComments.push(comment as CommentState)
     }
   })
   return publicComments
 }
 
-export const isUserCommented = (
-  comments: MoviesCommentsForIdState[],
-  id: string
-) => {
+export const isUserCommented = (comments: CommentState[], id: string) => {
   return comments.some((comment) => comment.userId === id)
 }
 
-export const isMovieCommented = (
-  comments: MoviesCommentsForIdState[],
-  movieId: number
-) => {
+export const isMovieCommented = (comments: CommentState[], movieId: number) => {
   return comments.some((comment) => comment.movie_id === movieId)
 }

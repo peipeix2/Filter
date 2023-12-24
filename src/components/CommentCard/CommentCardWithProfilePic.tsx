@@ -4,30 +4,7 @@ import Tag from '../../components/Tag'
 import { FaCommentAlt } from 'react-icons/fa'
 import OnSnapShotLikeBtn from '../Like/OnSnapShotLikeBtn'
 import parser from 'html-react-parser'
-
-interface PostState {
-  id: string
-  title?: string
-  author: string
-  userId: string
-  avatar: string
-  review?: string
-  comment?: string
-  comments_count: number
-  created_at: any
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-  likesUser: string[]
-}
+import { PostState } from '../../utils/type'
 
 interface CommentCardState {
   post: PostState

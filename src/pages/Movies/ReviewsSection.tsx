@@ -7,6 +7,7 @@ import useUserStore from '../../store/userStore'
 import { useParams } from 'react-router-dom'
 import { renderComments } from '../../utils/render'
 import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
+import { ReviewState } from '../../utils/type'
 
 const ReviewSection = () => {
   const { moviesReviewsForId, setMoviesReviewsForId } = useMoviesReviewStore()
@@ -18,11 +19,11 @@ const ReviewSection = () => {
     const ref = collectionGroup(db, 'REVIEWS')
     const q = query(ref, where('movie_id', '==', Number(id)))
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const reviewsArray: any = []
+      const reviewsArray: ReviewState[] = []
       querySnapshot.forEach((doc) => {
         const reviewData = doc.data()
         const reviewWithId = { ...reviewData, id: doc.id }
-        reviewsArray.push(reviewWithId)
+        reviewsArray.push(reviewWithId as ReviewState)
       })
       const publicComments = renderComments(reviewsArray, Number(id))
       setMoviesReviewsForId(publicComments)

@@ -7,7 +7,7 @@ import ExternalEvent from './ExternalEvent'
 import CalendarModal from '../../components/Modal/CalendarModal'
 import { ScrollShadow } from '@nextui-org/react'
 import { db } from '../../../firebase'
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc, Timestamp } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import { Tabs, Tab, Chip } from '@nextui-org/react'
@@ -16,6 +16,7 @@ import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmpty
 import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
 import CalendarSkeleton from '../../components/Skeletons/CalendarSkeleton'
 import { motion, AnimatePresence } from 'framer-motion'
+import { FavoriteState } from '../../utils/type'
 
 interface CalendarEventState {
   id: string
@@ -36,7 +37,7 @@ interface ExternalEventState {
   movie_poster: string
   movie_backdrop_path: string
   movie_original_title: string
-  created_at: any
+  created_at: Timestamp
   schedule_time: string
   movie_release: string
   user: string
@@ -64,17 +65,17 @@ const Calendar = () => {
       if (userId) {
         const userRef = collection(db, 'USERS', userId, 'FAVORITES')
         const querySnapshot = await getDocs(userRef)
-        const favoritesList: any = []
+        const favoritesList: FavoriteState[] = []
         querySnapshot.forEach((doc) => {
-          favoritesList.push(doc.data())
+          favoritesList.push(doc.data() as FavoriteState)
         })
 
         setCalendarState((calendarState) => {
           return {
             ...calendarState,
             calendarEvents: favoritesList
-              .filter((item: any) => item.schedule_time !== 'unscheduled')
-              .map((item: any) => {
+              .filter((item) => item.schedule_time !== 'unscheduled')
+              .map((item) => {
                 return {
                   title: item.movie_title,
                   color: '#f46854',
@@ -89,7 +90,7 @@ const Calendar = () => {
                 }
               }),
             externalEvents: favoritesList.filter(
-              (item: any) => item.schedule_time === 'unscheduled'
+              (item) => item.schedule_time === 'unscheduled'
             ),
           }
         })
@@ -259,7 +260,7 @@ const Calendar = () => {
                 <UnshceduledEmptyState />
               ) : (
                 <AnimatePresence mode="popLayout">
-                  {calendarState.externalEvents.map((event: any) => (
+                  {calendarState.externalEvents.map((event) => (
                     <motion.div
                       key={event.movie_id}
                       animate={{ scale: 1, opacity: 1 }}
@@ -306,7 +307,7 @@ const Calendar = () => {
                 <ScheduledEmptyState />
               ) : (
                 <AnimatePresence mode="popLayout">
-                  {calendarState.calendarEvents.map((event: any) => (
+                  {calendarState.calendarEvents.map((event) => (
                     <motion.div
                       key={event.id}
                       animate={{ scale: 1, opacity: 1 }}

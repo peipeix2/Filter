@@ -12,9 +12,12 @@ import useUserStore from '../../store/userStore'
 import PopularReviewers from './PopularReviewers'
 import CommentCard from '../../components/CommentCard'
 import FadeInOnce from '../../components/Animation/FadeInOnce'
+import { CommentState } from '../../utils/type'
 
 const PopularComments = () => {
-  const [followingUsersComments, setFollowingUsersComments] = useState<any>([])
+  const [followingUsersComments, setFollowingUsersComments] = useState<
+    CommentState[]
+  >([])
   const [isLoading, setIsLoading] = useState(false)
   const user = useUserStore((state) => state.user)
 
@@ -26,9 +29,9 @@ const PopularComments = () => {
     const commentRef = collectionGroup(db, 'COMMENTS')
     const q = query(commentRef, orderBy('likes_count', 'desc'), limit(5))
     const querySnapshot = await getDocs(q)
-    const data: any = []
+    const data: CommentState[] = []
     querySnapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() })
+      data.push({ id: doc.id, ...doc.data() } as CommentState)
     })
     return data
   }
@@ -65,7 +68,7 @@ const PopularComments = () => {
                 )
               })}
 
-          {followingUsersComments.map((post: any, index: number) => {
+          {followingUsersComments.map((post, index) => {
             return (
               <CommentCard
                 post={post}

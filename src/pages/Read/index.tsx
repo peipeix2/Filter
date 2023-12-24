@@ -15,11 +15,14 @@ import { Divider, Button } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import ReviewCardforReading from '../../components/CommentCard/ReviewCardforReading'
+import { ReviewState, MovieFromFirestoreState } from '../../utils/type'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
-  const [moviesData, setMoviesData] = useState<any>([])
-  const [review, setReview] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
+    null
+  )
+  const [review, setReview] = useState<ReviewState | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
@@ -28,7 +31,7 @@ const Read = () => {
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.id === id) {
-            setReview(doc.data())
+            setReview(doc.data() as ReviewState)
           }
         })
       }
@@ -39,7 +42,9 @@ const Read = () => {
   }, [])
 
   useEffect(() => {
-    getMoviesDetail(review.movie_id)
+    if (review) {
+      getMoviesDetail(review.movie_id)
+    }
   }, [review])
 
   const { id } = useParams()
@@ -48,16 +53,18 @@ const Read = () => {
   if (!id) return
   if (!userId) return
 
-  const getMoviesDetail = async (movieId: any) => {
+  const getMoviesDetail = async (movieId: number) => {
     const movieRef = doc(db, 'MOVIES', String(movieId))
     const docSnap = await getDoc(movieRef)
     if (docSnap.exists()) {
       const movieInfo = docSnap.data()
-      setMoviesData(movieInfo)
+      setMoviesData(movieInfo as MovieFromFirestoreState)
     }
   }
 
   const handleDeleteReview = async () => {
+    if (!review) return
+
     try {
       setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'REVIEWS', id)
@@ -72,6 +79,8 @@ const Read = () => {
   }
 
   const updateDeleteMovieRatings = async () => {
+    if (!review) return
+    if (!moviesData) return
     try {
       await setDoc(
         doc(db, 'MOVIES', `${review.movie_id}`),
