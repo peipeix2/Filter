@@ -1,18 +1,12 @@
 import { useState, useEffect } from 'react'
-import {
-  collectionGroup,
-  getDocs,
-  orderBy,
-  query,
-  limit,
-} from 'firebase/firestore'
-import { db } from '../../../firebase'
 import { Divider, Skeleton } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import PopularReviewers from './PopularReviewers'
 import CommentCard from '../../components/CommentCard'
 import FadeInOnce from '../../components/Animation/FadeInOnce'
 import { CommentState } from '../../utils/type'
+import firestore from '../../utils/firestore'
+import SubCategoryTitle from './SubCategoryTitle'
 
 const PopularComments = () => {
   const [followingUsersComments, setFollowingUsersComments] = useState<
@@ -25,22 +19,11 @@ const PopularComments = () => {
     fetchPopularComments()
   }, [])
 
-  const queryPopularComments = async () => {
-    const commentRef = collectionGroup(db, 'COMMENTS')
-    const q = query(commentRef, orderBy('likes_count', 'desc'), limit(5))
-    const querySnapshot = await getDocs(q)
-    const data: CommentState[] = []
-    querySnapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() } as CommentState)
-    })
-    return data
-  }
-
   const fetchPopularComments = async () => {
     setIsLoading(true)
-    const data = await queryPopularComments()
+    const data = await firestore.queryPopularPosts('COMMENTS')
     setIsLoading(false)
-    setFollowingUsersComments(data)
+    setFollowingUsersComments(data as CommentState[])
   }
 
   return (
@@ -53,7 +36,7 @@ const PopularComments = () => {
           padding={false}
         >
           <div className="title-wrapper flex items-center justify-between">
-            <p className="text-base font-semibold text-[#475565]">熱門評論</p>
+            <SubCategoryTitle subCategory="熱門評論" />
           </div>
           <Divider className="mt-1" />
 

@@ -7,6 +7,9 @@ import {
   setDoc,
   doc,
   addDoc,
+  collectionGroup,
+  orderBy,
+  limit,
 } from 'firebase/firestore'
 import { MovieFromAPIState } from './type'
 
@@ -116,6 +119,28 @@ const firestore = {
       })
       return docArray
     }
+  },
+
+  queryPopularPosts: async (category: string) => {
+    const commentRef = collectionGroup(db, category)
+    const q = query(commentRef, orderBy('likes_count', 'desc'), limit(5))
+    const querySnapshot = await getDocs(q)
+    const data: object[] = []
+    querySnapshot.forEach((doc) => {
+      data.push({ id: doc.id, ...doc.data() })
+    })
+    return data
+  },
+
+  queryPopularUsers: async (category: string) => {
+    const userRef = collection(db, category)
+    const q = query(userRef, orderBy('likes', 'desc'), limit(5))
+    const querySnapshot = await getDocs(q)
+    const popularUsersData: object[] = []
+    querySnapshot.forEach((doc) => {
+      popularUsersData.push(doc.data())
+    })
+    return popularUsersData
   },
 }
 

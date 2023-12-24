@@ -3,6 +3,7 @@ import { Divider, Image } from '@nextui-org/react'
 import { MovieFromAPIState, MovieFromFirestoreState } from '../../utils/type'
 import { FaStar } from 'react-icons/fa'
 import { IoEyeSharp } from 'react-icons/io5'
+import SubCategoryTitle from './SubCategoryTitle'
 
 interface MoviesShowcaseState {
   category: string
@@ -20,7 +21,7 @@ const MoviesShowcase = ({
   return (
     <div className="popular-container mt-20">
       <div className="title-wrapper flex items-center justify-between">
-        <p className="text-base font-semibold text-[#475565]">{category}</p>
+        <SubCategoryTitle subCategory={category} />
         <Link to={`browse/${categoryEn}`} className="text-sm text-[#475565]">
           More
         </Link>

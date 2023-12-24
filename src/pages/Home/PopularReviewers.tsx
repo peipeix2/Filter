@@ -1,26 +1,20 @@
 import { Divider, User } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { db } from '../../../firebase'
-import { query, orderBy, collection, limit, getDocs } from 'firebase/firestore'
 import { UserProfileState } from '../../utils/type'
+import SubCategoryTitle from './SubCategoryTitle'
+import firestore from '../../utils/firestore'
 
 const PopularReviewers = () => {
   const [popularUsers, setPopularUsers] = useState<UserProfileState[]>([])
 
   useEffect(() => {
-    const queryPopularUsers = async () => {
-      const userRef = collection(db, 'USERS')
-      const q = query(userRef, orderBy('likes', 'desc'), limit(5))
-      const querySnapshot = await getDocs(q)
-      const popularUsersData: UserProfileState[] = []
-      querySnapshot.forEach((doc) => {
-        popularUsersData.push(doc.data() as UserProfileState)
-      })
-      setPopularUsers(popularUsersData)
+    const fetchPopularUsers = async () => {
+      const data = await firestore.queryPopularUsers('USERS')
+      setPopularUsers(data as UserProfileState[])
     }
 
-    queryPopularUsers()
+    fetchPopularUsers()
   }, [])
 
   if (!popularUsers) return
@@ -28,7 +22,7 @@ const PopularReviewers = () => {
   return (
     <>
       <div className="title-wrapper flex items-center justify-between">
-        <p className="text-base font-semibold text-[#475565]">活躍用戶</p>
+        <SubCategoryTitle subCategory="活躍用戶" />
       </div>
       <Divider className="mt-1" />
       {popularUsers.map((user, index) => {
