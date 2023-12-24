@@ -93,6 +93,30 @@ const firestore = {
       )
     }
   },
+  getDocs: async (
+    collection1: string,
+    document1?: string,
+    collection2?: string
+  ) => {
+    if (!document1 || !collection2) {
+      const collectionSnap = await getDocs(collection(db, collection1))
+      const docArray: object[] = []
+      collectionSnap.forEach((doc) => {
+        docArray.push(doc.data())
+      })
+      return docArray
+    }
+    if (document1 && collection2) {
+      const collectionSnap = await getDocs(
+        collection(db, collection1, document1, collection2)
+      )
+      const docArray: object[] = []
+      collectionSnap.forEach((doc) => {
+        docArray.push(doc.data())
+      })
+      return docArray
+    }
+  },
 }
 
 export default firestore
