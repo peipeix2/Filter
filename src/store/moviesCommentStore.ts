@@ -1,14 +1,5 @@
-import { Timestamp } from 'firebase/firestore'
 import { create } from 'zustand'
-import { CommentState, ReviewState } from '../utils/type'
-
-interface MoviesCommentState {
-  comment: string
-  comments_count: number
-  isPublic: boolean
-  likes_count: number
-  rating: number
-}
+import { CommentState, ReviewState, UserCommentState } from '../utils/type'
 
 interface RevisedMoviesCommentState {
   comment: string
@@ -16,30 +7,8 @@ interface RevisedMoviesCommentState {
   isPublic: boolean
 }
 
-interface MoviesCommentsForIdState {
-  id: string
-  author: string
-  userId: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: Timestamp
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Timestamp
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-  likesUser: string[]
-}
-
 interface MoviesCommentsStoreState {
-  moviesComment: MoviesCommentState
+  moviesComment: UserCommentState
   setMoviesComment: (
     fieldName: string,
     value: string | number | File | boolean

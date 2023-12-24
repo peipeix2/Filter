@@ -28,8 +28,7 @@ const TagsSection = () => {
     const q = query(ref, where('movie_id', '==', Number(id)))
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach((doc) => {
-      const commentData = doc.data()
-      const commentWithId = { ...commentData, id: doc.id }
+      const commentWithId = { ...doc.data(), id: doc.id }
       commentsArray.push(commentWithId as CommentState)
     })
     setMoviesComments(commentsArray)
@@ -40,7 +39,7 @@ const TagsSection = () => {
     moviesComments.forEach((comment) => {
       movieTags.push(...comment.tags)
     })
-    const popularTags = filterTags(movieTags)
+    const popularTags = filterPopularTags(movieTags)
     setTagsForMovie(popularTags)
   }
 
@@ -49,7 +48,7 @@ const TagsSection = () => {
     return accumulator
   }, new Map())
 
-  const filterTags = (tagsForMovie: string[]) => {
+  const filterPopularTags = (tagsForMovie: string[]) => {
     const tagsForRender: string[] = []
     tagsForMovie.forEach((tag) => {
       if (count.get(tag) / tagsForMovie.length > 0.5) {

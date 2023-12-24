@@ -69,6 +69,14 @@ export interface PostState {
   likesUser: string[]
 }
 
+export interface UserCommentState {
+  comment: string
+  comments_count: number
+  isPublic: boolean
+  likes_count: number
+  rating: number
+}
+
 export interface SubCommentState {
   id: string
   comment_id: string
@@ -129,4 +137,13 @@ export interface FollowUserState {
   avatar: string
   userId: string
   username: string
+}
+
+export interface CastState {
+  id: number
+  name: string
+  profile_path: string
+  order: number
+  character: string
+  [key: string]: any
 }

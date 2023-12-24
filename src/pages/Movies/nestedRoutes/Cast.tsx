@@ -2,15 +2,7 @@ import { Tooltip } from '@nextui-org/react'
 import useMoviesDetailStore from '../../../store/moviesDetailStore'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-
-interface CastState {
-  id: number
-  name: string
-  profile_path: string
-  order: number
-  character: string
-  [key: string]: any
-}
+import { CastState } from '../../../utils/type'
 
 const Cast = () => {
   const moviesCast = useMoviesDetailStore((state) => state.moviesCast)

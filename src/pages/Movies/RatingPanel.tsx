@@ -34,7 +34,12 @@ import useUserStore from '../../store/userStore'
 import { isMovieCommented } from '../../utils/render'
 import Favorites from '../../components/Favorites'
 import toast from 'react-hot-toast'
-import { MovieFromFirestoreState, CommentState } from '../../utils/type'
+import {
+  MovieFromFirestoreState,
+  CommentState,
+  ReviewState,
+  UserCommentState,
+} from '../../utils/type'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
@@ -143,7 +148,11 @@ const RatingPanel = () => {
         {
           ratings_count:
             moviesCommentsForId.length + moviesReviewsForId.length + 1,
-          rating: countRating(),
+          rating: countRating(
+            moviesCommentsForId,
+            moviesReviewsForId,
+            moviesComment
+          ),
         },
         { merge: true }
       )
@@ -152,18 +161,22 @@ const RatingPanel = () => {
     }
   }
 
-  const countRating = () => {
-    const sumForComments = moviesCommentsForId.reduce(
+  const countRating = (
+    moviesComments: CommentState[] | ReviewState[],
+    moviesReviews: CommentState[] | ReviewState[],
+    userComment: UserCommentState
+  ) => {
+    const sumForComments = moviesComments.reduce(
       (acc, comment) => acc + comment.rating,
       0
     )
-    const sumForReviews = moviesReviewsForId.reduce(
+    const sumForReviews = moviesReviews.reduce(
       (acc, review) => acc + review.rating,
       0
     )
     const rating =
-      (sumForComments + sumForReviews + moviesComment.rating) /
-      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
+      (sumForComments + sumForReviews + userComment.rating) /
+      (moviesComments.length + moviesReviews.length + 1)
     return rating
   }
 
@@ -206,18 +219,12 @@ const RatingPanel = () => {
       <Divider />
 
       <Link to={`/review/${moviesDetail.id}`}>
-        <div className="py-3">
+        <div className="pt-3">
           <p className="text-center text-sm text-[#94a3ab] hover:text-[#475565]">
             寫影評
           </p>
         </div>
       </Link>
-
-      <Divider />
-
-      <div className="pt-3">
-        <p className="text-center text-sm text-[#94a3ab]">分享</p>
-      </div>
 
       {/* Modal Form */}
       <Modal

@@ -2,14 +2,7 @@ import { Tooltip } from '@nextui-org/react'
 import useMoviesDetailStore from '../../../store/moviesDetailStore'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-
-interface CrewState {
-  id: number
-  name: string
-  profile_path: string
-  job: string
-  [key: string]: any
-}
+import { CrewState } from '../../../utils/type'
 
 const Crew = () => {
   const moviesCrew = useMoviesDetailStore((state) => state.moviesCrew)
