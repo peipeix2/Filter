@@ -3,7 +3,7 @@ import { CiSearch } from 'react-icons/ci'
 import { useNavigate } from 'react-router-dom'
 import { Select, SelectItem } from '@nextui-org/react'
 
-const SubNavbar = () => {
+const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('')
   const [selectedValue, setSelectedValue] = useState('title')
   const navigate = useNavigate()
@@ -44,7 +44,7 @@ const SubNavbar = () => {
           <div className="search-form-dropdown">
             <Select
               size="sm"
-              className="min-w-[100px]"
+              className="min-w-[80px]"
               classNames={{
                 innerWrapper: 'bg-[#d2d2d2]',
                 trigger: [
@@ -69,4 +69,4 @@ const SubNavbar = () => {
   )
 }
 
-export default SubNavbar
+export default SearchBar

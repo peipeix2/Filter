@@ -12,7 +12,7 @@ import SignUp from '../SignUp'
 import SignIn from '../SignIn'
 import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
-import SubNavbar from '../../pages/Home/SubNavbar'
+import SearchBar from '../../pages/Home/SearchBar'
 import { Link } from 'react-router-dom'
 
 function Header() {
@@ -39,7 +39,7 @@ function Header() {
       </NavbarBrand>
 
       <NavbarContent className="flex w-2/3 items-center gap-5" justify="end">
-        <SubNavbar />
+        <SearchBar />
         {!isLogin && (
           <>
             <SignUp />
