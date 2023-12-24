@@ -1,6 +1,6 @@
 import { CommentState, ReviewState } from './type'
 
-export const renderComments = (
+export const filterPublicComments = (
   comments: CommentState[] | ReviewState[],
   id: number
 ) => {

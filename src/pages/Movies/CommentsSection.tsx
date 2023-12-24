@@ -4,18 +4,14 @@ import { onSnapshot, collectionGroup } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useParams } from 'react-router-dom'
-import { renderComments, isUserCommented } from '../../utils/render'
+import { filterPublicComments, isUserCommented } from '../../utils/render'
 import useUserStore from '../../store/userStore'
 import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
 import { CommentState } from '../../utils/type'
 
 const CommentsSection = () => {
-  const moviesCommentsForId = useMoviesCommentStore(
-    (state) => state.moviesCommentsForId
-  )
-  const setMoviesCommentsForId = useMoviesCommentStore(
-    (state) => state.setMoviesCommentsForId
-  )
+  const { moviesCommentsForId, setMoviesCommentsForId } =
+    useMoviesCommentStore()
   const { user, setHasCommented } = useUserStore()
   const { id } = useParams()
 
@@ -25,11 +21,10 @@ const CommentsSection = () => {
       (querySnapshot) => {
         const comments: CommentState[] = []
         querySnapshot.forEach((doc) => {
-          const commentsData = doc.data()
-          const commentsWithId = { ...commentsData, id: doc.id }
+          const commentsWithId = { ...doc.data(), id: doc.id }
           comments.push(commentsWithId as CommentState)
         })
-        const publicComments = renderComments(comments, Number(id))
+        const publicComments = filterPublicComments(comments, Number(id))
         setMoviesCommentsForId(publicComments)
         setHasCommented(isUserCommented(comments, user.userId))
       }

@@ -5,7 +5,7 @@ import { db } from '../../../firebase'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useUserStore from '../../store/userStore'
 import { useParams } from 'react-router-dom'
-import { renderComments } from '../../utils/render'
+import { filterPublicComments } from '../../utils/render'
 import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
 import { ReviewState } from '../../utils/type'
 
@@ -21,11 +21,10 @@ const ReviewSection = () => {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const reviewsArray: ReviewState[] = []
       querySnapshot.forEach((doc) => {
-        const reviewData = doc.data()
-        const reviewWithId = { ...reviewData, id: doc.id }
+        const reviewWithId = { ...doc.data(), id: doc.id }
         reviewsArray.push(reviewWithId as ReviewState)
       })
-      const publicComments = renderComments(reviewsArray, Number(id))
+      const publicComments = filterPublicComments(reviewsArray, Number(id))
       setMoviesReviewsForId(publicComments)
     })
 

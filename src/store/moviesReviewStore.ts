@@ -1,6 +1,6 @@
 import { Timestamp } from 'firebase/firestore'
 import { create } from 'zustand'
-import { ReviewState } from '../utils/type'
+import { CommentState, ReviewState } from '../utils/type'
 
 interface MoviesReviewState {
   title: string
@@ -48,8 +48,10 @@ interface MoviesReviewsStoreState {
     value: string | boolean | number | File
   ) => void
   resetMoviesReview: () => void
-  moviesReviewsForId: ReviewState[]
-  setMoviesReviewsForId: (moviesCommentsForId: ReviewState[]) => void
+  moviesReviewsForId: CommentState[] | ReviewState[]
+  setMoviesReviewsForId: (
+    moviesCommentsForId: ReviewState[] | CommentState[]
+  ) => void
   revisedMoviesReview: RevisedMoviesReviewState
   setRevisedMoviesReview: (
     fieldName: string,
