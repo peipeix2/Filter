@@ -5,7 +5,6 @@ import {
   deleteDoc,
   doc,
   getDoc,
-  setDoc,
   onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
@@ -16,6 +15,8 @@ import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import ReviewCardforReading from '../../components/CommentCard/ReviewCardforReading'
 import { ReviewState, MovieFromFirestoreState } from '../../utils/type'
+import { updateDeleteMovieRatings } from '../../utils/render'
+import firestore from '../../utils/firestore'
 
 const Read = () => {
   const user = useUserStore((state) => state.user)
@@ -54,48 +55,26 @@ const Read = () => {
   if (!userId) return
 
   const getMoviesDetail = async (movieId: number) => {
-    const movieRef = doc(db, 'MOVIES', String(movieId))
-    const docSnap = await getDoc(movieRef)
-    if (docSnap.exists()) {
-      const movieInfo = docSnap.data()
-      setMoviesData(movieInfo as MovieFromFirestoreState)
+    const docSnap = await firestore.getDoc('MOVIES', String(movieId))
+    if (docSnap) {
+      setMoviesData(docSnap as MovieFromFirestoreState)
     }
   }
 
   const handleDeleteReview = async () => {
     if (!review) return
+    if (!moviesData) return
 
     try {
       setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'REVIEWS', id)
       await deleteDoc(userRef)
-      await updateDeleteMovieRatings()
+      await updateDeleteMovieRatings(review, moviesData)
       setIsLoading(false)
       toast.success('評論已刪除！')
       navigate(`/movies/${review.movie_id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
-    }
-  }
-
-  const updateDeleteMovieRatings = async () => {
-    if (!review) return
-    if (!moviesData) return
-    try {
-      await setDoc(
-        doc(db, 'MOVIES', `${review.movie_id}`),
-        {
-          rating:
-            moviesData.ratings_count - 1 === 0
-              ? 0
-              : (moviesData.rating * moviesData.ratings_count - review.rating) /
-                (moviesData.ratings_count - 1),
-          ratings_count: moviesData.ratings_count - 1,
-        },
-        { merge: true }
-      )
-    } catch (error) {
-      console.error('Error updating movie ratings: ', error)
     }
   }
 

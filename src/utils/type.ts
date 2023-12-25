@@ -45,6 +45,12 @@ export interface ReviewState {
   likesUser: string[]
 }
 
+export interface RevisedMoviesCommentState {
+  comment: string
+  rating: number
+  isPublic: boolean
+}
+
 export interface RevisedMoviesReviewState {
   title: string
   review: string

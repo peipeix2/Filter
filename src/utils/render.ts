@@ -4,6 +4,7 @@ import {
   UserCommentState,
   UserReviewState,
   RevisedMoviesReviewState,
+  RevisedMoviesCommentState,
   MovieFromFirestoreState,
 } from './type'
 import firestore from './firestore'
@@ -49,9 +50,9 @@ export const countRating = (
 }
 
 export const updateMovieRatings = async (
-  originalPost: ReviewState,
+  originalPost: ReviewState | CommentState,
   moviesData: MovieFromFirestoreState,
-  revisedPost: RevisedMoviesReviewState
+  revisedPost: RevisedMoviesReviewState | RevisedMoviesCommentState
 ) => {
   if (!originalPost) return
   if (!moviesData) return
@@ -68,6 +69,27 @@ export const updateMovieRatings = async (
       String(originalPost.movie_id),
       updatedRating
     )
+  } catch (error) {
+    console.error('Error updating movie ratings: ', error)
+  }
+}
+
+export const updateDeleteMovieRatings = async (
+  post: CommentState | ReviewState,
+  moviesData: MovieFromFirestoreState
+) => {
+  if (!post) return
+  if (!moviesData) return
+  const updatedRating = {
+    rating:
+      moviesData.ratings_count - 1 === 0
+        ? 0
+        : (moviesData.rating * moviesData.ratings_count - post.rating) /
+          (moviesData.ratings_count - 1),
+    ratings_count: moviesData.ratings_count - 1,
+  }
+  try {
+    await firestore.setDoc('MOVIES', String(post.movie_id), updatedRating)
   } catch (error) {
     console.error('Error updating movie ratings: ', error)
   }

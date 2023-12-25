@@ -1,11 +1,10 @@
 import { create } from 'zustand'
-import { CommentState, ReviewState, UserCommentState } from '../utils/type'
-
-interface RevisedMoviesCommentState {
-  comment: string
-  rating: number
-  isPublic: boolean
-}
+import {
+  CommentState,
+  ReviewState,
+  UserCommentState,
+  RevisedMoviesCommentState,
+} from '../utils/type'
 
 interface MoviesCommentsStoreState {
   moviesComment: UserCommentState

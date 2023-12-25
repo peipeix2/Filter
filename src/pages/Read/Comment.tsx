@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom'
 import {
   collectionGroup,
   serverTimestamp,
-  getDoc,
   setDoc,
   doc,
   deleteDoc,
@@ -33,6 +32,11 @@ import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
 import { CommentState, MovieFromFirestoreState } from '../../utils/type'
+import {
+  updateDeleteMovieRatings,
+  updateMovieRatings,
+} from '../../utils/render'
+import firestore from '../../utils/firestore'
 
 const Comment = () => {
   const [comment, setComment] = useState<CommentState | null>(null)
@@ -83,11 +87,9 @@ const Comment = () => {
   if (!userId) return
 
   const getMoviesDetail = async (movieId: number) => {
-    const movieRef = doc(db, 'MOVIES', String(movieId))
-    const docSnap = await getDoc(movieRef)
-    if (docSnap.exists()) {
-      const movieInfo = docSnap.data()
-      setMoviesData(movieInfo as MovieFromFirestoreState)
+    const docSnap = await firestore.getDoc('MOVIES', String(movieId))
+    if (docSnap) {
+      setMoviesData(docSnap as MovieFromFirestoreState)
     }
   }
 
@@ -96,6 +98,8 @@ const Comment = () => {
       toast.error('請填寫評分！')
       return
     }
+
+    if (!comment || !moviesData) return
 
     const commentData = {
       ...revisedMoviesComment,
@@ -106,7 +110,7 @@ const Comment = () => {
     try {
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
       setDoc(userRef, commentData, { merge: true })
-      await updateMovieRatings()
+      await updateMovieRatings(comment, moviesData, revisedMoviesComment)
       if (comment?.movie_id) {
         navigate(`/movies/${comment.movie_id}`)
       }
@@ -115,60 +119,19 @@ const Comment = () => {
     }
   }
 
-  const updateMovieRatings = async () => {
-    if (!comment) return
-    if (!moviesData) return
-    try {
-      await setDoc(
-        doc(db, 'MOVIES', `${comment.movie_id}`),
-        {
-          rating:
-            (moviesData.rating * moviesData.ratings_count -
-              comment.rating +
-              revisedMoviesComment.rating) /
-            moviesData.ratings_count,
-        },
-        { merge: true }
-      )
-    } catch (error) {
-      console.error('Error updating movie ratings: ', error)
-    }
-  }
-
   const handleDeleteComment = async () => {
     if (!comment) return
+    if (!moviesData) return
     try {
       setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
       await deleteDoc(userRef)
-      await updateDeleteMovieRatings()
+      await updateDeleteMovieRatings(comment, moviesData)
       setIsLoading(false)
       toast.success('評論已刪除！')
       navigate(`/movies/${comment.movie_id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
-    }
-  }
-
-  const updateDeleteMovieRatings = async () => {
-    if (!comment) return
-    if (!moviesData) return
-    try {
-      await setDoc(
-        doc(db, 'MOVIES', `${comment.movie_id}`),
-        {
-          rating:
-            moviesData.ratings_count - 1 === 0
-              ? 0
-              : (moviesData.rating * moviesData.ratings_count -
-                  comment.rating) /
-                (moviesData.ratings_count - 1),
-          ratings_count: moviesData.ratings_count - 1,
-        },
-        { merge: true }
-      )
-    } catch (error) {
-      console.error('Error updating movie ratings: ', error)
     }
   }
 
