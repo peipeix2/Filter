@@ -10,6 +10,7 @@ import {
   collectionGroup,
   orderBy,
   limit,
+  getDoc,
 } from 'firebase/firestore'
 import { MovieFromAPIState } from './type'
 
@@ -119,6 +120,14 @@ const firestore = {
       })
       return docArray
     }
+  },
+
+  getDoc: async (collection: string, document: string) => {
+    const docSnap = await getDoc(doc(db, collection, document))
+    if (docSnap.exists()) {
+      return docSnap.data()
+    }
+    return undefined
   },
 
   queryPopularPosts: async (category: string) => {

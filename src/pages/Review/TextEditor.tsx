@@ -19,6 +19,7 @@ import useUserStore from '../../store/userStore'
 import toast from 'react-hot-toast'
 import StyleBtns from './StyleBtns'
 import { extension } from './extension'
+import { countRating } from '../../utils/render'
 
 const content = '<p>Type something here!</p>'
 
@@ -105,7 +106,11 @@ const TextEditor = () => {
         {
           ratings_count:
             moviesCommentsForId.length + moviesReviewsForId.length + 1,
-          rating: countRating(),
+          rating: countRating(
+            moviesCommentsForId,
+            moviesReviewsForId,
+            moviesReview
+          ),
           reviews_count: moviesReviewsForId.length + 1,
         },
         { merge: true }
@@ -113,21 +118,6 @@ const TextEditor = () => {
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }
-  }
-
-  const countRating = () => {
-    const sumForComments = moviesCommentsForId.reduce(
-      (acc, comment) => acc + comment.rating,
-      0
-    )
-    const sumForReviews = moviesReviewsForId.reduce(
-      (acc, review) => acc + review.rating,
-      0
-    )
-    const rating =
-      (sumForComments + sumForReviews + moviesReview.rating) /
-      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
-    return rating
   }
 
   const formInvalid = !moviesReview.rating

@@ -31,15 +31,10 @@ import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
-import { isMovieCommented } from '../../utils/render'
+import { isMovieCommented, countRating } from '../../utils/render'
 import Favorites from '../../components/Favorites'
 import toast from 'react-hot-toast'
-import {
-  MovieFromFirestoreState,
-  CommentState,
-  ReviewState,
-  UserCommentState,
-} from '../../utils/type'
+import { MovieFromFirestoreState, CommentState } from '../../utils/type'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
@@ -159,25 +154,6 @@ const RatingPanel = () => {
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }
-  }
-
-  const countRating = (
-    moviesComments: CommentState[] | ReviewState[],
-    moviesReviews: CommentState[] | ReviewState[],
-    userComment: UserCommentState
-  ) => {
-    const sumForComments = moviesComments.reduce(
-      (acc, comment) => acc + comment.rating,
-      0
-    )
-    const sumForReviews = moviesReviews.reduce(
-      (acc, review) => acc + review.rating,
-      0
-    )
-    const rating =
-      (sumForComments + sumForReviews + userComment.rating) /
-      (moviesComments.length + moviesReviews.length + 1)
-    return rating
   }
 
   const formInvalid = !moviesComment.rating

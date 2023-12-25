@@ -10,7 +10,6 @@ import {
   getDocs,
   collectionGroup,
   doc,
-  getDoc,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -20,6 +19,8 @@ import toast from 'react-hot-toast'
 import StyleBtns from './StyleBtns'
 import { extension } from './extension'
 import { ReviewState, MovieFromFirestoreState } from '../../utils/type'
+import firestore from '../../utils/firestore'
+import { updateMovieRatings } from '../../utils/render'
 
 const EditPage = () => {
   const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
@@ -61,11 +62,9 @@ const EditPage = () => {
   }
 
   const getMoviesDetail = async (movieId: number) => {
-    const movieRef = doc(db, 'MOVIES', String(movieId))
-    const docSnap = await getDoc(movieRef)
-    if (docSnap.exists()) {
-      const movieInfo = docSnap.data()
-      setMoviesData(movieInfo as MovieFromFirestoreState)
+    const docSnap = await firestore.getDoc('MOVIES', String(movieId))
+    if (docSnap) {
+      setMoviesData(docSnap as MovieFromFirestoreState)
     }
   }
 
@@ -98,26 +97,6 @@ const EditPage = () => {
   if (!user?.userId) return
   if (!reviewId) return
 
-  const updateMovieRatings = async () => {
-    if (!review) return
-    if (!moviesData) return
-    try {
-      await setDoc(
-        doc(db, 'MOVIES', `${review.movie_id}`),
-        {
-          rating:
-            (moviesData.rating * moviesData.ratings_count -
-              review.rating +
-              revisedMoviesReview.rating) /
-            moviesData.ratings_count,
-        },
-        { merge: true }
-      )
-    } catch (error) {
-      console.error('Error updating movie ratings: ', error)
-    }
-  }
-
   const handleSubmitReview = async () => {
     if (formInvalid) {
       toast.error('請填寫評分！')
@@ -130,7 +109,8 @@ const EditPage = () => {
       tags: tags,
     }
 
-    reviewData.review = revisedReview
+    reviewData.review =
+      revisedReview.length === 0 ? revisedMoviesReview.review : revisedReview
 
     try {
       const userRef = collection(db, 'USERS')
@@ -138,7 +118,11 @@ const EditPage = () => {
         merge: true,
       }),
         toast.success('修改已送出！')
-      await updateMovieRatings()
+      await updateMovieRatings(
+        review as ReviewState,
+        moviesData as MovieFromFirestoreState,
+        revisedMoviesReview
+      )
       if (review) {
         navigate(`/movies/${review.movie_id}`)
       }

@@ -26,7 +26,13 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
           </Link>
         </div>
         <div className="comment-rating w-2/3">
-          <Link to={`/comment/${Props.post.userId}/${Props.post.id}`}>
+          <Link
+            to={
+              Props.post.review
+                ? `/read/${Props.post.userId}/${Props.post.id}`
+                : `/comment/${Props.post.userId}/${Props.post.id}`
+            }
+          >
             {Props.post.review && (
               <h1 className="mb-5 font-bold">{Props.post.title}</h1>
             )}

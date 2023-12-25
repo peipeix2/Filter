@@ -45,6 +45,13 @@ export interface ReviewState {
   likesUser: string[]
 }
 
+export interface RevisedMoviesReviewState {
+  title: string
+  review: string
+  rating: number
+  isPublic: boolean
+}
+
 export interface PostState {
   id: string
   title?: string
@@ -71,6 +78,15 @@ export interface PostState {
 
 export interface UserCommentState {
   comment: string
+  comments_count: number
+  isPublic: boolean
+  likes_count: number
+  rating: number
+}
+
+export interface UserReviewState {
+  title: string
+  review: string
   comments_count: number
   isPublic: boolean
   likes_count: number
@@ -145,5 +161,13 @@ export interface CastState {
   profile_path: string
   order: number
   character: string
+  [key: string]: any
+}
+
+export interface CrewState {
+  id: number
+  name: string
+  profile_path: string
+  job: string
   [key: string]: any
 }
