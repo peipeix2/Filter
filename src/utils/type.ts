@@ -177,3 +177,34 @@ export interface CrewState {
   job: string
   [key: string]: any
 }
+
+interface CalendarEventState {
+  id: string
+  title: string
+  color: string
+  start: string
+  end: string
+  allDay: boolean
+  poster: string
+  backdrop: string
+  originalTitle: string
+  releaseDate: string
+}
+
+interface ExternalEventState {
+  movie_id: string
+  movie_title: string
+  movie_poster: string
+  movie_backdrop_path: string
+  movie_original_title: string
+  created_at: Timestamp
+  schedule_time: string
+  movie_release: string
+  user: string
+}
+
+export interface CalendarState {
+  weekendsVisible: boolean
+  externalEvents: ExternalEventState[] | null
+  calendarEvents: CalendarEventState[] | null
+}

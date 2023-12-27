@@ -11,8 +11,12 @@ import {
   orderBy,
   limit,
   getDoc,
+  deleteDoc,
 } from 'firebase/firestore'
 import { MovieFromAPIState } from './type'
+import { storage } from '../../firebase'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { v4 as uuidv4 } from 'uuid'
 
 const firestore = {
   async checkIfSavedToFirestore(id: unknown) {
@@ -130,6 +134,20 @@ const firestore = {
     return undefined
   },
 
+  deleteDoc: async (
+    collection1: string,
+    document1: string,
+    collection2?: string,
+    document2?: string
+  ) => {
+    if (!document2 || !collection2) {
+      await deleteDoc(doc(db, collection1, document1))
+    }
+    if (document2 && collection2) {
+      await deleteDoc(doc(db, collection1, document2, collection2, document2))
+    }
+  },
+
   queryPopularPosts: async (category: string) => {
     const commentRef = collectionGroup(db, category)
     const q = query(commentRef, orderBy('likes_count', 'desc'), limit(5))
@@ -150,6 +168,14 @@ const firestore = {
       popularUsersData.push(doc.data())
     })
     return popularUsersData
+  },
+
+  uploadImage: async (image: File) => {
+    const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
+    await uploadBytes(imageRef, image)
+
+    const downloadURL = await getDownloadURL(imageRef)
+    return downloadURL
   },
 }
 

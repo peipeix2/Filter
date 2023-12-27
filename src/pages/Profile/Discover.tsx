@@ -10,8 +10,8 @@ import {
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import CommentCard from '../../components/CommentCard'
-import { Skeleton } from '@nextui-org/react'
-import DiscoverPage from '../../components/EmptyStates/DiscoverPage'
+import { Spinner } from '@nextui-org/react'
+import DiscoverPageEmptyState from '../../components/EmptyStates/DiscoverPageEmptyState'
 import { CommentState, ReviewState } from '../../utils/type'
 
 const Discover = () => {
@@ -81,23 +81,20 @@ const Discover = () => {
     return <div>You can only view your own Discover page.</div>
   }
 
-  if (followingUserIds.length === 0) {
-    return <DiscoverPage />
+  if (!followingUsersComments || !followingUsersReviews) {
+    return <Spinner className="my-5 h-40 w-full" color="default" />
   }
 
-  if (!followingUsersComments) {
-    return <Skeleton className="my-5 h-40 w-full"></Skeleton>
-  }
-
-  if (!followingUsersReviews) {
-    return <Skeleton className="my-5 h-40 w-full"></Skeleton>
+  if (
+    followingUserIds.length === 0 ||
+    (followingUsersComments.length === 0 && followingUsersReviews.length === 0)
+  ) {
+    return <DiscoverPageEmptyState />
   }
 
   return (
     <div>
       <h1 className="text-base font-semibold text-[#475565]">他們的評論</h1>
-      {followingUsersComments.length === 0 &&
-        followingUsersReviews.length === 0 && <DiscoverPage />}
       {followingUsersComments.map((post, index) => {
         return (
           <CommentCard

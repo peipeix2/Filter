@@ -7,7 +7,7 @@ import ExternalEvent from './ExternalEvent'
 import CalendarModal from '../../components/Modal/CalendarModal'
 import { ScrollShadow } from '@nextui-org/react'
 import { db } from '../../../firebase'
-import { collection, getDocs, setDoc, doc, Timestamp } from 'firebase/firestore'
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import { Tabs, Tab, Chip } from '@nextui-org/react'
@@ -16,38 +16,12 @@ import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmpty
 import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
 import CalendarSkeleton from '../../components/Skeletons/CalendarSkeleton'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FavoriteState } from '../../utils/type'
-
-interface CalendarEventState {
-  id: string
-  title: string
-  color: string
-  start: string
-  end: string
-  allDay: boolean
-  poster: string
-  backdrop: string
-  originalTitle: string
-  releaseDate: string
-}
-
-interface ExternalEventState {
-  movie_id: string
-  movie_title: string
-  movie_poster: string
-  movie_backdrop_path: string
-  movie_original_title: string
-  created_at: Timestamp
-  schedule_time: string
-  movie_release: string
-  user: string
-}
-
-interface CalendarState {
-  weekendsVisible: boolean
-  externalEvents: ExternalEventState[] | null
-  calendarEvents: CalendarEventState[] | null
-}
+import { FavoriteState, CalendarState } from '../../utils/type'
+import {
+  EventDropArg,
+  EventInput,
+  EventClickArg,
+} from '@fullcalendar/core/index.js'
 
 const Calendar = () => {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
@@ -100,7 +74,7 @@ const Calendar = () => {
     getUserFavorites()
   }, [])
 
-  const handleEventReceive = (eventInfo: any) => {
+  const handleEventReceive = (eventInfo: EventInput) => {
     const currentUser = user.userId
     if (currentUser !== userId) {
       eventInfo.revert()
@@ -173,7 +147,7 @@ const Calendar = () => {
     }
   }
 
-  function myDropEvent(info: any) {
+  function myDropEvent(info: EventDropArg) {
     const currentUser = user.userId
     if (currentUser !== userId) {
       info.revert()
@@ -181,8 +155,8 @@ const Calendar = () => {
     }
 
     const movieId = info.oldEvent._def.publicId
-    const newScheduledTime = info.event.start.toISOString()
-
+    const newScheduledTime = info.event.start?.toISOString()
+    if (!newScheduledTime) return
     updateScheduledTime(movieId, userId, newScheduledTime)
     if (calendarState.calendarEvents) {
       const changedEventIndex = calendarState.calendarEvents.findIndex(
@@ -208,10 +182,9 @@ const Calendar = () => {
     }
   }
 
-  const handleEventClick = (info: any) => {
+  const handleEventClick = (info: EventClickArg) => {
     setModalIsOpen(!modalIsOpen)
     setActiveSchedule(info.event._def.publicId)
-    // eventClick.event.remove()
   }
 
   if (!userId) return

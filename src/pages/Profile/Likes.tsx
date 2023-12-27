@@ -4,14 +4,18 @@ import { db } from '../../../firebase'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import CommentCard from '../../components/CommentCard'
-import { Skeleton } from '@nextui-org/react'
+import { Spinner } from '@nextui-org/react'
 import { CommentState, ReviewState } from '../../utils/type'
+import LikesCommentEmptyState from '../../components/EmptyStates/LikesCommentEmptyState'
+import LikesReviewEmptyState from '../../components/EmptyStates/LikesReviewEmptyState'
 
 const Likes = () => {
-  const [likedComments, setLikedComments] = useState<CommentState[] | null>(
-    null
-  )
-  const [likedReviews, setLikedReviews] = useState<ReviewState[] | null>(null)
+  const [likedComments, setLikedComments] = useState<
+    CommentState[] | ReviewState[] | null
+  >(null)
+  const [likedReviews, setLikedReviews] = useState<
+    ReviewState[] | ReviewState[] | null
+  >(null)
   const user = useUserStore((state) => state.user)
   const { userId } = useParams()
 
@@ -59,24 +63,15 @@ const Likes = () => {
     setLikedReviews(likedReviews)
   }
 
-  if (!likedComments) {
-    return <Skeleton className="my-5 h-[100px] w-full"></Skeleton>
-  }
-
-  if (!likedReviews) {
-    return <Skeleton className="my-5 h-[100px] w-full"></Skeleton>
+  if (!likedComments || !likedReviews) {
+    return <Spinner className="my-5 h-[100px] w-full" color="default" />
   }
 
   return (
     <>
       <p className="text-base font-semibold text-[#475565]">點讚的評論</p>
       {likedComments.length === 0 ? (
-        <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
-          <img src="/undraw_love_it_xkc2.svg" className="h-[150px] w-[150px]" />
-          <p className="text-sm font-bold text-[#94a3ab]">
-            給你喜歡的評論多一點愛吧！
-          </p>
-        </div>
+        <LikesCommentEmptyState />
       ) : (
         likedComments.map((comment, index) => {
           return (
@@ -93,12 +88,7 @@ const Likes = () => {
 
       <p className="mt-40 text-base font-semibold text-[#475565]">點讚的影評</p>
       {likedReviews.length === 0 ? (
-        <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
-          <img src="/undraw_love_it_xkc2.svg" className="h-[150px] w-[150px]" />
-          <p className="text-sm font-bold text-[#94a3ab]">
-            給你喜歡的影評多一點愛吧！
-          </p>
-        </div>
+        <LikesReviewEmptyState />
       ) : (
         likedReviews.map((review, index) => {
           return (

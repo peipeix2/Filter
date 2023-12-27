@@ -221,6 +221,13 @@ const Profile = () => {
     },
   ]
 
+  const userData = [
+    { title: '評論', content: userMoviesComments.length },
+    { title: '影評', content: userMoviesReviews.length },
+    { title: '追蹤', content: followingCount },
+    { title: '粉絲', content: followersCount },
+  ]
+
   return (
     <>
       <div
@@ -259,30 +266,19 @@ const Profile = () => {
           </div>
 
           <div className="follows-data flex gap-8">
-            <div className="comments-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">評論</span>
-              <span className="text-2xl font-extrabold text-[#89a9a6]">
-                {userMoviesComments && userMoviesComments.length}
-              </span>
-            </div>
-            <div className="reviews-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">影評</span>
-              <span className="text-2xl font-extrabold text-[#89a9a6]">
-                {userMoviesReviews && userMoviesReviews.length}
-              </span>
-            </div>
-            <div className="followers-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">追蹤</span>
-              <span className="text-2xl font-extrabold text-[#89a9a6]">
-                {followingCount}
-              </span>
-            </div>
-            <div className="following-count flex flex-col items-center">
-              <span className="text-sm text-slate-300">粉絲</span>
-              <span className="text-2xl font-extrabold text-[#89a9a6]">
-                {followersCount}
-              </span>
-            </div>
+            {userData.map((item, index) => {
+              return (
+                <div
+                  className="comments-count flex flex-col items-center"
+                  key={index}
+                >
+                  <span className="text-sm text-slate-300">{item.title}</span>
+                  <span className="text-2xl font-extrabold text-[#89a9a6]">
+                    {item.content}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </div>
 

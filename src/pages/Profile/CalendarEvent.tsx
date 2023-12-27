@@ -6,6 +6,7 @@ import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
 import toast from 'react-hot-toast'
+import { CalendarState } from '../../utils/type'
 
 interface CalendarEventState {
   userId: string
@@ -21,8 +22,8 @@ interface CalendarEventState {
     originalTitle: string
     releaseDate: string
   }
-  calendarState: any
-  setCalendarState: any
+  calendarState: CalendarState
+  setCalendarState: React.Dispatch<React.SetStateAction<CalendarState>>
 }
 
 const CalendarEvent = (Props: CalendarEventState) => {
@@ -40,12 +41,12 @@ const CalendarEvent = (Props: CalendarEventState) => {
     movieTitle: string
   ) => {
     toast.success(`已將《${movieTitle}》從收藏中移除`)
-    Props.setCalendarState((calendarState: any) => {
+    Props.setCalendarState((calendarState) => {
       return {
         ...calendarState,
-        calendarEvents: calendarState.calendarEvents.filter(
-          (item: any) => item.id !== movieId
-        ),
+        calendarEvents:
+          calendarState.calendarEvents &&
+          calendarState.calendarEvents.filter((item) => item.id !== movieId),
       }
     })
     const favoriteRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)

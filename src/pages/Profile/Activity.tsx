@@ -1,9 +1,8 @@
-import { Image } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
-import { useParams, Link } from 'react-router-dom'
-import CommentStar from '../../components/Star/CommentStar'
+import { useParams } from 'react-router-dom'
 import ActivityEmptyState from '../../components/EmptyStates/ActivityEmptyState'
 import { CommentState, ReviewState } from '../../utils/type'
+import PosterPost from './PosterPost'
 
 const Activity = () => {
   const { user, userMoviesComments, userMoviesReviews } = useUserStore()
@@ -21,7 +20,8 @@ const Activity = () => {
 
   let displayComments
   let displayReviews
-  if (user.userId !== userId) {
+  const isCurrentUser = user.userId === userId
+  if (!isCurrentUser) {
     displayComments = userMoviesComments.filter(
       (comment) => comment.isPublic === true
     )
@@ -37,59 +37,36 @@ const Activity = () => {
     return <ActivityEmptyState />
   }
 
+  const activitySection = [
+    {
+      title: '評論的電影',
+      content: displayComments,
+    },
+    {
+      title: '撰寫的影評',
+      content: displayReviews,
+    },
+  ]
+
   return (
-    <div>
-      <div className="mb-5 flex w-full justify-between">
-        <p className="text-base font-semibold text-[#475565]">評論的電影</p>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        {displayComments.map((comment) => {
-          return (
-            <div
-              className="movie-card flex w-[18%] flex-col gap-3"
-              key={comment.id}
-            >
-              <Link to={`/comment/${comment.userId}/${comment.id}`}>
-                <Image
-                  src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
-                  alt={comment.movie_original_title}
-                  isBlurred
-                  className="mb-2 min-h-full min-w-full object-cover"
-                  style={{ aspectRatio: '2/3' }}
-                />
-                <CommentStar rating={comment.rating} />
-              </Link>
+    <div className="flex flex-col gap-20">
+      {activitySection.map((item) => {
+        return (
+          <div>
+            <div className="mb-5 flex w-full justify-between">
+              <p className="text-base font-semibold text-[#475565]">
+                {item.title}
+              </p>
             </div>
-          )
-        })}
-      </div>
 
-      <div className="mb-5 mt-20 flex w-full justify-between">
-        <p className="text-base font-semibold text-[#475565]">撰寫的影評</p>
-      </div>
-
-      <div className="flex gap-2">
-        {displayReviews.map((review) => {
-          return (
-            <div
-              className="movie-card flex h-full w-[18%] flex-col gap-3"
-              key={review.id}
-            >
-              <Link to={`/read/${review.userId}/${review.id}`}>
-                <Image
-                  src={`https://image.tmdb.org/t/p/w500${review.movie_poster}`}
-                  alt={review.movie_original_title}
-                  isBlurred
-                  className="mb-2 min-h-full min-w-full object-cover"
-                  style={{ aspectRatio: '2/3' }}
-                />
-                <CommentStar rating={review.rating} />
-              </Link>
+            <div className="flex flex-wrap gap-2">
+              {item.content.map((post) => {
+                return <PosterPost post={post} />
+              })}
             </div>
-          )
-        })}
-      </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

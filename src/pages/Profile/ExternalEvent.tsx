@@ -7,12 +7,12 @@ import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
 import toast from 'react-hot-toast'
-import { FavoriteState } from '../../utils/type'
+import { FavoriteState, CalendarState } from '../../utils/type'
 
 interface EventState {
   event: FavoriteState
-  calendarState: any
-  setCalendarState: any
+  calendarState: CalendarState
+  setCalendarState: React.Dispatch<React.SetStateAction<CalendarState>>
 }
 
 const ExternalEvent = memo((Props: EventState) => {
@@ -21,7 +21,7 @@ const ExternalEvent = memo((Props: EventState) => {
   const currentUserId = user.userId
 
   useEffect(() => {
-    let draggable: any
+    let draggable: Draggable | null = null
     if (elRef.current) {
       draggable = new Draggable(elRef.current, {
         eventData: function () {
@@ -30,7 +30,9 @@ const ExternalEvent = memo((Props: EventState) => {
       })
     }
 
-    return () => draggable.destroy()
+    return () => {
+      if (draggable) draggable.destroy()
+    }
   })
 
   const handleDeleteFavorite = async (
@@ -39,12 +41,14 @@ const ExternalEvent = memo((Props: EventState) => {
     movieTitle: string
   ) => {
     toast.success(`已將《${movieTitle}》從收藏中移除`)
-    Props.setCalendarState((calendarState: any) => {
+    Props.setCalendarState((calendarState) => {
       return {
         ...calendarState,
-        externalEvents: calendarState.externalEvents.filter(
-          (item: any) => item.movie_id !== movieId
-        ),
+        externalEvents:
+          calendarState.externalEvents &&
+          calendarState.externalEvents.filter(
+            (item) => item.movie_id !== movieId
+          ),
       }
     })
     const favoriteRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)
