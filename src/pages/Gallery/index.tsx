@@ -79,7 +79,7 @@ const Gallery = () => {
         </div>
       )}
 
-      <div className="mx-auto mt-20 flex flex-wrap justify-start gap-2">
+      <div className="mx-auto mt-10 flex flex-wrap justify-start gap-2 lg:mt-20">
         {isLoading &&
           Array(20)
             .fill(undefined)
@@ -92,7 +92,7 @@ const Gallery = () => {
               <Link
                 to={`/movies/${movie.id || movie.movie_id}`}
                 key={index}
-                className="group relative block h-full w-[19%]"
+                className="group relative block h-full w-[calc(50%-0.3rem)] md:w-[calc(33%-0.3rem)] lg:w-[19%]"
               >
                 <Image
                   alt="film-poster"
