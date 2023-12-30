@@ -83,6 +83,7 @@ const RatingPanel = () => {
         querySnapshot.forEach((doc) => {
           userComment.push(doc.data() as CommentState)
         })
+        console.log(userComment, Number(id))
         setHasCommented(isMovieCommented(userComment, Number(id)))
       }
     )
@@ -102,7 +103,7 @@ const RatingPanel = () => {
       unsubsComments()
       unsubsFavorites()
     }
-  }, [userId, isLogin])
+  }, [userId, isLogin, id])
 
   const handleSubmitComment = async () => {
     if (formInvalid) {
