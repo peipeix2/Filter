@@ -22,7 +22,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="header-search h-12 w-2/3">
+    <div className="header-search h-12 w-full">
       <div className="search-form flex h-12 items-center rounded-lg bg-[#d2d2d2] p-5">
         <form
           onSubmit={(e) => handleSearchSubmit(e)}
@@ -33,7 +33,7 @@ const SearchBar = () => {
           </button>
           <input
             type="text"
-            className="search-form-input w-full border-none bg-[#d2d2d2] px-2 placeholder-gray-500 outline-0 focus:outline-none"
+            className="search-form-input w-full border-none bg-[#d2d2d2] px-2 text-sm placeholder-gray-500 outline-0 focus:outline-none md:text-base"
             placeholder="搜尋電影"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -47,6 +47,8 @@ const SearchBar = () => {
               className="min-w-[80px]"
               classNames={{
                 innerWrapper: 'bg-[#d2d2d2]',
+                // listboxWrapper: 'text-sm md:text-base',
+                // mainWrapper: 'text-green-500',
                 trigger: [
                   'data-[hover=true]:bg-[#d2d2d2]',
                   'bg-[$d2d2d2] border-none shadow-none',

@@ -20,14 +20,13 @@ const PopularReviewers = () => {
   if (!popularUsers) return
 
   return (
-    <>
-      <div className="title-wrapper flex items-center justify-between">
-        <SubCategoryTitle subCategory="活躍用戶" />
-      </div>
+    <div className="popular-reviewer-wrapper w-full">
+      <SubCategoryTitle subCategory="活躍用戶" />
+
       <Divider className="mt-1" />
       {popularUsers.map((user, index) => {
         return (
-          <>
+          <div className="w-full">
             <Link
               to={`/profile/${user.userId}`}
               className="profile-card"
@@ -46,10 +45,10 @@ const PopularReviewers = () => {
               />
             </Link>
             <Divider />
-          </>
+          </div>
         )
       })}
-    </>
+    </div>
   )
 }
 

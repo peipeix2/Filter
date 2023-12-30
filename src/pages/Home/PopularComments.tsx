@@ -28,7 +28,7 @@ const PopularComments = () => {
 
   return (
     <div className="popular-comments-container mt-20 flex justify-between">
-      <section className="popular-comments w-2/3">
+      <section className="popular-comments xs:w-full md:w-2/3">
         <FadeInOnce
           direction="right"
           delay={0.25}
@@ -65,7 +65,7 @@ const PopularComments = () => {
         </FadeInOnce>
       </section>
 
-      <section className="popular-reviewers w-1/5">
+      <section className="popular-reviewers hidden w-full md:block md:w-1/5">
         <FadeInOnce
           direction="left"
           delay={0.25}

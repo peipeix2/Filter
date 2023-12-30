@@ -3,7 +3,11 @@ interface SubCategoryState {
 }
 
 const SubCategoryTitle = ({ subCategory }: SubCategoryState) => {
-  return <p className="text-base font-semibold text-[#475565]">{subCategory}</p>
+  return (
+    <p className="text-sm font-semibold text-[#475565] md:text-base">
+      {subCategory}
+    </p>
+  )
 }
 
 export default SubCategoryTitle

@@ -94,7 +94,7 @@ const Carousel = () => {
 
   return (
     <div
-      className="group relative m-auto h-[780px] w-full max-w-[1920px]"
+      className="group relative m-auto h-[300px] w-full max-w-[1920px] lg:h-[780px]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -108,16 +108,16 @@ const Carousel = () => {
         <LoadingMode />
       ) : (
         <>
-          <div className="absolute bottom-0 left-0 right-0 top-0 flex h-[780px] w-full flex-col justify-center overflow-hidden bg-black/[.5] bg-fixed">
-            <div className="mx-auto w-[1200px] max-w-[1200px]">
-              <div className="title-content w-2/5">
-                <span className="text-sm font-light text-[#94a3ab]">
+          <div className="absolute bottom-0 left-0 right-0 top-0 flex h-[300px] w-full flex-col justify-center overflow-hidden bg-black/[.5] bg-fixed lg:h-[780px]">
+            <div className="mx-auto w-4/5 max-w-[1200px]">
+              <div className="title-content w-2/3 lg:w-2/5">
+                <span className=" text-xs font-light text-[#94a3ab] lg:text-sm">
                   POPULAR REVIEWS 熱門影評
                 </span>
-                <p className="text-5xl font-semibold leading-normal text-white">
+                <p className="text-xl font-semibold leading-normal text-white lg:text-5xl">
                   {followingUsersReviews[currentIndex].title}
                 </p>
-                <p className="mt-10 line-clamp-2 text-sm leading-relaxed text-slate-300">
+                <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-slate-300 lg:mt-10 lg:text-sm">
                   {parser(followingUsersReviews[currentIndex].review as string)}
                 </p>
               </div>
@@ -130,6 +130,7 @@ const Carousel = () => {
                     name={followingUsersReviews[currentIndex].author}
                     avatarProps={{
                       src: followingUsersReviews[currentIndex].avatar,
+                      size: 'sm',
                     }}
                     isFocusable={true}
                   />
@@ -137,7 +138,7 @@ const Carousel = () => {
               </div>
               <Button
                 size="md"
-                className="mt-5 w-[100px] bg-[#89a9a6] text-white"
+                className="mt-5 w-[50px] bg-[#89a9a6] text-xs text-white lg:w-[100px] lg:text-base"
               >
                 <Link
                   to={`/read/${followingUsersReviews[currentIndex].userId}/${followingUsersReviews[currentIndex].id}`}
@@ -149,7 +150,7 @@ const Carousel = () => {
           </div>
           <Link
             to={`/movies/${followingUsersReviews[currentIndex].movie_id}`}
-            className="absolute bottom-20 right-5 flex cursor-pointer gap-2 text-xs text-slate-400 hover:text-white"
+            className="absolute bottom-5 right-5 flex cursor-pointer gap-2 text-xs text-slate-400 hover:text-white lg:bottom-20"
           >
             <span>《{followingUsersReviews[currentIndex].movie_title}》</span>
             <span>

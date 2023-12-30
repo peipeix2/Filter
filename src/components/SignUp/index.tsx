@@ -81,7 +81,7 @@ const SignUp = () => {
       <span
         onClick={onOpen}
         color="primary"
-        className="cursor-pointer hover:text-gray-500"
+        className="cursor-pointer text-xs hover:text-gray-500 xl:text-base"
       >
         Sign Up
       </span>
@@ -95,7 +95,7 @@ const SignUp = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1 text-slate-600">
+              <ModalHeader className="flex flex-col gap-1 text-base text-slate-600 md:text-lg">
                 註冊帳號
               </ModalHeader>
               <ModalBody>
@@ -120,8 +120,10 @@ const SignUp = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <div>
-                  <span className="mr-2">已經註冊？點擊登入</span>
+                <div className="flex items-center">
+                  <span className="mr-2 text-xs xl:text-base">
+                    已經註冊？點擊登入
+                  </span>
                   <SignIn />
                 </div>
               </ModalBody>

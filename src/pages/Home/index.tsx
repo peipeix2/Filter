@@ -103,7 +103,7 @@ const Home = () => {
   ]
 
   return (
-    <>
+    <div className="homepage-container">
       {isLogin ? (
         <Carousel />
       ) : (
@@ -142,7 +142,7 @@ const Home = () => {
         <CategoryTitle category="全站熱門" slogan="Latest on Filter" />
         <PopularComments />
       </div>
-    </>
+    </div>
   )
 }
 

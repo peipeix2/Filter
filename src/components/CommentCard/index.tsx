@@ -16,7 +16,7 @@ interface CommentCardState {
 
 const CommentCard = (Props: CommentCardState) => {
   return (
-    <>
+    <div className="comment-card-wrapper">
       <div className="comment-card my-5 flex items-center">
         <Link to={`/movies/${Props.post.movie_id}`}>
           <div className="avatar-wrapper flex w-[100px] items-start">
@@ -29,7 +29,7 @@ const CommentCard = (Props: CommentCardState) => {
         </Link>
         <div className="comment-rating ml-10 w-2/3">
           <Link to={`/movies/${Props.post.movie_id}`}>
-            <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
+            <div className="movie-info-header mb-2 flex flex-col items-baseline text-lg hover:text-[#89a9a6] lg:flex-row">
               <h1 className="mr-2 font-semibold">{Props.post.movie_title}</h1>
               <span className="text-sm">{Props.post.movie_original_title}</span>
             </div>
@@ -38,9 +38,9 @@ const CommentCard = (Props: CommentCardState) => {
             to={`/comment/${Props.post.userId}/${Props.post.id}`}
             className="w-full"
           >
-            <div className="comment-header flex items-center">
+            <div className="comment-header flex flex-col-reverse  lg:flex-row lg:items-center">
               {Props.post.userId !== Props.currentUserId ? (
-                <>
+                <div className="author-date-wrapper flex flex-col xl:flex-row">
                   <div className="comment-user mr-2 flex">
                     <span className="mr-1 text-xs text-slate-400">
                       評論作者
@@ -55,7 +55,7 @@ const CommentCard = (Props: CommentCardState) => {
                       {Props.post.created_at.toDate().toDateString()}
                     </span>
                   </div>
-                </>
+                </div>
               ) : (
                 <div className="comment-user mr-2 flex">
                   <span className="text-xs font-thin text-slate-800">
@@ -63,20 +63,21 @@ const CommentCard = (Props: CommentCardState) => {
                   </span>
                 </div>
               )}
-
-              <CommentStar rating={Props.post.rating} />
-              <div className="comment-count ml-2 flex items-center text-slate-400">
-                <FaCommentAlt className="text-xs" />
-                <span className="ml-1 text-sm">
-                  {Props.post.comments_count}
-                </span>
+              <div className="flex items-center">
+                <CommentStar rating={Props.post.rating} />
+                <div className="comment-count ml-2 flex items-center text-slate-400">
+                  <FaCommentAlt className="text-xs" />
+                  <span className="ml-1 text-sm">
+                    {Props.post.comments_count}
+                  </span>
+                </div>
               </div>
             </div>
           </Link>
 
           <div className="comment-content my-5">
             {Props.post.comment ? (
-              <p className="comment break-words text-sm">
+              <p className="comment break-words text-xs md:text-sm">
                 {Props.post.comment}
               </p>
             ) : (
@@ -106,7 +107,7 @@ const CommentCard = (Props: CommentCardState) => {
         </div>
       </div>
       <Divider />
-    </>
+    </div>
   )
 }
 

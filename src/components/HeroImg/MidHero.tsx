@@ -10,6 +10,23 @@ interface HeroImgState {
 const MidHero = (Props: HeroImgState) => {
   const { isLogin, user } = useUserStore()
 
+  const features = [
+    {
+      title: '電影筆記',
+      description:
+        '提供公開/私人模式自由切換，你的觀後感，可以是悄悄話，也可以昭告天下',
+    },
+    {
+      title: '好友社群',
+      description: '好友動態自動推送、輕鬆追蹤社群同好，挖掘有趣靈魂簡簡單單',
+    },
+    {
+      title: '自訂標籤',
+      description:
+        '為看過的影片打上自訂tag，並支持標籤搜尋功能，隨時隨地搜尋同類影片',
+    },
+  ]
+
   return (
     <>
       <div
@@ -20,7 +37,7 @@ const MidHero = (Props: HeroImgState) => {
         }}
       >
         <div className="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-black/[.5] bg-fixed">
-          <div className="content mt-20 flex w-full flex-col justify-center">
+          <div className="content mt-5 flex w-full flex-col justify-center md:mt-20">
             <FadeIn
               direction="down"
               delay={0.25}
@@ -29,7 +46,7 @@ const MidHero = (Props: HeroImgState) => {
             >
               <img
                 src="https://firebasestorage.googleapis.com/v0/b/filter-14ea1.appspot.com/o/Filter-logos_white_cut.png?alt=media&token=199ba25c-f542-4309-9aa2-62c63c8063e9"
-                className="mx-auto h-auto w-[300px] opacity-50"
+                className="mx-auto h-auto w-[250px] opacity-50 md:w-[300px]"
               />
             </FadeIn>
             {isLogin ? (
@@ -39,8 +56,8 @@ const MidHero = (Props: HeroImgState) => {
                 fullWidth={false}
                 padding={false}
               >
-                <div className="features mt-10 flex justify-center">
-                  <div className="flex items-baseline gap-10">
+                <div className="features mt-16 flex items-center justify-center md:mt-10">
+                  <div className="flex flex-col items-center gap-10 md:flex-row md:items-baseline">
                     <span className="text-5xl font-thin italic text-gray-200">
                       Welcome back
                     </span>
@@ -57,27 +74,45 @@ const MidHero = (Props: HeroImgState) => {
                 fullWidth={false}
                 padding={false}
               >
-                <div className="features mt-10 flex justify-center gap-20">
-                  <div className="feature-card flex max-w-xs flex-col items-center justify-center text-white opacity-70">
-                    <SlNotebook className="text-5xl" />
-                    <p className="mt-5 font-extrabold">電影筆記</p>
-                    <span className="mt-3 text-center text-sm leading-relaxed">
-                      提供公開/私人模式自由切換，你的觀後感，可以是悄悄話，也可以昭告天下
-                    </span>
+                <div className="features mt-5 flex flex-col justify-center gap-5 md:mt-10 md:flex-row md:gap-20">
+                  <div className="feature-card flex max-w-xs items-center justify-between text-white opacity-70 md:flex-col md:justify-center">
+                    <div className="flex items-center md:flex-col">
+                      <SlNotebook className="text-2xl md:text-5xl" />
+                      <p className="ml-2 text-sm font-extrabold md:ml-0 md:mt-5 md:text-base">
+                        電影筆記
+                      </p>
+                    </div>
+                    <div className="w-1/2 md:w-2/3 md:text-center">
+                      <span className="text-center text-xs leading-relaxed md:mt-3 md:text-sm">
+                        提供公開/私人模式自由切換，你的觀後感，可以是悄悄話，也可以昭告天下
+                      </span>
+                    </div>
                   </div>
-                  <div className="feature-card flex max-w-xs flex-col items-center justify-center text-white opacity-70">
-                    <FaUserGroup className="text-5xl" />
-                    <p className="mt-5 font-extrabold">好友社群</p>
-                    <span className="mt-3 text-center text-sm leading-relaxed">
-                      好友動態自動推送、輕鬆追蹤社群同好，挖掘有趣靈魂簡簡單單
-                    </span>
+                  <div className="feature-card flex max-w-xs items-center justify-between text-white opacity-70 md:flex-col md:justify-center">
+                    <div className="flex items-center md:flex-col">
+                      <FaUserGroup className="text-2xl md:text-5xl" />
+                      <p className="ml-2 text-sm font-extrabold md:ml-0 md:mt-5 md:text-base">
+                        好友社群
+                      </p>
+                    </div>
+                    <div className="w-1/2 md:w-2/3 md:text-center">
+                      <span className="text-center text-xs leading-relaxed md:mt-3 md:text-sm">
+                        好友動態自動推送、輕鬆追蹤社群同好，挖掘有趣靈魂簡簡單單
+                      </span>
+                    </div>
                   </div>
-                  <div className="feature-card flex max-w-xs flex-col items-center justify-center text-white opacity-70">
-                    <FaTag className="text-5xl" />
-                    <p className="mt-5 font-extrabold">自訂標籤</p>
-                    <span className="mt-3 text-center text-sm leading-relaxed">
-                      為看過的影片打上自訂tag，並支持標籤搜尋功能，隨時隨地搜尋同類影片
-                    </span>
+                  <div className="feature-card flex max-w-xs items-center justify-between text-white opacity-70 md:flex-col md:justify-center">
+                    <div className="flex items-center md:flex-col">
+                      <FaTag className="text-2xl md:text-5xl" />
+                      <p className="ml-2 text-sm font-extrabold md:ml-0 md:mt-5 md:text-base">
+                        自訂標籤
+                      </p>
+                    </div>
+                    <div className="w-1/2 md:w-2/3 md:text-center">
+                      <span className="text-center text-xs leading-relaxed md:mt-3 md:text-sm">
+                        為看過的影片打上自訂tag，並支持標籤搜尋功能，隨時隨地搜尋同類影片
+                      </span>
+                    </div>
                   </div>
                 </div>
               </FadeIn>

@@ -35,7 +35,7 @@ const SignIn = () => {
       <span
         onClick={onOpen}
         color="primary"
-        className="cursor-pointer hover:text-gray-500"
+        className="cursor-pointer text-xs hover:text-gray-500 xl:text-base"
       >
         Sign In
       </span>
@@ -49,7 +49,9 @@ const SignIn = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">登入</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1 text-base md:text-lg">
+                登入
+              </ModalHeader>
               <ModalBody>
                 <Input
                   autoFocus
@@ -66,7 +68,9 @@ const SignIn = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <div>
-                  <span className="mr-2">沒有帳號？點擊註冊</span>
+                  <span className="mr-2 text-xs xl:text-base">
+                    沒有帳號？點擊註冊
+                  </span>
                   <SignUp />
                 </div>
               </ModalBody>

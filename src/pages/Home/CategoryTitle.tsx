@@ -6,8 +6,8 @@ interface CategoryTitleState {
 const CategoryTitle = ({ category, slogan }: CategoryTitleState) => {
   return (
     <div className="mx-auto mb-2 text-right font-extrabold">
-      <p className="text-sm">{category}</p>
-      <p className="text-2xl">{`/ ${slogan}`}</p>
+      <p className="text-xs md:text-sm">{category}</p>
+      <p className="text-lg md:text-2xl">{`/ ${slogan}`}</p>
     </div>
   )
 }

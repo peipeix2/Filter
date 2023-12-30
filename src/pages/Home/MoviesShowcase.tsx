@@ -22,13 +22,16 @@ const MoviesShowcase = ({
     <div className="popular-container mt-20">
       <div className="title-wrapper flex items-center justify-between">
         <SubCategoryTitle subCategory={category} />
-        <Link to={`browse/${categoryEn}`} className="text-sm text-[#475565]">
+        <Link
+          to={`browse/${categoryEn}`}
+          className="text-xs text-[#475565] md:text-sm"
+        >
           More
         </Link>
       </div>
       <Divider className="mt-1" />
 
-      <div className="my-5 flex gap-2">
+      <div className="my-5 flex w-full flex-wrap gap-2 sm:flex-nowrap">
         {moviesDetails.map((movie, index) => {
           return (
             <Link
