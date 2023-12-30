@@ -35,6 +35,7 @@ import { isMovieCommented, countRating } from '../../utils/render'
 import Favorites from '../../components/Favorites'
 import toast from 'react-hot-toast'
 import { MovieFromFirestoreState, CommentState } from '../../utils/type'
+import { IoIosJournal } from 'react-icons/io'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
@@ -162,7 +163,7 @@ const RatingPanel = () => {
   if (!id) return
 
   return (
-    <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
+    <div className="rating-data-wrapper relative mx-auto flex max-w-[300px] flex-col-reverse py-3 lg:w-4/5 lg:flex-col lg:bg-slate-100">
       {!isLogin && (
         <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
           <div className="flex h-full w-full items-center justify-center text-center text-white">
@@ -181,9 +182,15 @@ const RatingPanel = () => {
           <span className="text-xs">看過</span>
         </div>
         <Favorites isFavorites={userFavorites.includes(id)} movieId={id} />
+        <Link to={`/review/${moviesDetail.id}`} className="lg:hidden">
+          <div className="flex cursor-pointer flex-col items-center text-[#94a3ab] hover:text-[#475565] ">
+            <IoIosJournal className="text-4xl" />
+            <span className="text-xs">寫影評</span>
+          </div>
+        </Link>
       </div>
 
-      <Divider />
+      <Divider className="hidden lg:block" />
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
@@ -192,9 +199,9 @@ const RatingPanel = () => {
         </p>
       </div>
 
-      <Divider />
+      <Divider className="hidden lg:block" />
 
-      <Link to={`/review/${moviesDetail.id}`}>
+      <Link to={`/review/${moviesDetail.id}`} className="hidden lg:block">
         <div className="pt-3">
           <p className="text-center text-sm text-[#94a3ab] hover:text-[#475565]">
             寫影評
@@ -212,21 +219,21 @@ const RatingPanel = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-sm lg:text-lg">
                 我看過...
               </ModalHeader>
-              <ModalBody className="flex flex-row">
+              <ModalBody className="flex flex-col lg:flex-row">
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${moviesDetail.poster_path}`}
                   alt={moviesDetail.original_title}
-                  className="w-[300px]"
+                  className="hidden lg:block lg:w-[300px]"
                   isBlurred
                 />
                 <div className="flex-grow px-10">
-                  <h1 className="mr-2 text-3xl font-bold">
+                  <h1 className="mr-2 text-xl font-bold lg:text-3xl">
                     {moviesDetail.title}
                   </h1>
-                  <p className="mb-5 font-['DM_Serif_Display'] text-2xl">
+                  <p className="mb-5 font-['DM_Serif_Display'] text-base lg:text-2xl">
                     {moviesDetail.original_title}
                   </p>
                   <Textarea
@@ -234,6 +241,10 @@ const RatingPanel = () => {
                     label="我的評價"
                     description="字數不可超過150字"
                     className="mb-5"
+                    classNames={{
+                      label: 'text-xs lg:text-base',
+                      description: 'text-xs lg:text-base',
+                    }}
                     maxLength={150}
                     value={moviesComment.comment}
                     onChange={(e) =>
@@ -248,9 +259,11 @@ const RatingPanel = () => {
                     setTagsInput={setTagsInput}
                   />
 
-                  <div className="rating-privacy mt-5 flex justify-between">
+                  <div className="rating-privacy mt-5 flex flex-col justify-between lg:flex-row">
                     <div className="flex items-center">
-                      <span className="mx-2 text-sm">評分</span>
+                      <span className="mr-2 text-sm lg:ml-2 lg:text-sm">
+                        評分
+                      </span>
                       {[...Array(5)].map((_, index) => {
                         const ratingValue: number = index + 1
                         return (
@@ -280,8 +293,10 @@ const RatingPanel = () => {
                       })}
                     </div>
 
-                    <div className="flex justify-between px-1 py-2">
-                      <span className="mr-2">隱私設定</span>
+                    <div className="mt-5 flex justify-start lg:mt-0 lg:justify-between lg:px-1 lg:py-2">
+                      <span className="mr-2 text-sm lg:text-base">
+                        隱私設定
+                      </span>
                       <Checkbox
                         classNames={{
                           label: 'text-small',

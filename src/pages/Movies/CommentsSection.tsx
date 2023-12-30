@@ -38,7 +38,7 @@ const CommentsSection = () => {
   return (
     <>
       <div>
-        <h1>熱門評論</h1>
+        <h1 className="text-sm lg:text-base">熱門評論</h1>
       </div>
       <Divider className="my-4" />
       {moviesCommentsForId.map((comment, index) => {

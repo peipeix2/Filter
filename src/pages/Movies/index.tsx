@@ -6,6 +6,7 @@ import RatingPanel from './RatingPanel'
 import CommentsSection from './CommentsSection'
 import ReviewSection from './ReviewsSection'
 import TagsSection from './TagsSection'
+import { Accordion, AccordionItem } from '@nextui-org/react'
 
 const tabLinks = ['CAST', 'CREW', 'DETAILS']
 
@@ -40,40 +41,48 @@ const Movies = () => {
         style={{
           backgroundImage: `url('https://image.tmdb.org/t/p/original${moviesDetail.backdrop_path}')`,
         }}
-        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
+        className="hidden h-[150px] w-full bg-contain bg-fixed bg-no-repeat lg:h-[500px] lg:bg-cover"
       />
-      <section className="film-introduction mx-auto mt-10 flex w-4/5">
-        <div className="film-poster sticky top-32 h-[500px] w-1/4">
+      <section className="film-introduction mx-auto mt-10 flex w-4/5 flex-col lg:flex-row">
+        <div className="film-poster mx-auto h-auto w-auto max-w-[300px] lg:sticky lg:top-32 lg:h-[500px] lg:w-1/4">
           <Image
             src={`https://image.tmdb.org/t/p/w500${moviesDetail.poster_path}`}
             alt={moviesDetail.original_title}
             isBlurred
           />
         </div>
-        <div className="film-detail w-1/2 flex-grow px-[60px]">
-          <div className="title-container flex flex-col gap-2">
-            <h1 className="mr-2 text-4xl font-bold">{moviesDetail.title}</h1>
-            <p className="font-['DM_Serif_Display'] text-2xl">
+        <div className="film-detail mt-10 flex-grow lg:mt-0 lg:w-1/2 lg:px-[60px]">
+          <div className="title-container flex flex-col gap-1 text-center lg:gap-2 lg:text-left">
+            <h1 className="mr-2 text-2xl font-bold lg:text-4xl">
+              {moviesDetail.title}
+            </h1>
+            <p className="font-['DM_Serif_Display'] text-lg lg:text-2xl">
               {moviesDetail.original_title}
             </p>
           </div>
 
-          <div className="intro-data-wrapper mt-20 flex">
-            <div className="intro w-3/5">
+          <div className="lg:hidden">
+            <RatingPanel />
+          </div>
+
+          <div className="intro-data-wrapper mt-5 flex flex-col lg:mt-20 lg:flex-row">
+            <div className="intro lg:w-3/5">
               <div className="story">
-                <p className="text-base leading-8 text-[#2a3037]">
+                <p className="text-sm leading-8 text-[#2a3037] lg:text-base">
                   {moviesDetail.overview}
                 </p>
               </div>
-              <div className="genres mt-10 flex gap-1 text-sm text-[#2a3037]">
+              <div className="genres mt-10 flex gap-1 text-xs text-[#2a3037] lg:text-sm">
                 <span className="mr-2 font-bold">類型 /</span>
                 {moviesDetail.genres.map((genre: GenreState, index) => {
                   return <span key={index}>{genre.name}</span>
                 })}
               </div>
-              <div className="run-time mt-1 flex gap-1 text-sm text-[#2a3037]">
-                <span className="mr-2 font-bold">片長 /</span>
-                <p className="text-sm text-[#2a3037]">
+              <div className="run-time mt-1 flex gap-1  text-[#2a3037] ">
+                <span className="mr-2 text-xs font-bold lg:text-sm">
+                  片長 /
+                </span>
+                <p className="text-xs text-[#2a3037] lg:text-sm">
                   {moviesDetail.runtime} 分鐘
                 </p>
               </div>
@@ -107,7 +116,7 @@ const Movies = () => {
                 <ReviewSection />
               </section>
             </div>
-            <div className="rating-data-wrapper w-2/5">
+            <div className="rating-data-wrapper hidden lg:block lg:w-2/5">
               <RatingPanel />
             </div>
           </div>

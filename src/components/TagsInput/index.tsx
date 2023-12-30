@@ -27,6 +27,10 @@ const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
       <Input
         label="標籤"
         placeholder="按Enter自訂標籤"
+        classNames={{
+          label: 'text-sm lg:text-base',
+          input: ['placeholder: text-xs lg:text-base'],
+        }}
         variant="flat"
         value={tagsInput}
         onChange={(e) => setTagsInput(e.target.value)}

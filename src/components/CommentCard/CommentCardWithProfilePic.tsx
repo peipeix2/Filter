@@ -15,7 +15,7 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
   return (
     <>
       <div className="comment-card my-5 flex items-start">
-        <div className="avatar-wrapper mx-10 mt-5 flex">
+        <div className="avatar-wrapper mx-5 mt-5 flex xl:mx-10">
           <Link to={`/profile/${Props.post.userId}`}>
             <div
               className="avatar mx-auto h-10 w-10 rounded-full bg-cover bg-no-repeat"
@@ -25,7 +25,7 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
             />
           </Link>
         </div>
-        <div className="comment-rating w-2/3">
+        <div className="comment-rating xl:w-2/3">
           <Link
             to={
               Props.post.review
@@ -34,21 +34,25 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
             }
           >
             {Props.post.review && (
-              <h1 className="mb-5 font-bold">{Props.post.title}</h1>
+              <h1 className="mb-2 font-bold xl:mb-5">{Props.post.title}</h1>
             )}
-            <div className="comment-header flex">
+            <div className="comment-header flex w-full flex-col gap-2 xl:flex-row xl:gap-0">
               <div className="comment-user mr-2 flex">
-                <span className="mr-1 text-sm text-slate-400">評論作者</span>
-                <span className="text-sm font-semibold text-slate-800">
+                <span className="mr-1 text-xs text-slate-400 xl:text-sm">
+                  評論作者
+                </span>
+                <span className="text-xs font-semibold text-slate-800 xl:text-sm">
                   {Props.post.author}
                 </span>
               </div>
-              <CommentStar rating={Props.post.rating} />
-              <div className="comment-count ml-2 flex items-center text-slate-400">
-                <FaCommentAlt className="text-xs" />
-                <span className="ml-1 text-sm">
-                  {Props.post.comments_count}
-                </span>
+              <div className="flex gap-2 xl:gap-0">
+                <CommentStar rating={Props.post.rating} />
+                <div className="comment-count flex items-center text-slate-400 xl:ml-2">
+                  <FaCommentAlt className="text-xs" />
+                  <span className="ml-1 text-xs xl:text-sm">
+                    {Props.post.comments_count}
+                  </span>
+                </div>
               </div>
             </div>
           </Link>

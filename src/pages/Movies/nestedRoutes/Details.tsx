@@ -23,7 +23,7 @@ const Details = () => {
         return (
           <div className="flex w-full justify-between text-xs">
             <p className="mb-2">{item.title}</p>
-            <div className="text-right">
+            <div className="w-2/3 text-right">
               {item.content.map((element: DetailsFromAPI) => {
                 return <span className="ml-2">{element.name}</span>
               })}

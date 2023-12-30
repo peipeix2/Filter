@@ -36,7 +36,7 @@ const ReviewSection = () => {
   return (
     <>
       <div>
-        <h1>熱門影評</h1>
+        <h1 className="text-sm lg:text-base">熱門影評</h1>
       </div>
       <Divider className="my-4" />
       {moviesReviewsForId.map((review, index) => {

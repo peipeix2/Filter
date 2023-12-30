@@ -51,7 +51,7 @@ function Header() {
       >
         <div
           className={` ${
-            openSearchBar ? 'absolute left-0 top-5 z-10 w-full' : 'hidden'
+            openSearchBar ? 'absolute left-0 top-5 z-20 w-full' : 'hidden'
           } md:block md:w-2/3`}
         >
           <SearchBar />
