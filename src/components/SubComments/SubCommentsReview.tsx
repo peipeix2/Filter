@@ -179,8 +179,10 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         return (
           <div className="subComment-card my-5" key={index}>
             <div className="header flex items-center gap-2">
-              <span className="font-bold">{subComment.username}</span>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm font-bold lg:text-base">
+                {subComment.username}
+              </span>
+              <span className="text-xs text-slate-400 lg:text-sm">
                 {subComment.created_at?.toDate().toDateString()}
               </span>
             </div>
@@ -207,7 +209,7 @@ const SubCommentsReview = (Props: SubCommentsState) => {
                 </div>
               </div>
             ) : (
-              <div className="comment-body mb-10 text-right">
+              <div className="comment-body mb-10 text-right text-sm lg:text-base">
                 {subComment.subcomment}
               </div>
             )}

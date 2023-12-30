@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import {
-  collectionGroup,
-  deleteDoc,
-  doc,
-  getDoc,
-  onSnapshot,
-} from 'firebase/firestore'
+import { collectionGroup, deleteDoc, doc, onSnapshot } from 'firebase/firestore'
 import { db } from '../../../firebase'
 import useUserStore from '../../store/userStore'
 import SubCommentsReview from '../../components/SubComments/SubCommentsReview'
@@ -86,17 +80,19 @@ const Read = () => {
         style={{
           backgroundImage: `url('https://image.tmdb.org/t/p/original/${review.movie_backdrop_path}')`,
         }}
-        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
+        className="w-100% hidden h-[500px] bg-cover bg-fixed bg-center bg-no-repeat lg:block"
       />
 
-      <div className="container mx-auto mb-20 w-2/5">
+      <div className="container mx-auto mb-20 w-4/5 lg:w-2/5">
         <div className="title-container my-20 text-center">
           <Link
             to={`/movies/${review.movie_id}`}
             className="hover:text-[#89a9a6]"
           >
-            <h1 className="mr-2 text-2xl font-bold">{review.movie_title}</h1>
-            <span className="font-['DM_Serif_Display'] text-xl">
+            <h1 className="mr-2 text-lg font-bold lg:text-2xl">
+              {review.movie_title}
+            </h1>
+            <span className="font-['DM_Serif_Display'] text-sm lg:text-xl">
               {review.movie_original_title}
             </span>
           </Link>
@@ -124,10 +120,12 @@ const Read = () => {
         )}
       </div>
 
-      <div className="mx-auto flex w-2/5 justify-end">
-        <div className="comments-section mb-10 flex w-[70%] flex-col items-center">
+      <div className="mx-auto flex w-4/5 lg:w-2/5 lg:justify-end">
+        <div className="comments-section mb-10 flex w-full flex-col items-center lg:w-[70%]">
           <div className="title-wrapper mb-10 w-full text-left">
-            <p className="text-base font-semibold text-[#475565]">留言區</p>
+            <p className="text-sm font-semibold text-[#475565] lg:text-base">
+              留言區
+            </p>
             <Divider />
           </div>
           <SubCommentsReview commentId={id} userId={userId} />

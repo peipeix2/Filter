@@ -143,17 +143,19 @@ const Comment = () => {
         style={{
           backgroundImage: `url('https://image.tmdb.org/t/p/original/${comment.movie_backdrop_path}')`,
         }}
-        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
+        className="w-100% hidden h-[500px] bg-cover bg-fixed bg-center bg-no-repeat lg:block"
       />
 
-      <div className="container mx-auto mb-20 w-2/5">
+      <div className="container mx-auto mb-20 w-4/5 lg:w-2/5">
         <div className="title-container my-20 text-center">
           <Link
             to={`/movies/${comment.movie_id}`}
             className="hover:text-[#89a9a6]"
           >
-            <h1 className="mr-2 text-2xl font-bold">{comment.movie_title}</h1>
-            <span className="font-['DM_Serif_Display'] text-xl">
+            <h1 className="mr-2 text-lg font-bold lg:text-2xl">
+              {comment.movie_title}
+            </h1>
+            <span className="font-['DM_Serif_Display'] text-sm lg:text-xl">
               {comment.movie_original_title}
             </span>
           </Link>
@@ -192,21 +194,21 @@ const Comment = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-sm lg:text-lg">
                 我看過...
               </ModalHeader>
-              <ModalBody className="flex flex-row">
+              <ModalBody className="flex flex-col lg:flex-row">
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
                   alt={comment.movie_original_title}
-                  className="w-[300px]"
+                  className="hidden lg:block lg:w-[300px]"
                   isBlurred
                 />
                 <div className="flex-grow px-10">
-                  <h1 className="mr-2 text-3xl font-bold">
+                  <h1 className="mr-2 text-xl font-bold lg:text-3xl">
                     {comment.movie_title}
                   </h1>
-                  <p className="mb-5 font-['DM_Serif_Display'] text-2xl">
+                  <p className="mb-5 font-['DM_Serif_Display'] text-base lg:text-2xl">
                     {comment.movie_original_title}
                   </p>
                   <Textarea
@@ -214,6 +216,10 @@ const Comment = () => {
                     label="我的評價"
                     description="字數不可超過150字"
                     className="mb-5"
+                    classNames={{
+                      label: 'text-xs lg:text-base',
+                      description: 'text-xs lg:text-base',
+                    }}
                     maxLength={150}
                     value={revisedMoviesComment.comment}
                     onChange={(e) =>
@@ -228,9 +234,11 @@ const Comment = () => {
                     setTagsInput={setTagsInput}
                   />
 
-                  <div className="rating-privacy mt-5 flex justify-between">
+                  <div className="rating-privacy mt-5 flex flex-col justify-between lg:flex-row">
                     <div className="flex items-center">
-                      <span className="mx-2 text-sm">評分</span>
+                      <span className="mr-2 text-sm lg:ml-2 lg:text-sm">
+                        評分
+                      </span>
                       {[...Array(5)].map((_, index) => {
                         const ratingValue: number = index + 1
                         return (
@@ -261,8 +269,10 @@ const Comment = () => {
                       })}
                     </div>
 
-                    <div className="flex justify-between px-1 py-2">
-                      <span className="mr-2">隱私設定</span>
+                    <div className="mt-5 flex justify-start lg:mt-0 lg:justify-between lg:px-1 lg:py-2">
+                      <span className="mr-2 text-sm lg:text-base">
+                        隱私設定
+                      </span>
                       <Checkbox
                         classNames={{
                           label: 'text-small',
@@ -299,10 +309,12 @@ const Comment = () => {
         </ModalContent>
       </Modal>
 
-      <div className="mx-auto flex w-2/5 justify-end">
-        <div className="comments-section mb-10 flex w-[70%] flex-col items-center">
+      <div className="mx-auto flex w-4/5 lg:w-2/5 lg:justify-end">
+        <div className="comments-section mb-10 flex w-full flex-col items-center lg:w-[70%]">
           <div className="title-wrapper mb-10 w-full text-left">
-            <p className="text-base font-semibold text-[#475565]">留言區</p>
+            <p className="text-sm font-semibold text-[#475565] lg:text-base">
+              留言區
+            </p>
             <Divider />
           </div>
           <SubComments commentId={id} userId={userId} />
