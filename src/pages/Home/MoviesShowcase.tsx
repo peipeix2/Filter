@@ -48,21 +48,21 @@ const MoviesShowcase = ({
               />
               <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
                 <div className="flex h-full flex-col items-center justify-center text-[#475565] opacity-0 group-hover:opacity-100">
-                  <p className="text-center text-xs font-semibold">
+                  <p className="text-center text-xs font-semibold sm:hidden md:inline">
                     {movie.title}
                   </p>
-                  <small className="text-center text-xs">
+                  <small className="text-center text-xs sm:hidden md:inline">
                     {movie.original_title}
                   </small>
                   {moviesRating.map((item) => {
                     if (item.id === movie.id) {
                       return (
                         <div className="mt-2">
-                          <div className="flex items-center gap-4 text-[36px]">
+                          <div className="flex items-center gap-4 text-[36px] sm:text-sm">
                             <FaStar color="#95aeac" />
                             <span>{item.rating.toFixed(0)}</span>
                           </div>
-                          <div className="flex items-center gap-4 text-[36px]">
+                          <div className="flex items-center gap-4 text-[36px] sm:text-sm">
                             <IoEyeSharp color="#95aeac" />
                             <span>{item.ratings_count}</span>
                           </div>

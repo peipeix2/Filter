@@ -135,7 +135,7 @@ const EditPage = () => {
   if (!review) return
 
   return (
-    <section className="text-editor-container mx-auto my-8 max-w-4xl">
+    <section className="text-editor-container mx-auto my-8 w-4/5 lg:max-w-4xl">
       <div className="mb-5 w-full">
         <Input
           type="text"
@@ -185,8 +185,9 @@ const EditPage = () => {
           setTagsInput={setTagsInput}
         />
         <div className="flex items-center justify-start px-1 py-2">
-          <span className="mr-2">隱私設定</span>
+          <span className="mr-2 text-sm">隱私設定</span>
           <Checkbox
+            size="sm"
             classNames={{
               label: 'text-small',
             }}

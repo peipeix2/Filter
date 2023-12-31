@@ -129,7 +129,7 @@ const Setting = () => {
   if (!profileUser) return
 
   return (
-    <div className="mx-auto w-1/2">
+    <div className="mx-auto w-full max-w-[400px]">
       <Table aria-label="profile-table">
         <TableHeader>
           <TableColumn>欄位</TableColumn>

@@ -61,7 +61,7 @@ const Movies = () => {
           </div>
 
           <div className="intro-data-wrapper mt-5 flex flex-col lg:mt-20 lg:flex-row">
-            <div className="intro order-3 lg:w-3/5">
+            <div className="intro order-2 lg:w-3/5">
               <div className="story">
                 <p className="text-sm leading-8 text-[#2a3037] lg:text-base">
                   {moviesDetail.overview}
@@ -111,7 +111,7 @@ const Movies = () => {
                 <ReviewSection />
               </section>
             </div>
-            <div className="rating-data-wrapper order-1 lg:block lg:w-2/5">
+            <div className="rating-data-wrapper order-1 lg:order-3 lg:block lg:w-2/5">
               <RatingPanel />
             </div>
           </div>

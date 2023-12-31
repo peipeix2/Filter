@@ -9,7 +9,10 @@ interface PosterPostState {
 
 const PosterPost = ({ post }: PosterPostState) => {
   return (
-    <div className="movie-card flex w-[18%] flex-col gap-3" key={post.id}>
+    <div
+      className="movie-card flex w-[calc(33%-0.3rem)] flex-col gap-3 lg:w-[18%]"
+      key={post.id}
+    >
       <Link to={`/comment/${post.userId}/${post.id}`}>
         <Image
           src={`https://image.tmdb.org/t/p/w500${post.movie_poster}`}

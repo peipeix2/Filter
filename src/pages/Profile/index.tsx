@@ -234,11 +234,11 @@ const Profile = () => {
         style={{
           backgroundImage: `url(${profileUser.backdrop})`,
         }}
-        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
+        className="h-[150px] w-full bg-cover bg-scroll bg-center bg-no-repeat lg:h-[500px] lg:bg-cover"
       />
       <section className="profile mx-auto mt-10 flex w-4/5 flex-col">
-        <div className="header flex w-full items-center justify-between">
-          <div className="profile flex items-center">
+        <div className="header flex w-full flex-col items-center justify-between gap-5 lg:flex-row">
+          <div className="profile flex flex-col items-center gap-2 lg:flex-row">
             <div className="profile-info flex items-center">
               <Avatar src={profileUser.avatar} size="lg" />
               <p className="ml-3 text-2xl font-extrabold">
@@ -282,13 +282,13 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="tab mx-auto mb-5 mt-20 flex w-1/2 justify-evenly">
+        <div className="tab mx-auto mb-5 mt-20 flex w-full justify-evenly md:w-1/2">
           {profileTabLinks.map((tab, index) => {
             return (
               <Link
                 to={tab.link}
                 key={index}
-                className={`text-md pb-2 font-['DM_Serif_Display'] tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] ${
+                className={`pb-2 font-['DM_Serif_Display'] text-sm tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] md:text-base ${
                   location.pathname?.includes(tab.linkName)
                     ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
                     : 'font-extrabold text-slate-300'
@@ -300,7 +300,7 @@ const Profile = () => {
           })}
         </div>
 
-        <div className="mx-auto mt-20 w-3/5">
+        <div className="mx-auto mt-20 w-full md:w-3/5">
           <Outlet />
         </div>
       </section>

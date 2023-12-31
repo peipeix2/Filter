@@ -29,9 +29,13 @@ const CommentCard = (Props: CommentCardState) => {
         </Link>
         <div className="comment-rating ml-10 w-2/3">
           <Link to={`/movies/${Props.post.movie_id}`}>
-            <div className="movie-info-header mb-2 flex flex-col items-baseline text-lg hover:text-[#89a9a6] lg:flex-row">
-              <h1 className="mr-2 font-semibold">{Props.post.movie_title}</h1>
-              <span className="text-sm">{Props.post.movie_original_title}</span>
+            <div className="movie-info-header mb-2 flex flex-col items-baseline hover:text-[#89a9a6] lg:flex-row">
+              <h1 className="mr-2 text-base font-semibold lg:text-lg">
+                {Props.post.movie_title}
+              </h1>
+              <span className="text-xs lg:text-sm">
+                {Props.post.movie_original_title}
+              </span>
             </div>
           </Link>
           <Link

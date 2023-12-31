@@ -48,8 +48,8 @@ const Network = () => {
   }
 
   return (
-    <div className="page-container flex justify-between">
-      <div className="following-section w-5/12">
+    <div className="page-container flex flex-col lg:flex-row lg:justify-between">
+      <div className="following-section mx-auto w-full max-w-[400px] lg:w-5/12">
         <h1 className="text-center text-base font-semibold text-[#475565]">
           追蹤用戶
         </h1>
@@ -68,7 +68,7 @@ const Network = () => {
           )}
         </div>
       </div>
-      <div className="follower-section w-5/12">
+      <div className="follower-section mx-auto mt-20 w-full max-w-[400px] lg:mt-0 lg:w-5/12">
         <h1 className="text-center text-base font-semibold text-[#475565]">
           粉絲
         </h1>

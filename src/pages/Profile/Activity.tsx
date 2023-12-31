@@ -11,11 +11,11 @@ const Activity = () => {
   if (!userId) return
 
   userMoviesComments.sort((a: CommentState, b: CommentState) => {
-    return b.created_at.toMillis() - a.created_at.toMillis()
+    return b.created_at?.toMillis() - a.created_at?.toMillis()
   })
 
   userMoviesReviews.sort((a: ReviewState, b: ReviewState) => {
-    return b.created_at.toMillis() - a.created_at.toMillis()
+    return b.created_at?.toMillis() - a.created_at?.toMillis()
   })
 
   let displayComments
@@ -50,9 +50,9 @@ const Activity = () => {
 
   return (
     <div className="flex flex-col gap-20">
-      {activitySection.map((item) => {
+      {activitySection.map((item, index) => {
         return (
-          <div>
+          <div key={index}>
             <div className="mb-5 flex w-full justify-between">
               <p className="text-base font-semibold text-[#475565]">
                 {item.title}
