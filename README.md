@@ -1,27 +1,39 @@
-# React + TypeScript + Vite
+# Filter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[Filter](https://filter-14ea1.web.app/) is a social network for film lover. At Filter, user can write short comment or long journal for films they've watched, search for titles, create customized tags for films they love, and manage their own watchlist calendar.
 
-Currently, two official plugins are available:
+## About Filter
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Utilized **React Query** to access TMDB movie database API and fulfill search-by-movie-title feature to reduce API request frequency.
+- Improved user’s film journaling experience by integrating **Tiptap**, a headless WYSIWYG text editor, for markdown and image upload support.
+- Realized watchlist calendar by applying external and in-calendar Drag&Drop with **FullCalendar**.
+- Added static type checking to JavaScript with **TypeScript**.
+- Built UI with **NextUI** and **Tailwind**.
+- Provided lively user experience by applying **Framer Motion** on the homepage.
 
-## Expanding the ESLint configuration
+## Built with
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+![React](https://img.shields.io/badge/React-61DAFB.svg?style=for-the-badge&logo=React&logoColor=black) ![Vite](https://img.shields.io/badge/Vite-646CFF.svg?style=for-the-badge&logo=Vite&logoColor=white) ![Tailwind](https://img.shields.io/badge/Tailwind%20CSS-06B6D4.svg?style=for-the-badge&logo=Tailwind-CSS&logoColor=white) ![Firebase](https://img.shields.io/badge/Firebase-FFCA28.svg?style=for-the-badge&logo=Firebase&logoColor=black) ![Typescript](https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white) ![npm](https://img.shields.io/badge/npm-CB3837.svg?style=for-the-badge&logo=npm&logoColor=white) ![Git](https://img.shields.io/badge/Git-F05032.svg?style=for-the-badge&logo=Git&logoColor=white)
 
-- Configure the top-level `parserOptions` property like this:
+**Base**
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+- React app
+- Firebase
+- Tailwind
+- Prettier
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+**Libraries**
+
+- Zustand
+- React Query
+- Tiptap (text editor)
+- FullCalendar
+
+### Flow chart
+
+![flow chart](/public/flow-chart.png)
+
+### Contact
+
+- [LinkedIn](https://www.linkedin.com/in/pei-pei-hsueh-1a8a4a7a/)
+- [Email](mailto:peipei.hsueh@outlook.com)
