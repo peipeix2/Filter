@@ -8,7 +8,7 @@ interface HeroImgState {
 const HeroImg = (Props: HeroImgState) => {
   return (
     <div
-      className="group relative h-[300px] w-full bg-cover bg-fixed bg-center bg-no-repeat lg:h-[580px] lg:bg-cover"
+      className="group relative h-[300px] w-full bg-cover bg-scroll bg-center bg-no-repeat lg:h-[580px] lg:bg-cover"
       style={{
         backgroundImage: `url(https://image.tmdb.org/t/p/original${Props.backdrop})`,
       }}
