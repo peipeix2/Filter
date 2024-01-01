@@ -26,7 +26,7 @@ const PopularReviewers = () => {
       <Divider className="mt-1" />
       {popularUsers.map((user, index) => {
         return (
-          <div className="w-full">
+          <div className="popular-user-wrapper">
             <Link
               to={`/profile/${user.userId}`}
               className="profile-card"
@@ -41,6 +41,7 @@ const PopularReviewers = () => {
                 className="my-3"
                 classNames={{
                   wrapper: 'ml-3',
+                  description: 'text-xs',
                 }}
               />
             </Link>
