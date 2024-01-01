@@ -26,7 +26,7 @@ const Read = () => {
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.id === id) {
-            setReview(doc.data() as ReviewState)
+            setReview({ id: doc.id, ...doc.data() } as ReviewState)
           }
         })
       }

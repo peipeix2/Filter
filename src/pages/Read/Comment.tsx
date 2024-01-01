@@ -218,7 +218,7 @@ const Comment = () => {
                     className="mb-5"
                     classNames={{
                       label: 'text-xs lg:text-base',
-                      description: 'text-xs lg:text-base',
+                      description: 'text-xs lg:text-sm',
                     }}
                     maxLength={150}
                     value={revisedMoviesComment.comment}
