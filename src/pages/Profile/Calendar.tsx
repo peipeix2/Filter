@@ -10,11 +10,10 @@ import { db } from '../../../firebase'
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
-import { Tabs, Tab, Chip } from '@nextui-org/react'
+import { Tabs, Tab, Chip, Spinner } from '@nextui-org/react'
 import CalendarEvent from './CalendarEvent'
 import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmptyState'
 import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
-import CalendarSkeleton from '../../components/Skeletons/CalendarSkeleton'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FavoriteState, CalendarState } from '../../utils/type'
 import {
@@ -188,8 +187,8 @@ const Calendar = () => {
   }
 
   if (!userId) return
-  if (!calendarState.externalEvents) return <CalendarSkeleton />
-  if (!calendarState.calendarEvents) return <CalendarSkeleton />
+  if (!calendarState.externalEvents || !calendarState.calendarEvents)
+    return <Spinner className="my-5 h-40 w-full" color="default" />
 
   return (
     <>
@@ -302,25 +301,27 @@ const Calendar = () => {
           </ScrollShadow>
         </Tab>
       </Tabs>
-      <FullCalendar
-        plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-        headerToolbar={{
-          left: 'prev,next,today',
-          center: 'title',
-          right: 'dayGridMonth,listYear',
-        }}
-        editable={true}
-        droppable={true}
-        selectable={true}
-        selectMirror={true}
-        dayMaxEvents={true}
-        initialView="dayGridMonth"
-        displayEventEnd={true}
-        events={calendarState.calendarEvents}
-        eventDrop={myDropEvent}
-        eventReceive={handleEventReceive}
-        eventClick={handleEventClick}
-      />
+      <div className="hidden lg:block">
+        <FullCalendar
+          plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: 'prev,next,today',
+            center: 'title',
+            right: 'dayGridMonth,listYear',
+          }}
+          editable={true}
+          droppable={true}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          initialView="dayGridMonth"
+          displayEventEnd={true}
+          events={calendarState.calendarEvents}
+          eventDrop={myDropEvent}
+          eventReceive={handleEventReceive}
+          eventClick={handleEventClick}
+        />
+      </div>
       <CalendarModal
         isOpen={modalIsOpen}
         setModalIsOpen={(value) => setModalIsOpen(value)}

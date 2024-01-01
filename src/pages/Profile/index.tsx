@@ -12,7 +12,7 @@ import {
   QuerySnapshot,
 } from 'firebase/firestore'
 import { useLocation } from 'react-router-dom'
-import { Skeleton } from '@nextui-org/react'
+import { Skeleton, Spinner } from '@nextui-org/react'
 import {
   UserProfileState,
   FollowUserState,
@@ -127,19 +127,7 @@ const Profile = () => {
   const isCurrentUser = userId === user.userId
 
   if (!profileUser) {
-    return (
-      <div>
-        <Skeleton className="w-100% h-[500px]"></Skeleton>
-        <Skeleton className="profile mx-auto mt-10 flex w-4/5 flex-col">
-          <Skeleton className="header flex w-full items-center justify-between">
-            <Skeleton className="profile flex items-center">
-              <Avatar size="lg" />
-              <Skeleton className="ml-3 h-4 w-1/5"></Skeleton>
-            </Skeleton>
-          </Skeleton>
-        </Skeleton>
-      </div>
-    )
+    return <Spinner className="my-5 h-40 w-full" color="default" />
   }
 
   if (!userId) return
@@ -241,7 +229,7 @@ const Profile = () => {
           <div className="profile flex flex-col items-center gap-2 lg:flex-row">
             <div className="profile-info flex items-center">
               <Avatar src={profileUser.avatar} size="lg" />
-              <p className="ml-3 text-2xl font-extrabold">
+              <p className="ml-3 text-lg font-extrabold md:text-2xl">
                 {profileUser.username}
               </p>
             </div>
@@ -272,8 +260,10 @@ const Profile = () => {
                   className="comments-count flex flex-col items-center"
                   key={index}
                 >
-                  <span className="text-sm text-slate-300">{item.title}</span>
-                  <span className="text-2xl font-extrabold text-[#89a9a6]">
+                  <span className="text-xs text-slate-300 md:text-sm">
+                    {item.title}
+                  </span>
+                  <span className="text-xl font-extrabold text-[#89a9a6] md:text-2xl">
                     {item.content}
                   </span>
                 </div>
@@ -282,7 +272,7 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="tab mx-auto mb-5 mt-20 flex w-full justify-evenly md:w-1/2">
+        <div className="tab mx-auto mb-5 mt-10 flex w-full justify-evenly md:mt-20 md:w-1/2">
           {profileTabLinks.map((tab, index) => {
             return (
               <Link
@@ -291,7 +281,7 @@ const Profile = () => {
                 className={`pb-2 font-['DM_Serif_Display'] text-sm tracking-wide hover:border-b-4 hover:border-[#89a9a6] hover:font-extrabold hover:text-[#89a9a6] md:text-base ${
                   location.pathname?.includes(tab.linkName)
                     ? 'border-b-4 border-[#89a9a6] font-extrabold text-[#89a9a6]'
-                    : 'font-extrabold text-slate-300'
+                    : 'border-b-4 border-transparent font-extrabold text-slate-300'
                 }`}
               >
                 {tab.name}
