@@ -29,7 +29,7 @@ const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
         placeholder="按Enter自訂標籤"
         classNames={{
           label: 'text-sm lg:text-base',
-          input: ['placeholder: text-xs lg:text-base'],
+          input: 'placeholder: text-xs lg:text-sm',
         }}
         variant="flat"
         value={tagsInput}
@@ -41,7 +41,7 @@ const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
           {tags.map((tag, index) => {
             return (
               <Chip
-                className="flex items-center bg-[#94a3ab] p-1 text-xs text-slate-100"
+                className="flex min-h-[24px] min-w-[60px] items-center bg-[#94a3ab] p-1 text-xs text-slate-100"
                 key={index}
                 size="sm"
                 startContent={
