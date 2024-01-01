@@ -76,7 +76,7 @@ const CommentCardWithProfilePic = (Props: CommentCardState) => {
           </div>
 
           <OnSnapShotLikeBtn
-            postCategory="COMMENTS"
+            postCategory={Props.post.review ? 'REVIEWS' : 'COMMENTS'}
             postId={Props.post.id}
             count={Props.post.likes_count}
             authorId={Props.post.userId}
