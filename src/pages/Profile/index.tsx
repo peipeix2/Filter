@@ -12,7 +12,7 @@ import {
   QuerySnapshot,
 } from 'firebase/firestore'
 import { useLocation } from 'react-router-dom'
-import { Skeleton, Spinner } from '@nextui-org/react'
+import { Spinner } from '@nextui-org/react'
 import {
   UserProfileState,
   FollowUserState,

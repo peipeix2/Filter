@@ -10,23 +10,6 @@ interface HeroImgState {
 const MidHero = (Props: HeroImgState) => {
   const { isLogin, user } = useUserStore()
 
-  const features = [
-    {
-      title: '電影筆記',
-      description:
-        '提供公開/私人模式自由切換，你的觀後感，可以是悄悄話，也可以昭告天下',
-    },
-    {
-      title: '好友社群',
-      description: '好友動態自動推送、輕鬆追蹤社群同好，挖掘有趣靈魂簡簡單單',
-    },
-    {
-      title: '自訂標籤',
-      description:
-        '為看過的影片打上自訂tag，並支持標籤搜尋功能，隨時隨地搜尋同類影片',
-    },
-  ]
-
   return (
     <>
       <div
