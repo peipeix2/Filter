@@ -103,12 +103,12 @@ const Gallery = () => {
                   style={{ aspectRatio: '2/3' }}
                 />
                 <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
-                  <div className="flex h-full flex-col items-center justify-center gap-3 text-[#475565] opacity-0 group-hover:opacity-100">
+                  <div className="flex h-full flex-col items-center justify-center gap-3 px-2 text-[#475565] opacity-0 group-hover:opacity-100">
                     <p className="text-center text-lg font-bold">
-                      {movie.title}
+                      {movie.title || movie.movie_title}
                     </p>
                     <small className="text-center text-xs">
-                      {movie.original_title}
+                      {movie.original_title || movie.movie_original_title}
                     </small>
                   </div>
                 </div>

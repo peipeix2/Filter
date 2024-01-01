@@ -63,7 +63,7 @@ const Comment = () => {
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.id === id) {
-            setComment(doc.data() as CommentState)
+            setComment({ id: doc.id, ...doc.data() } as CommentState)
             setTags(doc.data().tags)
             setRevisedMoviesComment('comment', doc.data().comment)
             setRevisedMoviesComment('rating', doc.data().rating || 0)
