@@ -138,7 +138,7 @@ const Carousel = () => {
               </div>
               <Button
                 size="md"
-                className="mt-5 w-[50px] bg-[#89a9a6] text-xs text-white lg:w-[100px] lg:text-base"
+                className="mt-5 w-[50px] bg-[#89a9a6] text-xs text-white lg:w-[100px] lg:text-sm"
               >
                 <Link
                   to={`/read/${followingUsersReviews[currentIndex].userId}/${followingUsersReviews[currentIndex].id}`}
