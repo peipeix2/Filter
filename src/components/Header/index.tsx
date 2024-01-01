@@ -29,10 +29,9 @@ function Header() {
 
   return (
     <Navbar
-      className="relative h-16 w-full items-center bg-white p-2 shadow-lg md:h-20 lg:px-32"
+      className="h-16 w-full items-center bg-white p-2 shadow-lg md:h-20 lg:px-32"
       maxWidth="full"
       height="90px"
-      position="sticky"
       isBordered
     >
       <NavbarBrand>
