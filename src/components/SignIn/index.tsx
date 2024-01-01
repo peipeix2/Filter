@@ -15,8 +15,8 @@ import SignUp from '../SignUp'
 import toast from 'react-hot-toast'
 
 const SignIn = () => {
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+  const [email, setEmail] = useState<string>('guest@email.com')
+  const [password, setPassword] = useState<string>('123456')
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
   const handleSignIn = async () => {
