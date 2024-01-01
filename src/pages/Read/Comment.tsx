@@ -3,15 +3,12 @@ import { useParams } from 'react-router-dom'
 import {
   collectionGroup,
   serverTimestamp,
-  getDoc,
   setDoc,
   doc,
   deleteDoc,
   onSnapshot,
 } from 'firebase/firestore'
 import { db } from '../../../firebase'
-import CommentStar from '../../components/Star/CommentStar'
-import { FaCommentAlt } from 'react-icons/fa'
 import useUserStore from '../../store/userStore'
 import {
   Modal,
@@ -30,17 +27,24 @@ import TagsInput from '../../components/TagsInput'
 import { FaStar } from 'react-icons/fa'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import { useNavigate } from 'react-router-dom'
-import CommentLikeBtn from '../../components/Like/CommentLikeBtn'
 import SubComments from '../../components/SubComments'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
-import Tag from '../../components/Tag'
+import CommentCardWithProfilePic from '../../components/CommentCard/CommentCardWithProfilePic'
+import { CommentState, MovieFromFirestoreState } from '../../utils/type'
+import {
+  updateDeleteMovieRatings,
+  updateMovieRatings,
+} from '../../utils/render'
+import firestore from '../../utils/firestore'
 
 const Comment = () => {
-  const [comment, setComment] = useState<any>([])
+  const [comment, setComment] = useState<CommentState | null>(null)
   const { revisedMoviesComment, setRevisedMoviesComment } =
     useMoviesCommentStore()
-  const [moviesData, setMoviesData] = useState<any>([])
+  const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
+    null
+  )
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
@@ -59,7 +63,7 @@ const Comment = () => {
       (querySnapshot) => {
         querySnapshot.forEach((doc) => {
           if (doc.id === id) {
-            setComment(doc.data())
+            setComment({ id: doc.id, ...doc.data() } as CommentState)
             setTags(doc.data().tags)
             setRevisedMoviesComment('comment', doc.data().comment)
             setRevisedMoviesComment('rating', doc.data().rating || 0)
@@ -82,12 +86,10 @@ const Comment = () => {
   if (!id) return
   if (!userId) return
 
-  const getMoviesDetail = async (movieId: any) => {
-    const movieRef = doc(db, 'MOVIES', String(movieId))
-    const docSnap = await getDoc(movieRef)
-    if (docSnap.exists()) {
-      const movieInfo = docSnap.data()
-      setMoviesData(movieInfo)
+  const getMoviesDetail = async (movieId: number) => {
+    const docSnap = await firestore.getDoc('MOVIES', String(movieId))
+    if (docSnap) {
+      setMoviesData(docSnap as MovieFromFirestoreState)
     }
   }
 
@@ -96,6 +98,8 @@ const Comment = () => {
       toast.error('請填寫評分！')
       return
     }
+
+    if (!comment || !moviesData) return
 
     const commentData = {
       ...revisedMoviesComment,
@@ -106,64 +110,28 @@ const Comment = () => {
     try {
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
       setDoc(userRef, commentData, { merge: true })
-      await updateMovieRatings()
-      navigate(`/movies/${comment.movie_id}`)
+      await updateMovieRatings(comment, moviesData, revisedMoviesComment)
+      if (comment?.movie_id) {
+        navigate(`/movies/${comment.movie_id}`)
+      }
     } catch (e) {
       console.error('Error adding document: ', e)
     }
   }
 
-  const updateMovieRatings = async () => {
-    try {
-      await setDoc(
-        doc(db, 'MOVIES', `${comment.movie_id}`),
-        {
-          rating:
-            (moviesData.rating * moviesData.ratings_count -
-              comment.rating +
-              revisedMoviesComment.rating) /
-            moviesData.ratings_count,
-        },
-        { merge: true }
-      )
-      console.log('Movie ratings updated successfully.')
-    } catch (error) {
-      console.error('Error updating movie ratings: ', error)
-    }
-  }
-
   const handleDeleteComment = async () => {
+    if (!comment) return
+    if (!moviesData) return
     try {
       setIsLoading(true)
       const userRef = doc(db, 'USERS', userId, 'COMMENTS', id)
       await deleteDoc(userRef)
-      await updateDeleteMovieRatings()
+      await updateDeleteMovieRatings(comment, moviesData)
       setIsLoading(false)
       toast.success('評論已刪除！')
       navigate(`/movies/${comment.movie_id}`)
     } catch (e) {
       console.error('Error adding document: ', e)
-    }
-  }
-
-  const updateDeleteMovieRatings = async () => {
-    try {
-      await setDoc(
-        doc(db, 'MOVIES', `${comment.movie_id}`),
-        {
-          rating:
-            moviesData.ratings_count - 1 === 0
-              ? 0
-              : (moviesData.rating * moviesData.ratings_count -
-                  comment.rating) /
-                (moviesData.ratings_count - 1),
-          ratings_count: moviesData.ratings_count - 1,
-        },
-        { merge: true }
-      )
-      console.log('Movie ratings updated successfully.')
-    } catch (error) {
-      console.error('Error updating movie ratings: ', error)
     }
   }
 
@@ -175,97 +143,45 @@ const Comment = () => {
         style={{
           backgroundImage: `url('https://image.tmdb.org/t/p/original/${comment.movie_backdrop_path}')`,
         }}
-        className="w-100% h-[500px] bg-cover bg-fixed bg-center bg-no-repeat"
+        className="w-100% hidden h-[500px] bg-cover bg-fixed bg-center bg-no-repeat lg:block"
       />
 
-      <div className="container mx-auto mb-20 w-2/5">
+      <div className="container mx-auto mb-20 w-4/5 lg:w-2/5">
         <div className="title-container my-20 text-center">
           <Link
             to={`/movies/${comment.movie_id}`}
             className="hover:text-[#89a9a6]"
           >
-            <h1 className="mr-2 text-2xl font-bold">{comment.movie_title}</h1>
-            <span className="font-['DM_Serif_Display'] text-xl">
+            <h1 className="mr-2 text-lg font-bold lg:text-2xl">
+              {comment.movie_title}
+            </h1>
+            <span className="font-['DM_Serif_Display'] text-sm lg:text-xl">
               {comment.movie_original_title}
             </span>
           </Link>
           <Divider />
         </div>
 
-        <div className="comment-card mx-auto my-5 flex items-start">
-          <Link
-            to={`/profile/${comment.userId}`}
-            className="avatar-wrapper mt-5 flex w-1/4"
-          >
-            <div
-              className="avatar mx-10 h-10 w-10 rounded-full bg-cover bg-no-repeat"
-              style={{
-                backgroundImage: `url(${comment.avatar})`,
-              }}
-            />
-          </Link>
-          <div className="comment-content-btn-container mx-auto flex w-3/4 flex-col items-start">
-            <div className="comment-rating w-full">
-              <h1 className="mb-5 font-bold">{comment.title}</h1>
-
-              <div className="comment-header flex">
-                <div className="comment-user mr-2 flex">
-                  <span className="mr-1 text-sm text-slate-400">評論作者</span>
-                  <span className="text-sm font-semibold text-slate-800">
-                    {comment.author}
-                  </span>
-                </div>
-                <CommentStar rating={comment.rating} />
-                <div className="comment-count ml-2 flex items-center text-slate-400">
-                  <FaCommentAlt className="text-xs" />
-                  <span className="ml-1 text-sm">{comment.comments_count}</span>
-                </div>
-              </div>
-
-              <div className="comment-content my-5">
-                <p className="break-words leading-10">{comment.comment}</p>
-              </div>
-
-              <div className="tags mb-3">
-                <ul className="flex gap-1">
-                  {comment.tags?.map((tag: string, index: number) => {
-                    return <Tag tag={tag} index={index} />
-                  })}
-                </ul>
-              </div>
-
-              <div className="like">
-                <CommentLikeBtn
-                  postId={id}
-                  authorId={comment.userId}
-                  count={comment.likes_count}
-                  isLiked={
-                    comment.likesUser && comment.likesUser.includes(user.userId)
-                  }
-                />
-              </div>
-            </div>
-            {comment.userId === user.userId && (
-              <div className="mt-2 flex w-full justify-end gap-2">
-                <Button
-                  size="sm"
-                  className="bg-[#94a3ab] text-white"
-                  onClick={onOpen}
-                >
-                  修改
-                </Button>
-                <Button
-                  size="sm"
-                  className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
-                  onClick={handleDeleteComment}
-                  isLoading={isLoading}
-                >
-                  刪除
-                </Button>
-              </div>
-            )}
+        <CommentCardWithProfilePic post={comment} currentUserId={user.userId} />
+        {comment.userId === user.userId && (
+          <div className="mt-2 flex w-full justify-end gap-2">
+            <Button
+              size="sm"
+              className="bg-[#94a3ab] text-white"
+              onClick={onOpen}
+            >
+              修改
+            </Button>
+            <Button
+              size="sm"
+              className="border-2 border-[#94a3ab] bg-white text-[#94a3ab]"
+              onClick={handleDeleteComment}
+              isLoading={isLoading}
+            >
+              刪除
+            </Button>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Modal Form */}
@@ -278,21 +194,21 @@ const Comment = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-sm lg:text-lg">
                 我看過...
               </ModalHeader>
-              <ModalBody className="flex flex-row">
+              <ModalBody className="flex flex-col lg:flex-row">
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${comment.movie_poster}`}
                   alt={comment.movie_original_title}
-                  className="w-[300px]"
+                  className="hidden lg:block lg:w-[300px]"
                   isBlurred
                 />
                 <div className="flex-grow px-10">
-                  <h1 className="mr-2 text-3xl font-bold">
+                  <h1 className="mr-2 text-xl font-bold lg:text-3xl">
                     {comment.movie_title}
                   </h1>
-                  <p className="mb-5 font-['DM_Serif_Display'] text-2xl">
+                  <p className="mb-5 font-['DM_Serif_Display'] text-base lg:text-2xl">
                     {comment.movie_original_title}
                   </p>
                   <Textarea
@@ -300,6 +216,10 @@ const Comment = () => {
                     label="我的評價"
                     description="字數不可超過150字"
                     className="mb-5"
+                    classNames={{
+                      label: 'text-xs lg:text-base',
+                      description: 'text-xs lg:text-sm',
+                    }}
                     maxLength={150}
                     value={revisedMoviesComment.comment}
                     onChange={(e) =>
@@ -314,9 +234,11 @@ const Comment = () => {
                     setTagsInput={setTagsInput}
                   />
 
-                  <div className="rating-privacy mt-5 flex justify-between">
+                  <div className="rating-privacy mt-5 flex flex-col justify-between lg:flex-row">
                     <div className="flex items-center">
-                      <span className="mx-2 text-sm">評分</span>
+                      <span className="mr-2 text-sm lg:ml-2 lg:text-sm">
+                        評分
+                      </span>
                       {[...Array(5)].map((_, index) => {
                         const ratingValue: number = index + 1
                         return (
@@ -347,8 +269,10 @@ const Comment = () => {
                       })}
                     </div>
 
-                    <div className="flex justify-between px-1 py-2">
-                      <span className="mr-2">隱私設定</span>
+                    <div className="mt-5 flex justify-start lg:mt-0 lg:justify-between lg:px-1 lg:py-2">
+                      <span className="mr-2 text-sm lg:text-base">
+                        隱私設定
+                      </span>
                       <Checkbox
                         classNames={{
                           label: 'text-small',
@@ -385,10 +309,12 @@ const Comment = () => {
         </ModalContent>
       </Modal>
 
-      <div className="mx-auto flex w-2/5 justify-end">
-        <div className="comments-section mb-10 flex w-[70%] flex-col items-center">
+      <div className="mx-auto flex w-4/5 lg:w-2/5 lg:justify-end">
+        <div className="comments-section mb-10 flex w-full flex-col items-center lg:w-[70%]">
           <div className="title-wrapper mb-10 w-full text-left">
-            <p className="text-base font-semibold text-[#475565]">留言區</p>
+            <p className="text-sm font-semibold text-[#475565] lg:text-base">
+              留言區
+            </p>
             <Divider />
           </div>
           <SubComments commentId={id} userId={userId} />

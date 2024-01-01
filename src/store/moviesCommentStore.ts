@@ -1,51 +1,27 @@
 import { create } from 'zustand'
-
-interface MoviesCommentState {
-  comment: string
-  comments_count: number
-  isPublic: boolean
-  likes_count: number
-  rating: number
-}
-
-interface RevisedMoviesCommentState {
-    comment: string,
-    rating: number,
-    isPublic: boolean
-}
-
-interface MoviesCommentsForIdState {
-  id: string
-  author: string
-  userId: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-  likesUser: string[]
-}
+import {
+  CommentState,
+  ReviewState,
+  UserCommentState,
+  RevisedMoviesCommentState,
+} from '../utils/type'
 
 interface MoviesCommentsStoreState {
-  moviesComment: MoviesCommentState
-  setMoviesComment: (fieldName: string, value: any) => void
+  moviesComment: UserCommentState
+  setMoviesComment: (
+    fieldName: string,
+    value: string | number | File | boolean
+  ) => void
   resetMoviesComment: () => void
-  moviesCommentsForId: MoviesCommentsForIdState[]
+  moviesCommentsForId: CommentState[] | ReviewState[]
   setMoviesCommentsForId: (
-    moviesCommentsForId: MoviesCommentsForIdState
+    moviesCommentsForId: CommentState[] | ReviewState[]
   ) => void
   revisedMoviesComment: RevisedMoviesCommentState
-  setRevisedMoviesComment: (fieldName: string, value: any) => void
+  setRevisedMoviesComment: (
+    fieldName: string,
+    value: string | number | File | boolean
+  ) => void
 }
 
 const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
@@ -73,21 +49,24 @@ const useMoviesCommentStore = create<MoviesCommentsStoreState>((set) => ({
     }))
   },
   moviesCommentsForId: [],
-  setMoviesCommentsForId: (moviesCommentsForId: any) =>
+  setMoviesCommentsForId: (moviesCommentsForId) =>
     set(() => ({ moviesCommentsForId: moviesCommentsForId })),
   revisedMoviesComment: {
     comment: '',
     isPublic: true,
     rating: 0,
   },
-  setRevisedMoviesComment: (fieldName:any, value:any) => {
+  setRevisedMoviesComment: (
+    fieldName: string,
+    value: string | boolean | File | number
+  ) => {
     set((state) => ({
       revisedMoviesComment: {
         ...state.revisedMoviesComment,
         [fieldName]: value,
-      }
+      },
     }))
-  }
+  },
 }))
 
 export default useMoviesCommentStore

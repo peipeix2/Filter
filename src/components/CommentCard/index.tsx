@@ -1,42 +1,22 @@
 import { Link } from 'react-router-dom'
 import { Image, Divider } from '@nextui-org/react'
-import DiscoverLikeBtn from '../Like/DiscoverLikeBtn'
+import ChangeLocalStateLikeBtn from '../Like/ChangeLocalStateLikeBtn'
 import Tag from '../Tag'
 import CommentStar from '../../components/Star/CommentStar'
 import { FaCommentAlt } from 'react-icons/fa'
-
-interface PostState {
-  id: string
-  author: string
-  userId: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: any
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-  likesUser: string[]
-}
+import parser from 'html-react-parser'
+import { PostState, CommentState, ReviewState } from '../../utils/type'
 
 interface CommentCardState {
   post: PostState
-  followingUsersComments: any
-  setFollowingUsersComments: any
+  followingUsersComments: CommentState[] | ReviewState[]
+  setFollowingUsersComments: (value: any) => void
   currentUserId: string
 }
 
 const CommentCard = (Props: CommentCardState) => {
   return (
-    <>
+    <div className="comment-card-wrapper">
       <div className="comment-card my-5 flex items-center">
         <Link to={`/movies/${Props.post.movie_id}`}>
           <div className="avatar-wrapper flex w-[100px] items-start">
@@ -49,18 +29,22 @@ const CommentCard = (Props: CommentCardState) => {
         </Link>
         <div className="comment-rating ml-10 w-2/3">
           <Link to={`/movies/${Props.post.movie_id}`}>
-            <div className="movie-info-header mb-2 flex items-baseline text-lg hover:text-[#89a9a6]">
-              <h1 className="mr-2 font-semibold">{Props.post.movie_title}</h1>
-              <span className="text-sm">{Props.post.movie_original_title}</span>
+            <div className="movie-info-header mb-2 flex flex-col items-baseline hover:text-[#89a9a6] lg:flex-row">
+              <h1 className="mr-2 text-base font-semibold lg:text-lg">
+                {Props.post.movie_title}
+              </h1>
+              <span className="text-xs lg:text-sm">
+                {Props.post.movie_original_title}
+              </span>
             </div>
           </Link>
           <Link
             to={`/comment/${Props.post.userId}/${Props.post.id}`}
             className="w-full"
           >
-            <div className="comment-header flex items-center">
+            <div className="comment-header flex flex-col-reverse  lg:flex-row lg:items-center">
               {Props.post.userId !== Props.currentUserId ? (
-                <>
+                <div className="author-date-wrapper flex flex-col xl:flex-row">
                   <div className="comment-user mr-2 flex">
                     <span className="mr-1 text-xs text-slate-400">
                       評論作者
@@ -75,7 +59,7 @@ const CommentCard = (Props: CommentCardState) => {
                       {Props.post.created_at.toDate().toDateString()}
                     </span>
                   </div>
-                </>
+                </div>
               ) : (
                 <div className="comment-user mr-2 flex">
                   <span className="text-xs font-thin text-slate-800">
@@ -83,19 +67,28 @@ const CommentCard = (Props: CommentCardState) => {
                   </span>
                 </div>
               )}
-
-              <CommentStar rating={Props.post.rating} />
-              <div className="comment-count ml-2 flex items-center text-slate-400">
-                <FaCommentAlt className="text-xs" />
-                <span className="ml-1 text-sm">
-                  {Props.post.comments_count}
-                </span>
+              <div className="flex items-center">
+                <CommentStar rating={Props.post.rating} />
+                <div className="comment-count ml-2 flex items-center text-slate-400">
+                  <FaCommentAlt className="text-xs" />
+                  <span className="ml-1 text-sm">
+                    {Props.post.comments_count}
+                  </span>
+                </div>
               </div>
             </div>
           </Link>
 
           <div className="comment-content my-5">
-            <p className="comment break-words text-sm">{Props.post.comment}</p>
+            {Props.post.comment ? (
+              <p className="comment break-words text-xs md:text-sm">
+                {Props.post.comment}
+              </p>
+            ) : (
+              <p className="comment line-clamp-3 break-words text-sm leading-10">
+                {Props.post.review && parser(Props.post.review)}
+              </p>
+            )}
           </div>
 
           <div className="tags mb-3">
@@ -106,8 +99,9 @@ const CommentCard = (Props: CommentCardState) => {
             </ul>
           </div>
 
-          <DiscoverLikeBtn
+          <ChangeLocalStateLikeBtn
             postId={Props.post.id}
+            postCategory={Props.post.title ? 'REVIEWS' : 'COMMENTS'}
             count={Props.post.likes_count}
             authorId={Props.post.userId}
             isLiked={Props.post.likesUser?.includes(Props.currentUserId)}
@@ -117,7 +111,7 @@ const CommentCard = (Props: CommentCardState) => {
         </div>
       </div>
       <Divider />
-    </>
+    </div>
   )
 }
 

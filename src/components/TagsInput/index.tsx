@@ -12,7 +12,7 @@ interface TagsProps {
 
 const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
   const addTags = (e: any) => {
-    if (e.target.value.length !== '' && e.target.value.trim().length !== 0) {
+    if (e.target.value !== '' && e.target.value.trim().length !== 0) {
       setTags([...tags, e.target.value])
       setTagsInput('')
     }
@@ -27,6 +27,10 @@ const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
       <Input
         label="標籤"
         placeholder="按Enter自訂標籤"
+        classNames={{
+          label: 'text-sm lg:text-base',
+          input: 'placeholder: text-xs lg:text-sm',
+        }}
         variant="flat"
         value={tagsInput}
         onChange={(e) => setTagsInput(e.target.value)}
@@ -37,7 +41,7 @@ const TagsInput = ({ tags, setTags, tagsInput, setTagsInput }: TagsProps) => {
           {tags.map((tag, index) => {
             return (
               <Chip
-                className="flex items-center bg-[#94a3ab] p-1 text-xs text-slate-100"
+                className="flex min-h-[24px] min-w-[60px] items-center bg-[#94a3ab] p-1 text-xs text-slate-100"
                 key={index}
                 size="sm"
                 startContent={

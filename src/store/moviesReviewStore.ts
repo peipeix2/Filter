@@ -1,52 +1,27 @@
 import { create } from 'zustand'
-
-interface MoviesReviewState {
-    title: string
-    review: string
-    comments_count: number
-    isPublic: boolean
-    likes_count: number
-    rating: number
-}
-
-interface RevisedMoviesReviewState {
-  title: string
-  review: string
-  rating: number
-  isPublic: boolean
-}
-
-interface MoviesReviewsForIdState {
-  id: string
-  title: string
-  author: string
-  userId: string
-  avatar: string
-  review: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: Date
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-  likesUser: string[]
-}
+import {
+  CommentState,
+  ReviewState,
+  UserReviewState,
+  RevisedMoviesReviewState,
+} from '../utils/type'
 
 interface MoviesReviewsStoreState {
-  moviesReview: MoviesReviewState
-  setMoviesReview: (fieldName: string, value: any) => void
+  moviesReview: UserReviewState
+  setMoviesReview: (
+    fieldName: string,
+    value: string | boolean | number | File
+  ) => void
   resetMoviesReview: () => void
-  moviesReviewsForId: MoviesReviewsForIdState[]
-  setMoviesReviewsForId: (moviesCommentsForId: MoviesReviewsForIdState) => void
+  moviesReviewsForId: CommentState[] | ReviewState[]
+  setMoviesReviewsForId: (
+    moviesCommentsForId: ReviewState[] | CommentState[]
+  ) => void
   revisedMoviesReview: RevisedMoviesReviewState
-  setRevisedMoviesReview: (fieldName: string, value: any) => void
+  setRevisedMoviesReview: (
+    fieldName: string,
+    value: string | boolean | number | File
+  ) => void
 }
 
 const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
@@ -76,7 +51,7 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
     }))
   },
   moviesReviewsForId: [],
-  setMoviesReviewsForId: (moviesReviewsForId: any) =>
+  setMoviesReviewsForId: (moviesReviewsForId) =>
     set(() => ({ moviesReviewsForId: moviesReviewsForId })),
   revisedMoviesReview: {
     title: '',
@@ -84,7 +59,10 @@ const useMoviesReviewStore = create<MoviesReviewsStoreState>((set) => ({
     isPublic: true,
     rating: 0,
   },
-  setRevisedMoviesReview: (fieldName: any, value: any) => {
+  setRevisedMoviesReview: (
+    fieldName: string,
+    value: string | boolean | number | File
+  ) => {
     set((state) => ({
       revisedMoviesReview: {
         ...state.revisedMoviesReview,

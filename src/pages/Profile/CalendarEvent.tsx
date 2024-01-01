@@ -6,6 +6,7 @@ import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
 import toast from 'react-hot-toast'
+import { CalendarState } from '../../utils/type'
 
 interface CalendarEventState {
   userId: string
@@ -21,8 +22,8 @@ interface CalendarEventState {
     originalTitle: string
     releaseDate: string
   }
-  calendarState: any
-  setCalendarState: any
+  calendarState: CalendarState
+  setCalendarState: React.Dispatch<React.SetStateAction<CalendarState>>
 }
 
 const CalendarEvent = (Props: CalendarEventState) => {
@@ -40,12 +41,12 @@ const CalendarEvent = (Props: CalendarEventState) => {
     movieTitle: string
   ) => {
     toast.success(`已將《${movieTitle}》從收藏中移除`)
-    Props.setCalendarState((calendarState: any) => {
+    Props.setCalendarState((calendarState) => {
       return {
         ...calendarState,
-        calendarEvents: calendarState.calendarEvents.filter(
-          (item: any) => item.id !== movieId
-        ),
+        calendarEvents:
+          calendarState.calendarEvents &&
+          calendarState.calendarEvents.filter((item) => item.id !== movieId),
       }
     })
     const favoriteRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)
@@ -54,7 +55,7 @@ const CalendarEvent = (Props: CalendarEventState) => {
 
   return (
     <Card
-      className="calendar-event-card relative mb-1 min-h-[230px] w-[144px] p-1"
+      className="calendar-event-card relative mb-1 mt-2 min-h-[180px] w-[120px] p-1 lg:mt-0 lg:min-h-[230px] lg:w-[144px]"
       style={{
         backgroundColor: '#f46854',
         borderColor: '#f46854',
@@ -63,7 +64,7 @@ const CalendarEvent = (Props: CalendarEventState) => {
     >
       {currentUserId === Props.userId && (
         <TiDelete
-          className="absolute right-1 top-1 z-10 text-xl"
+          className="absolute right-1 top-1 z-10 text-base lg:text-xl"
           onClick={() =>
             handleDeleteFavorite(
               Props.event.id,
@@ -81,7 +82,7 @@ const CalendarEvent = (Props: CalendarEventState) => {
                 src={`https://image.tmdb.org/t/p/w500/${Props.event.poster}`}
                 className="mb-2 h-auto max-h-[150px] w-auto max-w-[100px]"
               />
-              <strong className="break-words text-center text-[13.6px] text-white">
+              <strong className="break-words text-center text-xs text-white lg:text-[13.6px]">
                 {Props.event.title}
               </strong>
               <div className="flex items-center">

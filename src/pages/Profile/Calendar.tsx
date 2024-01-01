@@ -10,43 +10,17 @@ import { db } from '../../../firebase'
 import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
-import { Tabs, Tab, Chip } from '@nextui-org/react'
+import { Tabs, Tab, Chip, Spinner } from '@nextui-org/react'
 import CalendarEvent from './CalendarEvent'
 import UnshceduledEmptyState from '../../components/EmptyStates/UnscheduledEmptyState'
 import ScheduledEmptyState from '../../components/EmptyStates/ScheduledEmptyState'
-import CalendarSkeleton from '../../components/Skeletons/CalendarSkeleton'
 import { motion, AnimatePresence } from 'framer-motion'
-
-interface CalendarEventState {
-  id: string
-  title: string
-  color: string
-  start: string
-  end: string
-  allDay: boolean
-  poster: string
-  backdrop: string
-  originalTitle: string
-  releaseDate: string
-}
-
-interface ExternalEventState {
-  movie_id: string
-  movie_title: string
-  movie_poster: string
-  movie_backdrop_path: string
-  movie_original_title: string
-  created_at: any
-  schedule_time: string
-  movie_release: string
-  user: string
-}
-
-interface CalendarState {
-  weekendsVisible: boolean
-  externalEvents: ExternalEventState[] | null
-  calendarEvents: CalendarEventState[] | null
-}
+import { FavoriteState, CalendarState } from '../../utils/type'
+import {
+  EventDropArg,
+  EventInput,
+  EventClickArg,
+} from '@fullcalendar/core/index.js'
 
 const Calendar = () => {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
@@ -64,17 +38,17 @@ const Calendar = () => {
       if (userId) {
         const userRef = collection(db, 'USERS', userId, 'FAVORITES')
         const querySnapshot = await getDocs(userRef)
-        const favoritesList: any = []
+        const favoritesList: FavoriteState[] = []
         querySnapshot.forEach((doc) => {
-          favoritesList.push(doc.data())
+          favoritesList.push(doc.data() as FavoriteState)
         })
 
         setCalendarState((calendarState) => {
           return {
             ...calendarState,
             calendarEvents: favoritesList
-              .filter((item: any) => item.schedule_time !== 'unscheduled')
-              .map((item: any) => {
+              .filter((item) => item.schedule_time !== 'unscheduled')
+              .map((item) => {
                 return {
                   title: item.movie_title,
                   color: '#f46854',
@@ -89,7 +63,7 @@ const Calendar = () => {
                 }
               }),
             externalEvents: favoritesList.filter(
-              (item: any) => item.schedule_time === 'unscheduled'
+              (item) => item.schedule_time === 'unscheduled'
             ),
           }
         })
@@ -99,7 +73,7 @@ const Calendar = () => {
     getUserFavorites()
   }, [])
 
-  const handleEventReceive = (eventInfo: any) => {
+  const handleEventReceive = (eventInfo: EventInput) => {
     const currentUser = user.userId
     if (currentUser !== userId) {
       eventInfo.revert()
@@ -132,7 +106,6 @@ const Calendar = () => {
       releaseDate: eventInfo.draggedEl.getAttribute('data-release'),
     }
 
-    console.log(newEvent)
     updateScheduledTime(newEvent.id, userId, newEvent.start)
 
     setCalendarState((calendarState) => {
@@ -173,7 +146,7 @@ const Calendar = () => {
     }
   }
 
-  function myDropEvent(info: any) {
+  function myDropEvent(info: EventDropArg) {
     const currentUser = user.userId
     if (currentUser !== userId) {
       info.revert()
@@ -181,9 +154,8 @@ const Calendar = () => {
     }
 
     const movieId = info.oldEvent._def.publicId
-    const newScheduledTime = info.event.start.toISOString()
-    console.log(newScheduledTime)
-
+    const newScheduledTime = info.event.start?.toISOString()
+    if (!newScheduledTime) return
     updateScheduledTime(movieId, userId, newScheduledTime)
     if (calendarState.calendarEvents) {
       const changedEventIndex = calendarState.calendarEvents.findIndex(
@@ -209,15 +181,14 @@ const Calendar = () => {
     }
   }
 
-  const handleEventClick = (info: any) => {
+  const handleEventClick = (info: EventClickArg) => {
     setModalIsOpen(!modalIsOpen)
     setActiveSchedule(info.event._def.publicId)
-    // eventClick.event.remove()
   }
 
   if (!userId) return
-  if (!calendarState.externalEvents) return <CalendarSkeleton />
-  if (!calendarState.calendarEvents) return <CalendarSkeleton />
+  if (!calendarState.externalEvents || !calendarState.calendarEvents)
+    return <Spinner className="my-5 h-40 w-full" color="default" />
 
   return (
     <>
@@ -261,7 +232,7 @@ const Calendar = () => {
                 <UnshceduledEmptyState />
               ) : (
                 <AnimatePresence mode="popLayout">
-                  {calendarState.externalEvents.map((event: any) => (
+                  {calendarState.externalEvents.map((event) => (
                     <motion.div
                       key={event.movie_id}
                       animate={{ scale: 1, opacity: 1 }}
@@ -308,7 +279,7 @@ const Calendar = () => {
                 <ScheduledEmptyState />
               ) : (
                 <AnimatePresence mode="popLayout">
-                  {calendarState.calendarEvents.map((event: any) => (
+                  {calendarState.calendarEvents.map((event) => (
                     <motion.div
                       key={event.id}
                       animate={{ scale: 1, opacity: 1 }}
@@ -330,25 +301,27 @@ const Calendar = () => {
           </ScrollShadow>
         </Tab>
       </Tabs>
-      <FullCalendar
-        plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
-        headerToolbar={{
-          left: 'prev,next,today',
-          center: 'title',
-          right: 'dayGridMonth,listYear',
-        }}
-        editable={true}
-        droppable={true}
-        selectable={true}
-        selectMirror={true}
-        dayMaxEvents={true}
-        initialView="dayGridMonth"
-        displayEventEnd={true}
-        events={calendarState.calendarEvents}
-        eventDrop={myDropEvent}
-        eventReceive={handleEventReceive}
-        eventClick={handleEventClick}
-      />
+      <div className="hidden lg:block">
+        <FullCalendar
+          plugins={[dayGridPlugin, listPlugin, interactionPlugin]}
+          headerToolbar={{
+            left: 'prev,next,today',
+            center: 'title',
+            right: 'dayGridMonth,listYear',
+          }}
+          editable={true}
+          droppable={true}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          initialView="dayGridMonth"
+          displayEventEnd={true}
+          events={calendarState.calendarEvents}
+          eventDrop={myDropEvent}
+          eventReceive={handleEventReceive}
+          eventClick={handleEventClick}
+        />
+      </div>
       <CalendarModal
         isOpen={modalIsOpen}
         setModalIsOpen={(value) => setModalIsOpen(value)}

@@ -7,23 +7,12 @@ import useUserStore from '../../store/userStore'
 import { db } from '../../../firebase'
 import { deleteDoc, doc } from 'firebase/firestore'
 import toast from 'react-hot-toast'
+import { FavoriteState, CalendarState } from '../../utils/type'
 
 interface EventState {
-  event: {
-    movie_title: string
-    // color: string
-    movie_id: string
-    movie_original_title: string
-    schedule_time: string
-    user: string
-    movie_poster: string
-    movie_backdrop_path: string
-    movie_release: string
-    created_at: Date
-    release_date: string
-  }
-  calendarState: any
-  setCalendarState: any
+  event: FavoriteState
+  calendarState: CalendarState
+  setCalendarState: React.Dispatch<React.SetStateAction<CalendarState>>
 }
 
 const ExternalEvent = memo((Props: EventState) => {
@@ -32,7 +21,7 @@ const ExternalEvent = memo((Props: EventState) => {
   const currentUserId = user.userId
 
   useEffect(() => {
-    let draggable: any
+    let draggable: Draggable | null = null
     if (elRef.current) {
       draggable = new Draggable(elRef.current, {
         eventData: function () {
@@ -41,7 +30,9 @@ const ExternalEvent = memo((Props: EventState) => {
       })
     }
 
-    return () => draggable.destroy()
+    return () => {
+      if (draggable) draggable.destroy()
+    }
   })
 
   const handleDeleteFavorite = async (
@@ -50,12 +41,14 @@ const ExternalEvent = memo((Props: EventState) => {
     movieTitle: string
   ) => {
     toast.success(`已將《${movieTitle}》從收藏中移除`)
-    Props.setCalendarState((calendarState: any) => {
+    Props.setCalendarState((calendarState) => {
       return {
         ...calendarState,
-        externalEvents: calendarState.externalEvents.filter(
-          (item: any) => item.movie_id !== movieId
-        ),
+        externalEvents:
+          calendarState.externalEvents &&
+          calendarState.externalEvents.filter(
+            (item) => item.movie_id !== movieId
+          ),
       }
     })
     const favoriteRef = doc(db, 'USERS', userId, 'FAVORITES', movieId)
@@ -65,7 +58,7 @@ const ExternalEvent = memo((Props: EventState) => {
   return (
     <Card
       ref={elRef}
-      className="fc-event fc-h-event fc-daygrid-event fc-daygrid-block-event relative z-0 mb-1 min-h-[230px] w-auto min-w-[144px] p-1"
+      className="fc-event relative z-0 mb-1 h-full min-h-[180px] w-[120px] p-1 lg:min-h-[230px] lg:w-auto lg:min-w-[144px]"
       title={Props.event.movie_title}
       data-id={Props.event.movie_id}
       data-color="#f46854"
@@ -81,7 +74,7 @@ const ExternalEvent = memo((Props: EventState) => {
     >
       {currentUserId === Props.event.user && (
         <TiDelete
-          className="absolute right-1 top-1 z-10 text-xl"
+          className="absolute right-1 top-1 z-10 text-base lg:text-xl"
           onClick={() =>
             handleDeleteFavorite(
               Props.event.movie_id,
@@ -93,17 +86,13 @@ const ExternalEvent = memo((Props: EventState) => {
       )}
       <CardBody className="h-full">
         <Link to={`/movies/${Props.event.movie_id}`}>
-          <div className="fc-event-main h-full">
-            <div className="flex h-full flex-col items-center justify-between">
-              {/* <span className="mb-2 text-xs">
-              上映日期：{Props.event.movie_release}
-            </span> */}
-              <Image
-                src={`https://image.tmdb.org/t/p/w500/${Props.event.movie_poster}`}
-                className="mb-2 h-auto max-h-[150px] w-auto max-w-[100px]"
-              />
-
-              <strong className="mt-3 break-words">
+          <div className="fc-event-main flex h-full flex-col items-center justify-between">
+            <Image
+              src={`https://image.tmdb.org/t/p/w500/${Props.event.movie_poster}`}
+              className="mb-2 h-auto max-h-[150px] w-auto max-w-[100px]"
+            />
+            <div className="flex flex-grow flex-col items-center justify-center">
+              <strong className="mt-2 break-words text-white">
                 {Props.event.movie_title}
               </strong>
             </div>

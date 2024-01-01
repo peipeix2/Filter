@@ -1,34 +1,36 @@
 import useMoviesDetailStore from '../../../store/moviesDetailStore'
 
+interface DetailsFromAPI {
+  name: string
+  [key: string]: any
+}
+
 const Details = () => {
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
 
+  const moviesDetailList = [
+    { title: '語言', content: moviesDetail.spoken_languages },
+    { title: '出品國家', content: moviesDetail.production_countries },
+    {
+      title: '製作公司',
+      content: moviesDetail.production_companies,
+    },
+  ]
+
   return (
     <div className="mt-5 flex min-h-[150px] flex-wrap gap-2 rounded-lg border border-gray-500 px-3 py-5 text-slate-500">
-      <div className="flex w-full justify-between text-xs">
-        <p className="mb-2">語言</p>
-        <div className="text-right">
-          {moviesDetail.spoken_languages.map((language) => {
-            return <span className="ml-2">{language.name}</span>
-          })}
-        </div>
-      </div>
-      <div className="flex w-full justify-between text-xs">
-        <p className="mb-2">出品國家</p>
-        <div className="text-right">
-          {moviesDetail.production_countries.map((country) => {
-            return <span className="ml-2">{country.name}</span>
-          })}
-        </div>
-      </div>
-      <div className="flex w-full justify-between text-xs">
-        <p>製作公司</p>
-        <div className="text-right">
-          {moviesDetail.production_companies.map((company) => {
-            return <span className="ml-2">{company.name}</span>
-          })}
-        </div>
-      </div>
+      {moviesDetailList.map((item) => {
+        return (
+          <div className="flex w-full justify-between text-xs">
+            <p className="mb-2">{item.title}</p>
+            <div className="w-2/3 text-right">
+              {item.content.map((element: DetailsFromAPI) => {
+                return <span className="ml-2">{element.name}</span>
+              })}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

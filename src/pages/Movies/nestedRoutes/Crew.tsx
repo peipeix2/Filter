@@ -2,6 +2,7 @@ import { Tooltip } from '@nextui-org/react'
 import useMoviesDetailStore from '../../../store/moviesDetailStore'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { CrewState } from '../../../utils/type'
 
 const Crew = () => {
   const moviesCrew = useMoviesDetailStore((state) => state.moviesCrew)
@@ -19,7 +20,7 @@ const Crew = () => {
 
   return (
     <div className="mt-5 flex min-h-[150px] flex-wrap gap-2 py-5">
-      {moviesCrew.map((item: any) => {
+      {moviesCrew.map((item: CrewState) => {
         if (
           item.job === 'Director' ||
           item.job === 'Producer' ||

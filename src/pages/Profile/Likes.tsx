@@ -4,55 +4,18 @@ import { db } from '../../../firebase'
 import { useParams } from 'react-router-dom'
 import useUserStore from '../../store/userStore'
 import CommentCard from '../../components/CommentCard'
-import ReviewCard from '../../components/CommentCard/ReviewCard'
-import { Skeleton } from '@nextui-org/react'
-
-interface userMoviesCommentsState {
-  id: string
-  author: string
-  userId: string
-  avatar: string
-  comment: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: any
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-}
-
-interface userMoviesReviewsState {
-  id: string
-  title: string
-  author: string
-  userId: string
-  avatar: string
-  review: string
-  comments_count: number
-  created_at: Date
-  isPublic: boolean
-  likes_count: number
-  movie_id: number
-  rating: number
-  tags: string[]
-  updated_at: any
-  movie_title: string
-  movie_original_title: string
-  movie_backdrop_path: string
-  movie_poster: string
-  movie_release: string
-}
+import { Spinner } from '@nextui-org/react'
+import { CommentState, ReviewState } from '../../utils/type'
+import LikesCommentEmptyState from '../../components/EmptyStates/LikesCommentEmptyState'
+import LikesReviewEmptyState from '../../components/EmptyStates/LikesReviewEmptyState'
 
 const Likes = () => {
-  const [likedComments, setLikedComments] = useState<any>(null)
-  const [likedReviews, setLikedReviews] = useState<any>(null)
+  const [likedComments, setLikedComments] = useState<
+    CommentState[] | ReviewState[] | null
+  >(null)
+  const [likedReviews, setLikedReviews] = useState<
+    ReviewState[] | ReviewState[] | null
+  >(null)
   const user = useUserStore((state) => state.user)
   const { userId } = useParams()
 
@@ -77,49 +40,40 @@ const Likes = () => {
       getDocs(reviewsQuery),
     ])
 
-    let likedComments: any = []
+    let likedComments: CommentState[] = []
     commentsSnapshot.forEach((doc) => {
-      likedComments.push({ id: doc.id, ...doc.data() })
+      likedComments.push({ id: doc.id, ...doc.data() } as CommentState)
     })
 
-    let likedReviews: any = []
+    let likedReviews: ReviewState[] = []
     reviewsSnapshot.forEach((doc) => {
-      likedReviews.push({ id: doc.id, ...doc.data() })
+      likedReviews.push({ id: doc.id, ...doc.data() } as ReviewState)
     })
 
     likedComments = likedComments.sort(
-      (a: userMoviesCommentsState, b: userMoviesCommentsState) =>
-        b.updated_at - a.updated_at
+      (a: CommentState, b: CommentState) =>
+        b.updated_at.toMillis() - a.updated_at.toMillis()
     )
     setLikedComments(likedComments)
 
     likedReviews = likedReviews.sort(
-      (a: userMoviesReviewsState, b: userMoviesReviewsState) =>
-        b.updated_at - a.updated_at
+      (a: ReviewState, b: ReviewState) =>
+        b.updated_at.toMillis() - a.updated_at.toMillis()
     )
     setLikedReviews(likedReviews)
   }
 
-  if (!likedComments) {
-    return <Skeleton className="my-5 h-[100px] w-full"></Skeleton>
-  }
-
-  if (!likedReviews) {
-    return <Skeleton className="my-5 h-[100px] w-full"></Skeleton>
+  if (!likedComments || !likedReviews) {
+    return <Spinner className="my-5 h-[100px] w-full" color="default" />
   }
 
   return (
     <>
       <p className="text-base font-semibold text-[#475565]">點讚的評論</p>
       {likedComments.length === 0 ? (
-        <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
-          <img src="/undraw_love_it_xkc2.svg" className="h-[150px] w-[150px]" />
-          <p className="text-sm font-bold text-[#94a3ab]">
-            給你喜歡的評論多一點愛吧！
-          </p>
-        </div>
+        <LikesCommentEmptyState />
       ) : (
-        likedComments.map((comment: any, index: number) => {
+        likedComments.map((comment, index) => {
           return (
             <CommentCard
               post={comment}
@@ -134,19 +88,14 @@ const Likes = () => {
 
       <p className="mt-40 text-base font-semibold text-[#475565]">點讚的影評</p>
       {likedReviews.length === 0 ? (
-        <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
-          <img src="/undraw_love_it_xkc2.svg" className="h-[150px] w-[150px]" />
-          <p className="text-sm font-bold text-[#94a3ab]">
-            給你喜歡的影評多一點愛吧！
-          </p>
-        </div>
+        <LikesReviewEmptyState />
       ) : (
-        likedReviews.map((review: any, index: number) => {
+        likedReviews.map((review, index) => {
           return (
-            <ReviewCard
+            <CommentCard
               post={review}
-              followingUsersReviews={likedReviews}
-              setFollowingUsersReviews={setLikedReviews}
+              followingUsersComments={likedReviews}
+              setFollowingUsersComments={setLikedReviews}
               currentUserId={user.userId}
               key={index}
             />

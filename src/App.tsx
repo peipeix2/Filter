@@ -18,7 +18,11 @@ function App() {
 
   return (
     <>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          className: 'text-xs lg:text-sm',
+        }}
+      />
       <ScrollToTop />
       <Header />
       <Outlet />

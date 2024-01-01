@@ -7,6 +7,7 @@ import { Image, Skeleton, Pagination } from '@nextui-org/react'
 import { Link } from 'react-router-dom'
 import { collectionGroup, getDocs, query, where } from 'firebase/firestore'
 import { db } from '../../../firebase'
+import { CommentState } from '../../utils/type'
 
 type QueryKey = [string, number, string, string | null | undefined]
 
@@ -19,7 +20,11 @@ const Gallery = () => {
   const { pathname } = useLocation()
 
   if (!pathname) return
-  const getMoviesFromCategory = async ({ queryKey }: any) => {
+  const getMoviesFromCategory = async ({
+    queryKey,
+  }: {
+    queryKey: QueryKey
+  }) => {
     if (pathname.includes('search') && searchValue) {
       const data = await api.queryMovies(
         encodeURIComponent(searchValue),
@@ -48,9 +53,9 @@ const Gallery = () => {
     const commentRef = collectionGroup(db, 'COMMENTS')
     const q = query(commentRef, where('tags', 'array-contains', tag))
     const querySnapshot = await getDocs(q)
-    const data: any = []
+    const data: CommentState[] = []
     querySnapshot.forEach((doc) => {
-      data.push(doc.data())
+      data.push(doc.data() as CommentState)
     })
     const pages = Math.ceil(data.length / 20)
     setTotalPages(pages)
@@ -74,7 +79,7 @@ const Gallery = () => {
         </div>
       )}
 
-      <div className="mx-auto mt-20 flex flex-wrap justify-start gap-2">
+      <div className="mx-auto mt-10 flex flex-wrap justify-start gap-2 lg:mt-20">
         {isLoading &&
           Array(20)
             .fill(undefined)
@@ -87,7 +92,7 @@ const Gallery = () => {
               <Link
                 to={`/movies/${movie.id || movie.movie_id}`}
                 key={index}
-                className="group relative block h-full w-[19%]"
+                className="group relative block h-full w-[calc(50%-0.3rem)] md:w-[calc(33%-0.3rem)] lg:w-[19%]"
               >
                 <Image
                   alt="film-poster"
@@ -98,12 +103,12 @@ const Gallery = () => {
                   style={{ aspectRatio: '2/3' }}
                 />
                 <div className="absolute inset-0 z-10 h-full w-full overflow-hidden bg-fixed opacity-90 duration-300 hover:bg-white">
-                  <div className="flex h-full flex-col items-center justify-center gap-3 text-[#475565] opacity-0 group-hover:opacity-100">
+                  <div className="flex h-full flex-col items-center justify-center gap-3 px-2 text-[#475565] opacity-0 group-hover:opacity-100">
                     <p className="text-center text-lg font-bold">
-                      {movie.title}
+                      {movie.title || movie.movie_title}
                     </p>
                     <small className="text-center text-xs">
-                      {movie.original_title}
+                      {movie.original_title || movie.movie_original_title}
                     </small>
                   </div>
                 </div>

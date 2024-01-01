@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Navbar,
   NavbarBrand,
@@ -12,20 +13,25 @@ import SignUp from '../SignUp'
 import SignIn from '../SignIn'
 import Logout from '../Logout'
 import useUserStore from '../../store/userStore'
-import SubNavbar from '../../pages/Home/SubNavbar'
+import SearchBar from '../../pages/Home/SearchBar'
 import { Link } from 'react-router-dom'
+import { CiSearch } from 'react-icons/ci'
 
 function Header() {
   const { user, isLogin } = useUserStore()
+  const [openSearchBar, setOpenSearchBar] = useState<boolean>(false)
+
+  const handleToggleSearchBar = () => {
+    setOpenSearchBar(!openSearchBar)
+  }
 
   if (!user) return
 
   return (
     <Navbar
-      className="items-center bg-white px-32 shadow-lg"
+      className="h-16 w-full items-center bg-white p-2 shadow-lg md:h-20 lg:px-32"
       maxWidth="full"
       height="90px"
-      position="sticky"
       isBordered
     >
       <NavbarBrand>
@@ -33,13 +39,33 @@ function Header() {
           <img
             src="https://firebasestorage.googleapis.com/v0/b/filter-14ea1.appspot.com/o/Filter-logos_transparent_cut.png?alt=media&token=d3119f34-30f8-4afe-8e1c-6e74367acf7c"
             alt="site-logo"
-            className="h-auto w-[300px]"
+            className="h-auto w-[100px] md:w-[300px]"
           />
         </Link>
       </NavbarBrand>
 
-      <NavbarContent className="flex w-2/3 items-center gap-5" justify="end">
-        <SubNavbar />
+      <NavbarContent
+        className="flex h-[60px] w-full items-center gap-5 md:w-2/3"
+        justify="end"
+      >
+        <div
+          className={` ${
+            openSearchBar ? 'absolute left-0 top-5 z-20 w-full' : 'hidden'
+          } md:block md:w-2/3`}
+        >
+          <SearchBar />
+        </div>
+        <div
+          className={` ${
+            openSearchBar
+              ? 'fixed left-0 top-0 h-screen w-screen bg-slate-800/60'
+              : 'hidden'
+          }`}
+          onClick={handleToggleSearchBar}
+        />
+        <div className="md:hidden">
+          <CiSearch size={18} color="#718096" onClick={handleToggleSearchBar} />
+        </div>
         {!isLogin && (
           <>
             <SignUp />

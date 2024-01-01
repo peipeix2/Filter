@@ -1,4 +1,4 @@
-const DiscoverPage = () => {
+const DiscoverPageEmptyState = () => {
   return (
     <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 rounded-xl bg-slate-100 p-6">
       <img src="/browsing_online.svg" className="h-[150px] w-[150px]" />
@@ -9,4 +9,4 @@ const DiscoverPage = () => {
   )
 }
 
-export default DiscoverPage
+export default DiscoverPageEmptyState

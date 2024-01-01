@@ -12,6 +12,7 @@ import {
 import { Textarea, Button, Divider } from '@nextui-org/react'
 import useUserStore from '../../store/userStore'
 import toast from 'react-hot-toast'
+import { SubCommentState } from '../../utils/type'
 
 interface SubCommentsState {
   commentId: string
@@ -19,8 +20,8 @@ interface SubCommentsState {
 }
 
 const SubCommentsReview = (Props: SubCommentsState) => {
-  const [subComments, setSubComments] = useState<any>([])
-  const [editingComments, setEditingComments] = useState<any>([])
+  const [subComments, setSubComments] = useState<SubCommentState[]>([])
+  const [editingComments, setEditingComments] = useState<string[]>([])
   const [text, setText] = useState<string>('')
   const [editTextMap, setEditTextMap] = useState<any>({})
   const user = useUserStore((state) => state.user)
@@ -35,9 +36,9 @@ const SubCommentsReview = (Props: SubCommentsState) => {
       'SUBCOMMENTS'
     )
     const unsubscribe = onSnapshot(reviewRef, (querySnapshot) => {
-      const subCommentsData: any = []
+      const subCommentsData: SubCommentState[] = []
       querySnapshot.forEach((doc) => {
-        subCommentsData.push({ ...doc.data(), id: doc.id })
+        subCommentsData.push({ ...doc.data(), id: doc.id } as SubCommentState)
       })
       const subCommentsDataSorted = subCommentsData.sort(
         (a: any, b: any) => a.created_at - b.created_at
@@ -92,10 +93,9 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         { comments_count: subComments.length + 1 },
         { merge: true }
       )
-      console.log('Add subComment successfully.')
       setText('')
     } catch (err) {
-      console.log('Error', err)
+      console.error('Error', err)
     }
   }
 
@@ -104,11 +104,11 @@ const SubCommentsReview = (Props: SubCommentsState) => {
     subCommentBody: string
   ) => {
     if (editingComments.includes(subCommentId)) {
-      setEditingComments((prev: any) =>
+      setEditingComments((prev) =>
         prev.filter((id: string) => id !== subCommentId)
       )
     } else {
-      setEditingComments((prev: any) => [...prev, subCommentId])
+      setEditingComments((prev) => [...prev, subCommentId])
     }
     setEditTextMap((prev: any) => ({ ...prev, [subCommentId]: subCommentBody }))
   }
@@ -133,11 +133,11 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         },
         { merge: true }
       )
-      setEditingComments((prev: any) =>
+      setEditingComments((prev) =>
         prev.filter((id: string) => id !== subCommentId)
       )
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -167,7 +167,7 @@ const SubCommentsReview = (Props: SubCommentsState) => {
         { merge: true }
       )
     } catch (err) {
-      console.log('Error', err)
+      console.error('Error', err)
     }
   }
 
@@ -175,12 +175,14 @@ const SubCommentsReview = (Props: SubCommentsState) => {
 
   return (
     <div className="w-full">
-      {subComments.map((subComment: any, index: number) => {
+      {subComments.map((subComment, index) => {
         return (
           <div className="subComment-card my-5" key={index}>
             <div className="header flex items-center gap-2">
-              <span className="font-bold">{subComment.username}</span>
-              <span className="text-sm text-slate-400">
+              <span className="text-sm font-bold lg:text-base">
+                {subComment.username}
+              </span>
+              <span className="text-xs text-slate-400 lg:text-sm">
                 {subComment.created_at?.toDate().toDateString()}
               </span>
             </div>
@@ -207,7 +209,7 @@ const SubCommentsReview = (Props: SubCommentsState) => {
                 </div>
               </div>
             ) : (
-              <div className="comment-body mb-10 text-right">
+              <div className="comment-body mb-10 text-right text-sm lg:text-base">
                 {subComment.subcomment}
               </div>
             )}

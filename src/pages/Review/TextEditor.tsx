@@ -1,27 +1,7 @@
-import StarterKit from '@tiptap/starter-kit'
 import { useEditor, EditorContent } from '@tiptap/react'
-import Heading from '@tiptap/extension-heading'
-import Underline from '@tiptap/extension-underline'
-import Image from '@tiptap/extension-image'
-import Blockquote from '@tiptap/extension-blockquote'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import { mergeAttributes } from '@tiptap/react'
-import { useState, useRef } from 'react'
-import { storage } from '../../../firebase'
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
-import { v4 as uuidv4 } from 'uuid'
+import { useState } from 'react'
 import { Input, Button, Checkbox } from '@nextui-org/react'
-import {
-  FaStar,
-  FaBold,
-  FaItalic,
-  FaUnderline,
-  FaQuoteLeft,
-  FaImage,
-  FaUndoAlt,
-  FaRedoAlt,
-} from 'react-icons/fa'
+import { FaStar } from 'react-icons/fa'
 import useMoviesReviewStore from '../../store/moviesReviewStore'
 import useMoviesDetailStore from '../../store/moviesDetailStore'
 import {
@@ -36,8 +16,10 @@ import { useNavigate } from 'react-router-dom'
 import useMoviesCommentStore from '../../store/moviesCommentStore'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
-import { AiOutlineOrderedList, AiOutlineUnorderedList } from 'react-icons/ai'
 import toast from 'react-hot-toast'
+import StyleBtns from './StyleBtns'
+import { extension } from './extension'
+import { countRating } from '../../utils/render'
 
 const content = '<p>Type something here!</p>'
 
@@ -45,7 +27,6 @@ const TextEditor = () => {
   const [hover, setHover] = useState<number | null>(null)
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
-  const imgRef = useRef<HTMLInputElement>(null)
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
     moviesReview,
@@ -69,54 +50,11 @@ const TextEditor = () => {
         return text.toUpperCase()
       },
     },
-    extensions: [
-      StarterKit,
-      Underline,
-      Image,
-      Heading.configure({ levels: [1, 2, 3] })
-        .extend({
-          levels: [1, 2, 3],
-          renderHTML({ node, HTMLAttributes }) {
-            const level = this.options.levels.includes(node.attrs.level)
-              ? node.attrs.level
-              : this.options.levels[0]
-            const classes: { [index: number]: string } = {
-              1: 'text-2xl font-extrabold',
-              2: 'text-xl font-extrabold',
-              3: 'text-lg font-bold',
-            }
-            return [
-              `h${level}`,
-              mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-                class: `${classes[level]}`,
-              }),
-              0,
-            ]
-          },
-        })
-        .configure({ levels: [1, 2, 3] }),
-      Blockquote.configure({
-        HTMLAttributes: {
-          class:
-            'p-4 my-4 italic font-medium leading-relaxed text-gray-900 dark:text-white border-l-4 border-gray-300',
-        },
-      }),
-      OrderedList.configure({
-        HTMLAttributes: {
-          class: 'p-4 list-decimal',
-        },
-      }),
-      BulletList.configure({
-        HTMLAttributes: {
-          class: 'p-4 list-disc',
-        },
-      }),
-    ],
+    extensions: extension,
     content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML()
       setMoviesReview('review', html)
-      console.log(html)
     },
   })
 
@@ -125,37 +63,6 @@ const TextEditor = () => {
   }
 
   if (!user?.userId) return
-
-  const handleImageChange = (event: any) => {
-    const file = event.target.files[0]
-
-    addImage(file)
-  }
-
-  const uploadImage = async (image: any) => {
-    const imageRef = ref(storage, `/images/${image.name + uuidv4()}`)
-    await uploadBytes(imageRef, image)
-
-    const downloadURL = await getDownloadURL(imageRef)
-    return downloadURL
-  }
-
-  const addImage = async (image: any) => {
-    let imageURL = null
-    if (image) {
-      imageURL = await uploadImage(image)
-    }
-
-    if (imageURL) {
-      editor.chain().focus().setImage({ src: imageURL }).run()
-    }
-  }
-
-  const handlePickImg = () => {
-    if (imgRef.current) {
-      imgRef.current.click()
-    }
-  }
 
   const handleSubmitReview = async () => {
     if (formInvalid) {
@@ -199,36 +106,24 @@ const TextEditor = () => {
         {
           ratings_count:
             moviesCommentsForId.length + moviesReviewsForId.length + 1,
-          rating: countRating(),
+          rating: countRating(
+            moviesCommentsForId,
+            moviesReviewsForId,
+            moviesReview
+          ),
           reviews_count: moviesReviewsForId.length + 1,
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }
   }
 
-  const countRating = () => {
-    const sumForComments = moviesCommentsForId.reduce(
-      (acc, comment) => acc + comment.rating,
-      0
-    )
-    const sumForReviews = moviesReviewsForId.reduce(
-      (acc, review) => acc + review.rating,
-      0
-    )
-    const rating =
-      (sumForComments + sumForReviews + moviesReview.rating) /
-      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
-    return rating
-  }
-
   const formInvalid = !moviesReview.rating
 
   return (
-    <section className="text-editor-container mx-auto my-8 max-w-4xl">
+    <section className="text-editor-container mx-auto my-8 w-4/5 lg:max-w-4xl">
       <div className="mb-5 w-full">
         <Input
           type="text"
@@ -266,116 +161,7 @@ const TextEditor = () => {
           )
         })}
       </div>
-      <div className="buttons flex flex-wrap items-center justify-center gap-x-8 border-l border-r border-t border-gray-400 p-4">
-        <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={
-            editor.isActive('bold') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
-          }
-        >
-          <FaBold />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={
-            editor.isActive('italic') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
-          }
-        >
-          <FaItalic />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={
-            editor.isActive('underline') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
-          }
-        >
-          <FaUnderline />
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className={
-            editor.isActive('heading', { level: 1 })
-              ? 'rounded bg-[#89a9a6] p-1'
-              : 'p-1'
-          }
-        >
-          H1
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={
-            editor.isActive('heading', { level: 2 })
-              ? 'rounded bg-[#89a9a6] p-1'
-              : 'p-1'
-          }
-        >
-          H2
-        </button>
-        <button
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={
-            editor.isActive('heading', { level: 3 })
-              ? 'rounded bg-[#89a9a6] p-1'
-              : 'p-1'
-          }
-        >
-          H3
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={
-            editor.isActive('blockquote') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
-          }
-        >
-          <FaQuoteLeft />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={
-            editor.isActive('orderedList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
-          }
-        >
-          <AiOutlineOrderedList className="text-xl font-bold" />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={
-            editor.isActive('bulletList') ? 'rounded bg-[#89a9a6] p-1' : 'p-1'
-          }
-        >
-          <AiOutlineUnorderedList className="text-xl font-bold" />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().undo()}
-        >
-          <FaUndoAlt />
-        </button>
-        <button
-          onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().redo()}
-        >
-          <FaRedoAlt />
-        </button>
-        <div>
-          <button onClick={handlePickImg}>
-            <FaImage className="mt-1 text-xl" />
-          </button>
-          <input
-            className="hidden"
-            type="file"
-            accept=".jpg, .png"
-            ref={imgRef}
-            onChange={handleImageChange}
-          />
-        </div>
-      </div>
+      <StyleBtns editor={editor} />
       <div>
         <EditorContent editor={editor} />
       </div>
@@ -387,8 +173,9 @@ const TextEditor = () => {
           setTagsInput={setTagsInput}
         />
         <div className="flex items-center justify-start px-1 py-2">
-          <span className="mr-2">隱私設定</span>
+          <span className="mr-2 text-sm">隱私設定</span>
           <Checkbox
+            size="sm"
             classNames={{
               label: 'text-small',
             }}

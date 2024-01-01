@@ -7,9 +7,11 @@ const Review = () => {
 
   return (
     <>
-      <div className="title-container mx-auto my-20 max-w-4xl text-center">
-        <span className="mr-2 text-2xl font-bold">{moviesDetail.title}</span>
-        <span className="font-['DM_Serif_Display'] text-xl">
+      <div className="title-container mx-auto my-20 flex w-4/5 flex-col text-center lg:max-w-4xl">
+        <span className="mr-2 text-lg font-bold lg:text-2xl">
+          {moviesDetail.title}
+        </span>
+        <span className="font-['DM_Serif_Display'] text-sm lg:text-xl">
           {moviesDetail.original_title}
         </span>
         <Divider className="mt-3" />

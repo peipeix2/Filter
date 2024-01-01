@@ -31,34 +31,20 @@ import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import TagsInput from '../../components/TagsInput'
 import useUserStore from '../../store/userStore'
-import { isMovieCommented } from '../../utils/render'
+import { isMovieCommented, countRating } from '../../utils/render'
 import Favorites from '../../components/Favorites'
 import toast from 'react-hot-toast'
-import Test from './Test'
-import { toPng } from 'html-to-image'
-
-interface MoviesState {
-  id: number
-  title: string
-  original_title: string
-  overview: string
-  poster_path: string
-  rating: number
-  ratings_count: number
-  comments_count: number
-  reviews_count: number
-  wishes_count: number
-  tag: string[]
-  release_date: string
-}
+import { MovieFromFirestoreState, CommentState } from '../../utils/type'
+import { IoIosJournal } from 'react-icons/io'
 
 const RatingPanel = () => {
   const [hover, setHover] = useState<number | null>(null)
-  const [moviesData, setMoviesData] = useState<MoviesState | null>(null)
+  const [moviesData, setMoviesData] = useState<MovieFromFirestoreState | null>(
+    null
+  )
   const [userFavorites, setUserFavorites] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [tagsInput, setTagsInput] = useState<string>('')
-  const [isCardVisible, setIsCardVisible] = useState<boolean>(false)
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
   const moviesDetail = useMoviesDetailStore((state) => state.moviesDetail)
   const {
@@ -76,12 +62,11 @@ const RatingPanel = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(doc(db, 'MOVIES', `${id}`), (doc) => {
-      const movies: any = doc.data()
+      const movies: MovieFromFirestoreState =
+        doc.data() as MovieFromFirestoreState
       if (movies === undefined) return
       setMoviesData(movies)
     })
-
-    // if (!user?.userId) return
 
     return () => {
       unsubscribe()
@@ -94,10 +79,11 @@ const RatingPanel = () => {
     const unsubsComments = onSnapshot(
       collection(db, 'USERS', userId, 'COMMENTS'),
       (querySnapshot) => {
-        const userComment: any = []
+        const userComment: CommentState[] = []
         querySnapshot.forEach((doc) => {
-          userComment.push(doc.data())
+          userComment.push(doc.data() as CommentState)
         })
+        console.log(userComment, Number(id))
         setHasCommented(isMovieCommented(userComment, Number(id)))
       }
     )
@@ -105,7 +91,7 @@ const RatingPanel = () => {
     const unsubsFavorites = onSnapshot(
       collection(db, 'USERS', userId, 'FAVORITES'),
       (querySnapshot) => {
-        const favoriteIds: any = []
+        const favoriteIds: string[] = []
         querySnapshot.forEach((doc) => {
           favoriteIds.push(doc.id)
         })
@@ -117,7 +103,7 @@ const RatingPanel = () => {
       unsubsComments()
       unsubsFavorites()
     }
-  }, [userId, isLogin])
+  }, [userId, isLogin, id])
 
   const handleSubmitComment = async () => {
     if (formInvalid) {
@@ -152,8 +138,6 @@ const RatingPanel = () => {
     }
   }
 
-  console.log('hasCommented', hasCommented)
-
   const updateMovieRatings = async () => {
     try {
       await setDoc(
@@ -161,47 +145,17 @@ const RatingPanel = () => {
         {
           ratings_count:
             moviesCommentsForId.length + moviesReviewsForId.length + 1,
-          rating: countRating(),
+          rating: countRating(
+            moviesCommentsForId,
+            moviesReviewsForId,
+            moviesComment
+          ),
         },
         { merge: true }
       )
-      console.log('Movie ratings updated successfully.')
     } catch (error) {
       console.error('Error updating movie ratings: ', error)
     }
-  }
-
-  const countRating = () => {
-    const sumForComments = moviesCommentsForId.reduce(
-      (acc, comment) => acc + comment.rating,
-      0
-    )
-    const sumForReviews = moviesReviewsForId.reduce(
-      (acc, review) => acc + review.rating,
-      0
-    )
-    console.log('sumForComments', sumForComments)
-    console.log('sumForReviews', sumForReviews)
-    const rating =
-      (sumForComments + sumForReviews + moviesComment.rating) /
-      (moviesCommentsForId.length + moviesReviewsForId.length + 1)
-    return rating
-  }
-
-  const generateImage = () => {
-    setIsCardVisible(true)
-    const element = document.querySelector('#generated-card')
-    toPng(element as HTMLElement, { cacheBust: false })
-      .then((dataURL) => {
-        const link = document.createElement('a')
-        link.download = 'image.png'
-        link.href = dataURL
-        link.click()
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    setIsCardVisible(false)
   }
 
   const formInvalid = !moviesComment.rating
@@ -210,7 +164,7 @@ const RatingPanel = () => {
   if (!id) return
 
   return (
-    <div className="rating-data-wrapper relative mx-auto w-4/5 bg-slate-100 py-3">
+    <div className="rating-data-wrapper relative mx-auto flex max-w-[300px] flex-col-reverse py-3 lg:w-4/5 lg:flex-col lg:bg-slate-100">
       {!isLogin && (
         <div className="protected-wrapper absolute -top-1 z-10 mx-auto h-full w-full bg-slate-800 bg-opacity-50">
           <div className="flex h-full w-full items-center justify-center text-center text-white">
@@ -229,9 +183,15 @@ const RatingPanel = () => {
           <span className="text-xs">看過</span>
         </div>
         <Favorites isFavorites={userFavorites.includes(id)} movieId={id} />
+        <Link to={`/review/${moviesDetail.id}`} className="lg:hidden">
+          <div className="flex cursor-pointer flex-col items-center text-[#94a3ab] hover:text-[#475565] ">
+            <IoIosJournal className="text-4xl" />
+            <span className="text-xs">寫影評</span>
+          </div>
+        </Link>
       </div>
 
-      <Divider />
+      <Divider className="hidden lg:block" />
 
       <div className="rating-wrapper flex flex-col items-center justify-center py-3">
         <SimplisticStar rating={moviesData.rating} count={1} />
@@ -240,26 +200,15 @@ const RatingPanel = () => {
         </p>
       </div>
 
-      <Divider />
+      <Divider className="hidden lg:block" />
 
-      <Link to={`/review/${moviesDetail.id}`}>
-        <div className="py-3">
+      <Link to={`/review/${moviesDetail.id}`} className="hidden lg:block">
+        <div className="pt-3">
           <p className="text-center text-sm text-[#94a3ab] hover:text-[#475565]">
             寫影評
           </p>
         </div>
       </Link>
-
-      <Divider />
-
-      <div className="pt-3">
-        <p
-          className="text-center text-sm text-[#94a3ab]"
-          onClick={generateImage}
-        >
-          分享
-        </p>
-      </div>
 
       {/* Modal Form */}
       <Modal
@@ -271,21 +220,21 @@ const RatingPanel = () => {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
+              <ModalHeader className="flex flex-col gap-1 text-sm lg:text-lg">
                 我看過...
               </ModalHeader>
-              <ModalBody className="flex flex-row">
+              <ModalBody className="flex flex-col lg:flex-row">
                 <Image
                   src={`https://image.tmdb.org/t/p/w500${moviesDetail.poster_path}`}
                   alt={moviesDetail.original_title}
-                  className="w-[300px]"
+                  className="hidden lg:block lg:w-[300px]"
                   isBlurred
                 />
                 <div className="flex-grow px-10">
-                  <h1 className="mr-2 text-3xl font-bold">
+                  <h1 className="mr-2 text-xl font-bold lg:text-3xl">
                     {moviesDetail.title}
                   </h1>
-                  <p className="mb-5 font-['DM_Serif_Display'] text-2xl">
+                  <p className="mb-5 font-['DM_Serif_Display'] text-base lg:text-2xl">
                     {moviesDetail.original_title}
                   </p>
                   <Textarea
@@ -293,6 +242,10 @@ const RatingPanel = () => {
                     label="我的評價"
                     description="字數不可超過150字"
                     className="mb-5"
+                    classNames={{
+                      label: 'text-xs lg:text-base',
+                      description: 'text-xs lg:text-sm',
+                    }}
                     maxLength={150}
                     value={moviesComment.comment}
                     onChange={(e) =>
@@ -307,9 +260,11 @@ const RatingPanel = () => {
                     setTagsInput={setTagsInput}
                   />
 
-                  <div className="rating-privacy mt-5 flex justify-between">
+                  <div className="rating-privacy mt-5 flex flex-col justify-between lg:flex-row">
                     <div className="flex items-center">
-                      <span className="mx-2 text-sm">評分</span>
+                      <span className="mr-2 text-sm lg:ml-2 lg:text-sm">
+                        評分
+                      </span>
                       {[...Array(5)].map((_, index) => {
                         const ratingValue: number = index + 1
                         return (
@@ -339,8 +294,10 @@ const RatingPanel = () => {
                       })}
                     </div>
 
-                    <div className="flex justify-between px-1 py-2">
-                      <span className="mr-2">隱私設定</span>
+                    <div className="mt-5 flex justify-start lg:mt-0 lg:justify-between lg:px-1 lg:py-2">
+                      <span className="mr-2 text-sm lg:text-base">
+                        隱私設定
+                      </span>
                       <Checkbox
                         classNames={{
                           label: 'text-small',
@@ -364,9 +321,7 @@ const RatingPanel = () => {
                   取消
                 </Button>
                 <Button
-                  // color="default"
                   className="bg-[#94a3ab] text-white"
-                  // onPress={onClose}
                   onClick={handleSubmitComment}
                 >
                   送出
@@ -376,10 +331,6 @@ const RatingPanel = () => {
           )}
         </ModalContent>
       </Modal>
-
-      <div className={isCardVisible ? 'absolute bottom-0' : 'hidden'}>
-        <Test />
-      </div>
     </div>
   )
 }

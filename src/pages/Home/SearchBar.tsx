@@ -3,7 +3,7 @@ import { CiSearch } from 'react-icons/ci'
 import { useNavigate } from 'react-router-dom'
 import { Select, SelectItem } from '@nextui-org/react'
 
-const SubNavbar = () => {
+const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('')
   const [selectedValue, setSelectedValue] = useState('title')
   const navigate = useNavigate()
@@ -22,7 +22,7 @@ const SubNavbar = () => {
   }
 
   return (
-    <div className="header-search h-12 w-2/3">
+    <div className="header-search h-12 w-full">
       <div className="search-form flex h-12 items-center rounded-lg bg-[#d2d2d2] p-5">
         <form
           onSubmit={(e) => handleSearchSubmit(e)}
@@ -33,7 +33,7 @@ const SubNavbar = () => {
           </button>
           <input
             type="text"
-            className="search-form-input w-full border-none bg-[#d2d2d2] px-2 placeholder-gray-500 outline-0 focus:outline-none"
+            className="search-form-input w-full border-none bg-[#d2d2d2] px-2 text-sm placeholder-gray-500 outline-0 focus:outline-none md:text-base"
             placeholder="搜尋電影"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
@@ -44,9 +44,11 @@ const SubNavbar = () => {
           <div className="search-form-dropdown">
             <Select
               size="sm"
-              className="min-w-[100px]"
+              className="min-w-[80px]"
               classNames={{
                 innerWrapper: 'bg-[#d2d2d2]',
+                // listboxWrapper: 'text-sm md:text-base',
+                // mainWrapper: 'text-green-500',
                 trigger: [
                   'data-[hover=true]:bg-[#d2d2d2]',
                   'bg-[$d2d2d2] border-none shadow-none',
@@ -62,14 +64,6 @@ const SubNavbar = () => {
                 標籤
               </SelectItem>
             </Select>
-            {/* <select
-              className="focus: border-none bg-[#d2d2d2] px-3 text-sm text-[#222222] outline-none"
-              onChange={(e) => setSelectedValue(e.target.value)}
-              defaultValue={[selectedValue]}
-            >
-              <option value="title">片名</option>
-              <option value="tag">標籤</option>
-            </select> */}
           </div>
         </div>
       </div>
@@ -77,4 +71,4 @@ const SubNavbar = () => {
   )
 }
 
-export default SubNavbar
+export default SearchBar
