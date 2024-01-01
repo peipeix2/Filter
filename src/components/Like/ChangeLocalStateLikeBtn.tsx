@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore'
 import useUserStore from '../../store/userStore'
 import { CommentState, ReviewState } from '../../utils/type'
+import toast from 'react-hot-toast'
 
 interface LikeState {
   postId: string
@@ -68,7 +69,7 @@ const ChangeLocalStateLikeBtn = (Props: LikeState) => {
     likesCount: number
   ) => {
     if (!isLogin) {
-      return alert('請先登入或註冊！')
+      return toast.error('請先登入或註冊！')
     }
 
     const userRef = doc(db, 'USERS', currentUserId)
