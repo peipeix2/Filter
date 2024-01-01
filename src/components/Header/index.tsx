@@ -29,7 +29,7 @@ function Header() {
 
   return (
     <Navbar
-      className="relative items-center bg-white p-2 shadow-lg lg:px-32"
+      className="relative h-16 w-full items-center bg-white p-2 shadow-lg md:h-20 lg:px-32"
       maxWidth="full"
       height="90px"
       position="sticky"
@@ -46,7 +46,7 @@ function Header() {
       </NavbarBrand>
 
       <NavbarContent
-        className="flex w-full items-center gap-5 md:w-2/3"
+        className="flex h-[60px] w-full items-center gap-5 md:w-2/3"
         justify="end"
       >
         <div
