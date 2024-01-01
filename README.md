@@ -31,7 +31,7 @@
 
 ### Flow chart
 
-![flow chart](/flow-chart.png)
+![flow chart](/public/flow-chart.png)
 
 ### Contact
 
