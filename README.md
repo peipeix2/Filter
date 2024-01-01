@@ -1,3 +1,17 @@
+<div align="center">
+  <a href="https://filter-14ea1.web.app/" style="margin-bottom:20px; display:block;">
+    <img src="/public/Filter-logos_transparent_cut.png" alt="Logo" width="200px">
+  </a>
+
+  <p align="center">
+    <a href="https://github.com/peipeix2/Filter/#About-Filter">About</a>
+    |
+    <a href="https://youtu.be/wy-MUv4LEOM?si=Z6XGvAz_MoURrrE1">Demo</a>
+    |
+    <a href="https://github.com/peipeix2/Filter/#Contact">Contact</a>
+  </p>
+</div>
+
 # Filter
 
 [Filter](https://filter-14ea1.web.app/) is a social network for film lover. At Filter, user can write short comment or long journal for films they've watched, search for titles, create customized tags for films they love, and manage their own watchlist calendar.
